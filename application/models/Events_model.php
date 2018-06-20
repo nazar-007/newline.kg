@@ -89,7 +89,7 @@ class Events_model extends CI_Model {
     }
     public function deleteEventFan($id) {
         $this->db->where('id', $id);
-        $this->db->delete('song_fans');
+        $this->db->delete('event_fans');
     }
 
     public function insertEventNotification($data) {

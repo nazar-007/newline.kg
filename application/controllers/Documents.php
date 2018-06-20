@@ -12,7 +12,7 @@ class Documents extends CI_Controller {
     public function Index() {
         $user_id = 1;
         $data = array(
-            'documents' => $this->documents_model->getDocuments($user_id),
+            'documents' => $this->documents_model->getDocumentsByUserId($user_id),
             'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );

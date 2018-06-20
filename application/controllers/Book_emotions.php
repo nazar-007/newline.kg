@@ -34,4 +34,15 @@ class Book_emotions extends CI_Controller {
         );
         $this->books_model->insertBookEmotion($data_book_emotions);
     }
+
+    public function delete_book_emotion() {
+        $id = $this->input->post('id');
+        $this->books_model->deleteBookEmotion($id);
+        $delete_json = array(
+            'id' => $id,
+            'csrf_name' => $this->security->get_csrf_token_name (),
+            'csrf_hash' => $this->security->get_csrf_hash()
+        );
+//        echo json_encode($delete_json);
+    }
 }

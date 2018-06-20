@@ -9,7 +9,7 @@ class Documents_model extends CI_Model {
         $this->load->helper('url');
 
     }
-    public function getDocuments($user_id) {
+    public function getDocumentsByUserId($user_id) {
         $this->db->where('user_id', $user_id);
         $query = $this->db->get('documents');
         return $query->result();
@@ -19,6 +19,10 @@ class Documents_model extends CI_Model {
     }
     public function deleteDocument($id) {
         $this->db->where('id', $id);
+        $this->db->delete('documents');
+    }
+    public function deleteDocumentsByFolderId($folder_id) {
+        $this->db->where('folder_id', $folder_id);
         $this->db->delete('documents');
     }
     public function updateDocument($id, $data) {

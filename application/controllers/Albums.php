@@ -19,7 +19,16 @@ class Albums extends CI_Controller {
     }
 
     public function insert_album() {
-        $data = array();
-        $this->albums_model->insertAlbum($data);
+        $album_name = $this->input->post('album_name');
+        $user_id = $this->input->post('user_id');
+
+        $data_albums = array(
+            'album_name' => $album_name,
+            'user_id' => $user_id
+        );
+
+        if ($album_name != 'My Album' || $album_name != 'Publication Album') {
+            $this->albums_model->insertAlbum($data_albums);
+        }
     }
 }

@@ -34,4 +34,15 @@ class Song_emotions extends CI_Controller {
         );
         $this->songs_model->insertSongEmotion($data_song_emotions);
     }
+
+    public function delete_song_emotion() {
+        $id = $this->input->post('id');
+        $this->songs_model->deleteSongEmotion($id);
+        $delete_json = array(
+            'id' => $id,
+            'csrf_name' => $this->security->get_csrf_token_name (),
+            'csrf_hash' => $this->security->get_csrf_hash()
+        );
+        echo json_encode($delete_json);
+    }
 }

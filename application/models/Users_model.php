@@ -45,14 +45,25 @@ class Users_model extends CI_Model {
         $this->db->update('users', $data);
     }
 
+    public function getFriends($user_id) {
+        $this->db->where('user_id', $user_id);
+        $query = $this->db->get('friends');
+        return $query->result();
+    }
     public function insertFriend($data) {
         $this->db->insert('friends', $data);
     }
-    public function deleteFriend($id) {
-        $this->db->where('id', $id);
+    public function deleteFriends($user_id, $friend_id) {
+        $this->db->where('user_id', $user_id);
+        $this->db->where('friend_id', $friend_id);
         $this->db->delete('friends');
     }
 
+    public function getGuests($user_id) {
+        $this->db->where('user_id', $user_id);
+        $query = $this->db->get('guests');
+        return $query->result();
+    }
     public function insertGuest($data) {
         $this->db->insert('guests', $data);
     }

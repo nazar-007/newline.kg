@@ -2,24 +2,15 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Messages_model extends CI_Model {
-
     public function __construct() {
         parent::__construct();
         $this->load->database();
         $this->load->helper('url');
     }
+
     public function getPrivateMessages($user_id) {
         $this->db->where('from_id', $user_id);
         $query = $this->db->get('private_messages');
-        return $query->result();
-    }
-    public function getGuestMessages($user_id) {
-        $this->db->where('to_id', $user_id);
-        $query = $this->db->get('guest_messages');
-        return $query->result();
-    }
-    public function getFeedbackMessages() {
-        $query = $this->db->get('feedback_messages');
         return $query->result();
     }
     public function insertPrivateMessage($data) {
@@ -33,6 +24,12 @@ class Messages_model extends CI_Model {
         $this->db->where('to_id', $user_id);
         $this->db->delete('private_messages');
     }
+
+    public function getGuestMessages($user_id) {
+        $this->db->where('to_id', $user_id);
+        $query = $this->db->get('guest_messages');
+        return $query->result();
+    }
     public function insertGuestMessage($data) {
         $this->db->insert('guest_messages', $data);
     }
@@ -43,6 +40,11 @@ class Messages_model extends CI_Model {
     public function deleteAllGuestMessagesByUserId($user_id) {
         $this->db->where('user_id', $user_id);
         $this->db->delete('guest_messages');
+    }
+
+    public function getFeedbackMessages() {
+        $query = $this->db->get('feedback_messages');
+        return $query->result();
     }
     public function insertFeedbackMessage($data) {
         $this->db->insert('feedback_messages', $data);

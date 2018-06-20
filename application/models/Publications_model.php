@@ -41,6 +41,11 @@ class Publications_model extends CI_Model {
         $this->db->update('publications', $data);
     }
 
+    public function getPublicationComments($publication_id) {
+        $this->db->where('publication_id', $publication_id);
+        $query = $this->db->get('publication_comments');
+        return $query->result();
+    }
     public function insertPublicationComment($data) {
         $this->db->insert('publication_comments', $data);
     }
@@ -106,6 +111,10 @@ class Publications_model extends CI_Model {
     }
     public function deletePublicationShareEmotion($id) {
         $this->db->where('id', $id);
+        $this->db->delete('publication_share_emotions');
+    }
+    public function deletePublicationShareEmotionsByPublicationShareId($publication_share_id) {
+        $this->db->where('publication_share_id', $publication_share_id);
         $this->db->delete('publication_share_emotions');
     }
     public function updatePublicationShareEmotion($id, $data) {

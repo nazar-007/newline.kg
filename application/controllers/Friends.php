@@ -9,12 +9,13 @@ class Friends extends CI_Controller {
     }
 
     public function Index() {
+        $user_id = 5;
         $data = array(
-            'publications' => $this->publications_model->getPublications(),
+            'friends' => $this->users_model->getFriends($user_id),
             'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
-        $this->load->view('publications', $data);
+        $this->load->view('friends', $data);
     }
 
     public function insert_friend() {
@@ -40,5 +41,16 @@ class Friends extends CI_Controller {
 
         $this->users_model->insertFriend($data_friends_1);
         $this->users_model->insertFriend($data_friends_2);
+    }
+
+    public function delete_friend() {
+
+        $user_id = 14;
+        $friend_id = 4;
+
+//        $user_id = $this->input->post('user_id');
+//        $friend_id = $this->input->post('friend_id');
+        $this->users_model->deleteFriends($user_id, $friend_id);
+        $this->users_model->deleteFriends($friend_id, $user_id);
     }
 }

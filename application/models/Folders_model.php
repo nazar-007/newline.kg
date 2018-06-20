@@ -8,10 +8,12 @@ class Folders_model extends CI_Model {
         $this->load->helper('url');
 
     }
-    public function getFolders($user_id) {
-        $this->db->where('user_id', $user_id);
-        $query = $this->db->get('folders');
-        return $query->result();
+    public function getFoldersByUserId($user_id) {
+        $this->db->where('folder_id', $user_id);
+        $query = $this->db->get('documents');
+        echo '<pre>';
+        print_r($query->result());
+        echo '</pre>';
     }
     public function insertFolder($data) {
         $this->db->insert('folders', $data);

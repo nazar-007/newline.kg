@@ -34,4 +34,15 @@ class Event_emotions extends CI_Controller {
         );
         $this->events_model->insertEventEmotion($data_event_emotions);
     }
+
+    public function delete_event_emotion() {
+        $id = $this->input->post('id');
+        $this->events_model->deleteEventEmotion($id);
+        $delete_json = array(
+            'id' => $id,
+            'csrf_name' => $this->security->get_csrf_token_name (),
+            'csrf_hash' => $this->security->get_csrf_hash()
+        );
+        echo json_encode($delete_json);
+    }
 }
