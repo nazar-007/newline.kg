@@ -99,6 +99,11 @@ class Songs_model extends CI_Model {
         $this->db->delete('song_notifications');
     }
 
+    public function getSongSuggestions($admin_id) {
+        $this->db->where('admin_id', $admin_id);
+        $query = $this->db->get('song_suggestions');
+        return $query->result();
+    }
     public function insertSongSuggestion($data) {
         $this->db->insert('song_suggestions', $data);
     }

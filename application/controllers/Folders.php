@@ -29,7 +29,7 @@ class Folders extends CI_Controller {
             'user_id' => $user_id
         );
 
-        if ($folder_name != 'My Folder') {
+        if ($folder_name != 'User Folder') {
             $this->folders_model->insertFolder($data_folders);
         }
     }

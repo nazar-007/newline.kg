@@ -19,6 +19,35 @@ class Gift_sent extends CI_Controller {
         $this->load->view('gift_sent', $data);
     }
 
+    public function insert_gift_sent() {
+        $sent_date = date('d.m.Y');
+        $sent_time = date('H:i:s');
+        $sent_user_id = $this->input->post('gifted_user_id');
+        $user_id = $this->input->post('user_id');
+        $gift_id = $this->input->post('gift_id');
+
+        $data_gift_sent = array(
+            'sent_date' => $sent_date,
+            'sent_time' => $sent_time,
+            'sent_user_id' => $sent_user_id,
+            'user_id' => $user_id,
+            'gift_id' => $gift_id
+        );
+        $this->gifts_model->insertGiftSent($data_gift_sent);
+
+        $notification_text = 'Пользователь Назар сделал Вам подарок';
+
+        $data_user_notifications = array(
+            'notification_type' => 'Подарок для Вас',
+            'notification_text' => $notification_text,
+            'notification_date' => $sent_date,
+            'notification_time' => $sent_time,
+            'notification_viewed' => 'Не просмотрено',
+            'user_id' => $user_id
+        );
+        $this->users_model->insertUserNotification($data_user_notifications);
+    }
+
     public function delete_gift_sent() {
         $id = $this->input->post('id');
         $this->gifts_model->deleteGiftSent($id);

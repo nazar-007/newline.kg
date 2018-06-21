@@ -43,6 +43,6 @@ class Book_emotions extends CI_Controller {
             'csrf_name' => $this->security->get_csrf_token_name (),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
-//        echo json_encode($delete_json);
+        echo json_encode($delete_json);
     }
 }

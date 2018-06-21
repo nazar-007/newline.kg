@@ -35,6 +35,21 @@ class Stake_fans extends CI_Controller {
         }
     }
 
+    public function insert_stake_fan() {
+        $stake_date = date('d.m.Y');
+        $stake_time = date('H:i:s');
+        $user_id = $this->input->post('user_id');
+        $stake_id = $this->input->post('stake_id');
+
+        $data_stake_fans = array(
+            'stake_date' => $stake_date,
+            'stake_time' => $stake_time,
+            'user_id' => $user_id,
+            'stake_id' => $stake_id
+        );
+        $this->stakes_model->insertStakeFan($data_stake_fans);
+    }
+
     public function delete_stake_fan() {
         $id = $this->input->post('id');
         $this->stakes_model->deleteStakeFan($id);

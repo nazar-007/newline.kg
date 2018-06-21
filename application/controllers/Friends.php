@@ -44,12 +44,8 @@ class Friends extends CI_Controller {
     }
 
     public function delete_friend() {
-
-        $user_id = 14;
-        $friend_id = 4;
-
-//        $user_id = $this->input->post('user_id');
-//        $friend_id = $this->input->post('friend_id');
+        $user_id = $this->input->post('user_id');
+        $friend_id = $this->input->post('friend_id');
         $this->users_model->deleteFriends($user_id, $friend_id);
         $this->users_model->deleteFriends($friend_id, $user_id);
     }

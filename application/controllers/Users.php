@@ -212,7 +212,7 @@ class Users extends CI_Controller {
             $insert_user_id = $this->db->insert_id();
 
             $data_user_albums = array(
-                'album_name' => "My Album",
+                'album_name' => "User Album",
                 'user_id' => $insert_user_id
             );
             $this->albums_model->insertAlbum($data_user_albums);
@@ -225,13 +225,13 @@ class Users extends CI_Controller {
             $this->albums_model->insertAlbum($data_publication_albums);
 
             $data_folders = array(
-                'folder_name' => "My Folder",
+                'folder_name' => "User Folder",
                 'user_id' => $insert_user_id
             );
             $this->folders_model->insertFolder($data_folders);
 
             $data_user_images = array(
-                'user_image_name' => 'My first image',
+                'user_image_name' => 'User first image',
                 'user_image_file' => $main_image,
                 'user_image_date' => $date_mk,
                 'user_image_time' => $time_mk,

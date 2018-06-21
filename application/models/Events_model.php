@@ -100,6 +100,11 @@ class Events_model extends CI_Model {
         $this->db->delete('event_notifications');
     }
 
+    public function getEventSuggestions($admin_id) {
+        $this->db->where('admin_id', $admin_id);
+        $query = $this->db->get('event_suggestions');
+        return $query->result();
+    }
     public function insertEventSuggestion($data) {
         $this->db->insert('event_suggestions', $data);
     }

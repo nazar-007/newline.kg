@@ -34,7 +34,17 @@ class Guests extends CI_Controller {
             'user_id' => $user_id,
             'guest_id' => $guest_id
         );
-
         $this->users_model->insertGuest($data_guests);
+    }
+
+    public function delete_guest() {
+        $id = $this->input->post('id');
+        $this->users_model->deleteGuest($id);
+        $delete_json = array(
+            'id' => $id,
+            'csrf_name' => $this->security->get_csrf_token_name (),
+            'csrf_hash' => $this->security->get_csrf_hash()
+        );
+        echo json_encode($delete_json);
     }
 }

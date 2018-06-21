@@ -27,7 +27,7 @@ class Albums extends CI_Controller {
             'user_id' => $user_id
         );
 
-        if ($album_name != 'My Album' || $album_name != 'Publication Album') {
+        if ($album_name != 'User Album' || $album_name != 'Publication Album') {
             $this->albums_model->insertAlbum($data_albums);
         }
     }

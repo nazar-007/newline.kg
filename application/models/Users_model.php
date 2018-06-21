@@ -45,6 +45,19 @@ class Users_model extends CI_Model {
         $this->db->update('users', $data);
     }
 
+    public function getUserBlacklist($user_id) {
+        $this->db->where('user_id', $user_id);
+        $query = $this->db->get('user_blacklist');
+        return $query->result();
+    }
+    public function insertUserBlacklist($data) {
+        $this->db->insert('user_blacklist', $data);
+    }
+    public function deleteUserBlacklist($id) {
+        $this->db->where('id', $id);
+        $this->db->delete('user_blacklist');
+    }
+
     public function getFriends($user_id) {
         $this->db->where('user_id', $user_id);
         $query = $this->db->get('friends');
@@ -122,6 +135,14 @@ class Users_model extends CI_Model {
     public function deleteUserImageNotification($id) {
         $this->db->where('id', $id);
         $this->db->delete('user_image_notifications');
+    }
+
+    public function insertUserInvite($data) {
+        $this->db->insert('user_invites', $data);
+    }
+    public function deleteUserInvite($id) {
+        $this->db->where('id', $id);
+        $this->db->delete('user_invites');
     }
 
     public function insertUserNotification($data) {

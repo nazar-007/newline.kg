@@ -100,6 +100,11 @@ class Books_model extends CI_Model {
         $this->db->delete('book_notifications');
     }
 
+    public function getBookSuggestions($admin_id) {
+        $this->db->where('admin_id', $admin_id);
+        $query = $this->db->get('book_suggestions');
+        return $query->result();
+    }
     public function insertBookSuggestion($data) {
         $this->db->insert('book_suggestions', $data);
     }
