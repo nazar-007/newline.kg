@@ -17,7 +17,7 @@ class Documents_model extends CI_Model {
     public function insertDocument($data) {
         $this->db->insert('documents', $data);
     }
-    public function deleteDocument($id) {
+    public function deleteDocumentById($id) {
         $this->db->where('id', $id);
         $this->db->delete('documents');
     }
@@ -25,7 +25,7 @@ class Documents_model extends CI_Model {
         $this->db->where('folder_id', $folder_id);
         $this->db->delete('documents');
     }
-    public function updateDocument($id, $data) {
+    public function updateDocumentById($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('documents', $data);
     }

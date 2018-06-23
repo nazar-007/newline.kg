@@ -39,7 +39,7 @@ class Folders extends CI_Controller {
         $folder_name = $this->input->post('folder_name');
 
         if ($folder_name != 'My folder') {
-            $this->folders_model->deleteFolder($id);
+            $this->folders_model->deleteFolderById($id);
             $this->documents_model->deleteDocumentsByFolderId($id);
         }
 
@@ -48,6 +48,6 @@ class Folders extends CI_Controller {
             'csrf_name' => $this->security->get_csrf_token_name (),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
-//        echo json_encode($delete_json);
+        echo json_encode($delete_json);
     }
 }

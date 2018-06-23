@@ -2,25 +2,75 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ce46e8a7-f822-48f3-ae00-3e1c2dffd3bc" name="Default" comment="">
-      <change type="MOVED" beforePath="$PROJECT_DIR$/application/controllers/Black_list.php" afterPath="$PROJECT_DIR$/application/controllers/User_blacklist.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/application/controllers/User_notifications.php" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/application/controllers/Admin_notifications.php" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/application/controllers/Book_notifications.php" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/application/controllers/Event_notifications.php" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/application/controllers/Song_notifications.php" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/application/controllers/User_image_notifications.php" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/application/controllers/User_notifcations.php" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Admins.php" afterPath="$PROJECT_DIR$/application/controllers/Admins.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Albums.php" afterPath="$PROJECT_DIR$/application/controllers/Albums.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Book_categories.php" afterPath="$PROJECT_DIR$/application/controllers/Book_categories.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Book_comments.php" afterPath="$PROJECT_DIR$/application/controllers/Book_comments.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Book_complaints.php" afterPath="$PROJECT_DIR$/application/controllers/Book_complaints.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Book_emotions.php" afterPath="$PROJECT_DIR$/application/controllers/Book_emotions.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Book_fans.php" afterPath="$PROJECT_DIR$/application/controllers/Book_fans.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Book_suggestions.php" afterPath="$PROJECT_DIR$/application/controllers/Book_suggestions.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Books.php" afterPath="$PROJECT_DIR$/application/controllers/Books.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Documents.php" afterPath="$PROJECT_DIR$/application/controllers/Documents.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Emotions.php" afterPath="$PROJECT_DIR$/application/controllers/Emotions.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Event_categories.php" afterPath="$PROJECT_DIR$/application/controllers/Event_categories.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Event_comments.php" afterPath="$PROJECT_DIR$/application/controllers/Event_comments.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Event_complaints.php" afterPath="$PROJECT_DIR$/application/controllers/Event_complaints.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Event_emotions.php" afterPath="$PROJECT_DIR$/application/controllers/Event_emotions.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Event_fans.php" afterPath="$PROJECT_DIR$/application/controllers/Event_fans.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Event_suggestions.php" afterPath="$PROJECT_DIR$/application/controllers/Event_suggestions.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Events.php" afterPath="$PROJECT_DIR$/application/controllers/Events.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Folders.php" afterPath="$PROJECT_DIR$/application/controllers/Folders.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Friends.php" afterPath="$PROJECT_DIR$/application/controllers/Friends.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Gift_categories.php" afterPath="$PROJECT_DIR$/application/controllers/Gift_categories.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Gift_sent.php" afterPath="$PROJECT_DIR$/application/controllers/Gift_sent.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Gifts.php" afterPath="$PROJECT_DIR$/application/controllers/Gifts.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Guests.php" afterPath="$PROJECT_DIR$/application/controllers/Guests.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Private_messages.php" afterPath="$PROJECT_DIR$/application/controllers/Private_messages.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Publication_comments.php" afterPath="$PROJECT_DIR$/application/controllers/Publication_comments.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Publication_complaints.php" afterPath="$PROJECT_DIR$/application/controllers/Publication_complaints.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Publication_emotions.php" afterPath="$PROJECT_DIR$/application/controllers/Publication_emotions.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Publication_image_emotions.php" afterPath="$PROJECT_DIR$/application/controllers/Publication_image_emotions.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Publication_images.php" afterPath="$PROJECT_DIR$/application/controllers/Publication_images.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Publication_share_emotions.php" afterPath="$PROJECT_DIR$/application/controllers/Publication_share_emotions.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Publication_shares.php" afterPath="$PROJECT_DIR$/application/controllers/Publication_shares.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Publications.php" afterPath="$PROJECT_DIR$/application/controllers/Publications.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Song_categories.php" afterPath="$PROJECT_DIR$/application/controllers/Song_categories.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Song_comments.php" afterPath="$PROJECT_DIR$/application/controllers/Song_comments.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Song_complaints.php" afterPath="$PROJECT_DIR$/application/controllers/Song_complaints.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Song_emotions.php" afterPath="$PROJECT_DIR$/application/controllers/Song_emotions.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Song_fans.php" afterPath="$PROJECT_DIR$/application/controllers/Song_fans.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Song_suggestions.php" afterPath="$PROJECT_DIR$/application/controllers/Song_suggestions.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Songs.php" afterPath="$PROJECT_DIR$/application/controllers/Songs.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Stake_categories.php" afterPath="$PROJECT_DIR$/application/controllers/Stake_categories.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Stake_fans.php" afterPath="$PROJECT_DIR$/application/controllers/Stake_fans.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Stakes.php" afterPath="$PROJECT_DIR$/application/controllers/Stakes.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/User_blacklist.php" afterPath="$PROJECT_DIR$/application/controllers/User_blacklist.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/User_complaints.php" afterPath="$PROJECT_DIR$/application/controllers/User_complaints.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/User_image_comments.php" afterPath="$PROJECT_DIR$/application/controllers/User_image_comments.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/User_image_emotions.php" afterPath="$PROJECT_DIR$/application/controllers/User_image_emotions.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/User_images.php" afterPath="$PROJECT_DIR$/application/controllers/User_images.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/User_invites.php" afterPath="$PROJECT_DIR$/application/controllers/User_invites.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/User_page_emotions.php" afterPath="$PROJECT_DIR$/application/controllers/User_page_emotions.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Users.php" afterPath="$PROJECT_DIR$/application/controllers/Users.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/models/Admins_model.php" afterPath="$PROJECT_DIR$/application/models/Admins_model.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/models/Albums_model.php" afterPath="$PROJECT_DIR$/application/models/Albums_model.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/models/Books_model.php" afterPath="$PROJECT_DIR$/application/models/Books_model.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/models/Documents_model.php" afterPath="$PROJECT_DIR$/application/models/Documents_model.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/models/Emotions_model.php" afterPath="$PROJECT_DIR$/application/models/Emotions_model.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/models/Events_model.php" afterPath="$PROJECT_DIR$/application/models/Events_model.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/models/Folders_model.php" afterPath="$PROJECT_DIR$/application/models/Folders_model.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/models/Gifts_model.php" afterPath="$PROJECT_DIR$/application/models/Gifts_model.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/models/Messages_model.php" afterPath="$PROJECT_DIR$/application/models/Messages_model.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/models/Publications_model.php" afterPath="$PROJECT_DIR$/application/models/Publications_model.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/models/Songs_model.php" afterPath="$PROJECT_DIR$/application/models/Songs_model.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/models/Stakes_model.php" afterPath="$PROJECT_DIR$/application/models/Stakes_model.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/models/Users_model.php" afterPath="$PROJECT_DIR$/application/models/Users_model.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/views/albums.php" afterPath="$PROJECT_DIR$/application/views/albums.php" />
     </list>
@@ -37,31 +87,11 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="albums.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/application/views/albums.php">
+      <file leaf-file-name="User_complaints.php" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/application/controllers/User_complaints.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="68" lean-forward="false" selection-start-line="0" selection-start-column="68" selection-end-line="0" selection-end-column="68" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="User_invites.php" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/application/controllers/User_invites.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="501">
-              <caret line="62" column="1" lean-forward="true" selection-start-line="62" selection-start-column="1" selection-end-line="62" selection-end-column="1" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="User_image_emotions.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/application/controllers/User_image_emotions.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="72">
-              <caret line="37" column="0" lean-forward="false" selection-start-line="37" selection-start-column="0" selection-end-line="47" selection-end-column="77" />
+            <state relative-caret-position="357">
+              <caret line="34" column="0" lean-forward="true" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -88,57 +118,57 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/application/controllers/Stake_categories.php" />
-        <option value="$PROJECT_DIR$/application/controllers/Stakes.php" />
-        <option value="$PROJECT_DIR$/application/controllers/User_complaints.php" />
-        <option value="$PROJECT_DIR$/application/controllers/User_image_comments.php" />
-        <option value="$PROJECT_DIR$/application/controllers/User_image_notifications.php" />
-        <option value="$PROJECT_DIR$/application/controllers/User_images.php" />
-        <option value="$PROJECT_DIR$/application/controllers/User_notifcations.php" />
-        <option value="$PROJECT_DIR$/application/controllers/Book_complaints.php" />
+        <option value="$PROJECT_DIR$/application/controllers/Events.php" />
+        <option value="$PROJECT_DIR$/application/controllers/Folders.php" />
+        <option value="$PROJECT_DIR$/application/controllers/Friends.php" />
+        <option value="$PROJECT_DIR$/application/controllers/Gift_categories.php" />
+        <option value="$PROJECT_DIR$/application/controllers/Gift_sent.php" />
+        <option value="$PROJECT_DIR$/application/controllers/Gifts.php" />
+        <option value="$PROJECT_DIR$/application/controllers/Guests.php" />
         <option value="$PROJECT_DIR$/application/controllers/Publication_comments.php" />
-        <option value="$PROJECT_DIR$/application/models/Documents_model.php" />
-        <option value="$PROJECT_DIR$/application/controllers/Documents.php" />
-        <option value="$PROJECT_DIR$/application/models/Folders_model.php" />
+        <option value="$PROJECT_DIR$/application/controllers/Publication_image_emotions.php" />
+        <option value="$PROJECT_DIR$/application/controllers/Publication_images.php" />
+        <option value="$PROJECT_DIR$/application/controllers/Publications.php" />
+        <option value="$PROJECT_DIR$/application/controllers/Publication_share_emotions.php" />
+        <option value="$PROJECT_DIR$/application/controllers/Publication_shares.php" />
+        <option value="$PROJECT_DIR$/application/controllers/Song_categories.php" />
+        <option value="$PROJECT_DIR$/application/controllers/Song_comments.php" />
+        <option value="$PROJECT_DIR$/application/controllers/Song_notifications.php" />
+        <option value="$PROJECT_DIR$/application/controllers/Songs.php" />
+        <option value="$PROJECT_DIR$/application/controllers/Stake_categories.php" />
+        <option value="$PROJECT_DIR$/application/controllers/Stake_fans.php" />
+        <option value="$PROJECT_DIR$/application/controllers/Song_suggestions.php" />
+        <option value="$PROJECT_DIR$/application/controllers/Stakes.php" />
+        <option value="$PROJECT_DIR$/application/controllers/Books.php" />
+        <option value="$PROJECT_DIR$/application/controllers/User_blacklist.php" />
+        <option value="$PROJECT_DIR$/application/models/Publications_model.php" />
+        <option value="$PROJECT_DIR$/application/controllers/Event_actions.php" />
+        <option value="$PROJECT_DIR$/application/controllers/Book_fans.php" />
+        <option value="$PROJECT_DIR$/application/models/Books_model.php" />
+        <option value="$PROJECT_DIR$/application/models/Events_model.php" />
+        <option value="$PROJECT_DIR$/application/models/Songs_model.php" />
+        <option value="$PROJECT_DIR$/application/models/Users_model.php" />
+        <option value="$PROJECT_DIR$/application/controllers/Emotions.php" />
+        <option value="$PROJECT_DIR$/application/models/Admins_model.php" />
+        <option value="$PROJECT_DIR$/application/controllers/Admin_actions.php" />
+        <option value="$PROJECT_DIR$/application/controllers/Book_actions.php" />
+        <option value="$PROJECT_DIR$/application/controllers/Event_fans.php" />
+        <option value="$PROJECT_DIR$/application/controllers/Song_actions.php" />
+        <option value="$PROJECT_DIR$/application/controllers/Song_fans.php" />
+        <option value="$PROJECT_DIR$/application/controllers/User_image_actions.php" />
+        <option value="$PROJECT_DIR$/application/controllers/User_images.php" />
+        <option value="$PROJECT_DIR$/application/controllers/User_notifications.php" />
         <option value="$PROJECT_DIR$/application/controllers/Event_emotions.php" />
         <option value="$PROJECT_DIR$/application/controllers/Song_emotions.php" />
         <option value="$PROJECT_DIR$/application/controllers/Publication_emotions.php" />
-        <option value="$PROJECT_DIR$/application/controllers/Publication_image_emotions.php" />
-        <option value="$PROJECT_DIR$/application/controllers/Publication_share_emotions.php" />
-        <option value="$PROJECT_DIR$/application/controllers/Book_fans.php" />
-        <option value="$PROJECT_DIR$/application/controllers/Event_fans.php" />
-        <option value="$PROJECT_DIR$/application/controllers/Song_fans.php" />
-        <option value="$PROJECT_DIR$/application/models/Publications_model.php" />
-        <option value="$PROJECT_DIR$/application/controllers/Publication_shares.php" />
-        <option value="$PROJECT_DIR$/application/controllers/Publications.php" />
-        <option value="$PROJECT_DIR$/application/controllers/Book_categories.php" />
-        <option value="$PROJECT_DIR$/application/controllers/Event_categories.php" />
-        <option value="$PROJECT_DIR$/application/controllers/Song_categories.php" />
-        <option value="$PROJECT_DIR$/application/models/Messages_model.php" />
-        <option value="$PROJECT_DIR$/application/controllers/Guest_messages.php" />
-        <option value="$PROJECT_DIR$/application/controllers/Feedback_messages.php" />
-        <option value="$PROJECT_DIR$/application/controllers/Black_list.php" />
-        <option value="$PROJECT_DIR$/application/controllers/User_blacklist.php" />
-        <option value="$PROJECT_DIR$/application/controllers/Guests.php" />
-        <option value="$PROJECT_DIR$/application/controllers/Book_emotions.php" />
-        <option value="$PROJECT_DIR$/application/controllers/Book_suggestions.php" />
-        <option value="$PROJECT_DIR$/application/models/Books_model.php" />
-        <option value="$PROJECT_DIR$/application/models/Events_model.php" />
-        <option value="$PROJECT_DIR$/application/controllers/Event_suggestions.php" />
-        <option value="$PROJECT_DIR$/application/models/Songs_model.php" />
-        <option value="$PROJECT_DIR$/application/controllers/Song_suggestions.php" />
-        <option value="$PROJECT_DIR$/application/controllers/Users.php" />
-        <option value="$PROJECT_DIR$/application/controllers/Albums.php" />
-        <option value="$PROJECT_DIR$/application/controllers/Folders.php" />
-        <option value="$PROJECT_DIR$/application/controllers/Admins.php" />
-        <option value="$PROJECT_DIR$/application/controllers/User_page_emotions.php" />
-        <option value="$PROJECT_DIR$/application/controllers/Stake_fans.php" />
-        <option value="$PROJECT_DIR$/application/controllers/Gift_sent.php" />
-        <option value="$PROJECT_DIR$/application/models/Users_model.php" />
-        <option value="$PROJECT_DIR$/application/controllers/Friends.php" />
         <option value="$PROJECT_DIR$/application/controllers/User_image_emotions.php" />
-        <option value="$PROJECT_DIR$/application/views/albums.php" />
-        <option value="$PROJECT_DIR$/application/controllers/User_invites.php" />
+        <option value="$PROJECT_DIR$/application/controllers/User_page_emotions.php" />
+        <option value="$PROJECT_DIR$/application/controllers/User_image_comments.php" />
+        <option value="$PROJECT_DIR$/application/controllers/Book_complaints.php" />
+        <option value="$PROJECT_DIR$/application/controllers/Event_complaints.php" />
+        <option value="$PROJECT_DIR$/application/controllers/Song_complaints.php" />
+        <option value="$PROJECT_DIR$/application/controllers/Publication_complaints.php" />
+        <option value="$PROJECT_DIR$/application/controllers/User_complaints.php" />
       </list>
     </option>
   </component>
@@ -169,6 +199,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -181,10 +213,76 @@
               <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="newline.kg" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="newline.kg" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="application" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="newline.kg" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="newline.kg" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="application" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="views" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="newline.kg" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="newline.kg" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="application" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="models" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="newline.kg" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="newline.kg" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="application" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="controllers" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -281,18 +379,20 @@
       <workItem from="1529514939204" duration="20000" />
       <workItem from="1529515253632" duration="9865000" />
       <workItem from="1529562763642" duration="3116000" />
-      <workItem from="1529572091444" duration="14685000" />
+      <workItem from="1529572091444" duration="21981000" />
+      <workItem from="1529693289014" duration="604000" />
+      <workItem from="1529693928222" duration="24065000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="163193000" />
+    <option name="totallyTimeSpent" value="195158000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-1" y="0" width="1368" height="741" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2901515" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.29924244" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -319,397 +419,111 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="1" />
+      <option name="time" value="2" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/application/controllers/Book_comments.php">
+    <entry file="file://$PROJECT_DIR$/application/models/Gifts_model.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="414">
-          <caret line="34" column="67" lean-forward="true" selection-start-line="21" selection-start-column="8" selection-end-line="34" selection-end-column="67" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/views/friends.php" />
-    <entry file="file://$PROJECT_DIR$/application/models/Documents_model.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="430">
-          <caret line="27" column="0" lean-forward="false" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/models/Folders_model.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="324">
-          <caret line="21" column="31" lean-forward="true" selection-start-line="21" selection-start-column="31" selection-end-line="21" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/controllers/Song_emotions.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="339">
-          <caret line="41" column="24" lean-forward="true" selection-start-line="41" selection-start-column="24" selection-end-line="41" selection-end-column="24" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/controllers/Songs.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="16" column="49" lean-forward="true" selection-start-line="16" selection-start-column="49" selection-end-line="16" selection-end-column="49" />
-          <folding>
-            <marker date="1529434401036" expanded="true" signature="1010:1189" ph="..." />
-            <marker date="1529434401036" expanded="true" signature="1058:1174" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/controllers/Publication_share_emotions.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="38" column="0" lean-forward="false" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/controllers/Book_fans.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="20" column="0" lean-forward="false" selection-start-line="20" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/controllers/Event_fans.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="20" column="0" lean-forward="false" selection-start-line="20" selection-start-column="0" selection-end-line="44" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/controllers/Song_fans.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="249">
-          <caret line="35" column="4" lean-forward="false" selection-start-line="35" selection-start-column="4" selection-end-line="44" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/controllers/Publication_shares.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="33">
-          <caret line="19" column="0" lean-forward="false" selection-start-line="19" selection-start-column="0" selection-end-line="44" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/models/Publications_model.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="115" column="70" lean-forward="false" selection-start-line="115" selection-start-column="20" selection-end-line="115" selection-end-column="70" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/controllers/Publication_emotions.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="159">
-          <caret line="28" column="0" lean-forward="false" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/controllers/Publications.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="630">
-          <caret line="35" column="0" lean-forward="true" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/controllers/Song_categories.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="339">
-          <caret line="29" column="38" lean-forward="false" selection-start-line="29" selection-start-column="38" selection-end-line="29" selection-end-column="38" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/controllers/Publication_image_emotions.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="249">
-          <caret line="28" column="34" lean-forward="false" selection-start-line="28" selection-start-column="34" selection-end-line="28" selection-end-column="34" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/controllers/Event_categories.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="114">
-          <caret line="20" column="0" lean-forward="false" selection-start-line="20" selection-start-column="0" selection-end-line="38" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/controllers/Documents.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="249">
-          <caret line="40" column="0" lean-forward="false" selection-start-line="40" selection-start-column="0" selection-end-line="49" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/controllers/Guest_messages.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="501">
-          <caret line="55" column="1" lean-forward="true" selection-start-line="55" selection-start-column="1" selection-end-line="55" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/controllers/Feedback_messages.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="393">
-          <caret line="51" column="63" lean-forward="false" selection-start-line="51" selection-start-column="63" selection-end-line="51" selection-end-column="63" />
+        <state relative-caret-position="483">
+          <caret line="54" column="5" lean-forward="true" selection-start-line="54" selection-start-column="5" selection-end-line="54" selection-end-column="5" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/application/models/Messages_model.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="447">
-          <caret line="58" column="1" lean-forward="true" selection-start-line="58" selection-start-column="1" selection-end-line="58" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/controllers/Book_categories.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="339">
-          <caret line="23" column="18" lean-forward="false" selection-start-line="23" selection-start-column="18" selection-end-line="23" selection-end-column="18" />
+        <state relative-caret-position="378">
+          <caret line="21" column="14" lean-forward="false" selection-start-line="21" selection-start-column="14" selection-end-line="21" selection-end-column="14" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/application/views/books.php">
+    <entry file="file://$PROJECT_DIR$/application/controllers/Book_comments.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
+        <state relative-caret-position="-111">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/error.log">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="900">
-          <caret line="50" column="0" lean-forward="true" selection-start-line="50" selection-start-column="0" selection-end-line="50" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/controllers/Books.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-216">
-          <caret line="21" column="47" lean-forward="true" selection-start-line="21" selection-start-column="47" selection-end-line="21" selection-end-column="47" />
-          <folding>
-            <marker date="1529434401160" expanded="true" signature="1011:1190" ph="..." />
-            <marker date="1529434401160" expanded="true" signature="1059:1175" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/controllers/Guests.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-273">
-          <caret line="10" column="0" lean-forward="true" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/controllers/User_blacklist.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="72">
-          <caret line="20" column="0" lean-forward="false" selection-start-line="20" selection-start-column="0" selection-end-line="46" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/models/Books_model.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="321">
-          <caret line="102" column="38" lean-forward="false" selection-start-line="102" selection-start-column="38" selection-end-line="102" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/models/Events_model.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="102" column="39" lean-forward="false" selection-start-line="102" selection-start-column="39" selection-end-line="102" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/controllers/Event_suggestions.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/controllers/Song_suggestions.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="38" column="31" lean-forward="false" selection-start-line="38" selection-start-column="31" selection-end-line="38" selection-end-column="31" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/models/Songs_model.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="303">
-          <caret line="101" column="38" lean-forward="false" selection-start-line="101" selection-start-column="38" selection-end-line="101" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/controllers/Folders.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="558">
-          <caret line="31" column="33" lean-forward="false" selection-start-line="31" selection-start-column="33" selection-end-line="31" selection-end-column="33" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/controllers/Users.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="151" column="12" lean-forward="false" selection-start-line="151" selection-start-column="12" selection-end-line="151" selection-end-column="70" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/controllers/Admins.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="339">
-          <caret line="79" column="42" lean-forward="false" selection-start-line="79" selection-start-column="42" selection-end-line="79" selection-end-column="42" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/controllers/Book_emotions.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="321">
-          <caret line="37" column="0" lean-forward="false" selection-start-line="37" selection-start-column="0" selection-end-line="46" selection-end-column="5" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/application/controllers/Book_suggestions.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="13" column="82" lean-forward="false" selection-start-line="13" selection-start-column="82" selection-end-line="13" selection-end-column="82" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/models/Admins_model.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="141">
-          <caret line="16" column="0" lean-forward="true" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/controllers/Event_emotions.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="78">
-          <caret line="20" column="4" lean-forward="true" selection-start-line="20" selection-start-column="4" selection-end-line="35" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/controllers/Stake_fans.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="33">
-          <caret line="38" column="8" lean-forward="true" selection-start-line="38" selection-start-column="8" selection-end-line="49" selection-end-column="62" />
-          <folding>
-            <marker date="1529605420407" expanded="true" signature="943:1122" ph="..." />
-            <marker date="1529605420407" expanded="true" signature="991:1107" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/models/Gifts_model.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-183">
+        <state relative-caret-position="-327">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/application/models/Stakes_model.php">
+    <entry file="file://$PROJECT_DIR$/application/controllers/Books.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="276">
-          <caret line="51" column="5" lean-forward="true" selection-start-line="51" selection-start-column="5" selection-end-line="51" selection-end-column="5" />
+        <state relative-caret-position="312">
+          <caret line="21" column="31" lean-forward="false" selection-start-line="21" selection-start-column="31" selection-end-line="21" selection-end-column="31" />
+          <folding>
+            <marker date="1529746300255" expanded="true" signature="1036:1215" ph="..." />
+            <marker date="1529746300255" expanded="true" signature="1084:1200" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/Documents.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-471">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/Emotions.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="11" column="0" lean-forward="false" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/Event_actions.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="13" column="104" lean-forward="true" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="104" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/models/Emotions_model.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/models/Books_model.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="324">
+          <caret line="18" column="0" lean-forward="false" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/Book_actions.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="17" column="32" lean-forward="false" selection-start-line="17" selection-start-column="32" selection-end-line="17" selection-end-column="32" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/application/controllers/Albums.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="465">
-          <caret line="31" column="9" lean-forward="true" selection-start-line="31" selection-start-column="9" selection-end-line="31" selection-end-column="9" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/controllers/Gift_sent.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="50" column="4" lean-forward="true" selection-start-line="50" selection-start-column="4" selection-end-line="59" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/controllers/Friends.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="42" column="58" lean-forward="true" selection-start-line="21" selection-start-column="8" selection-end-line="42" selection-end-column="58" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/controllers/User_page_emotions.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="123">
-          <caret line="35" column="0" lean-forward="false" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/controllers/User_image_emotions.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="72">
-          <caret line="37" column="0" lean-forward="false" selection-start-line="37" selection-start-column="0" selection-end-line="47" selection-end-column="77" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/models/Users_model.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="123">
-          <caret line="143" column="1" lean-forward="false" selection-start-line="143" selection-start-column="1" selection-end-line="143" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/views/albums.php">
-      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
-          <caret line="0" column="68" lean-forward="false" selection-start-line="0" selection-start-column="68" selection-end-line="0" selection-end-column="68" />
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.htaccess">
+    <entry file="file://$PROJECT_DIR$/application/controllers/Admins.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -717,10 +531,310 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/application/controllers/User_invites.php">
+    <entry file="file://$PROJECT_DIR$/application/controllers/Book_categories.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/Admin_actions.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="13" column="41" lean-forward="false" selection-start-line="13" selection-start-column="41" selection-end-line="13" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/models/Admins_model.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="303">
+          <caret line="24" column="0" lean-forward="false" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/Book_fans.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="216">
+          <caret line="45" column="63" lean-forward="false" selection-start-line="45" selection-start-column="63" selection-end-line="45" selection-end-column="63" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/Event_fans.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="501">
           <caret line="62" column="1" lean-forward="true" selection-start-line="62" selection-start-column="1" selection-end-line="62" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/Event_suggestions.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="501">
+          <caret line="50" column="1" lean-forward="true" selection-start-line="50" selection-start-column="1" selection-end-line="50" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/Publication_image_emotions.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="41" column="29" lean-forward="true" selection-start-line="41" selection-start-column="29" selection-end-line="41" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/Publication_share_emotions.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="483">
+          <caret line="46" column="5" lean-forward="true" selection-start-line="46" selection-start-column="5" selection-end-line="46" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/Publication_images.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/Publications.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="324">
+          <caret line="18" column="5" lean-forward="false" selection-start-line="18" selection-start-column="5" selection-end-line="18" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/Publication_shares.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="483">
+          <caret line="45" column="5" lean-forward="true" selection-start-line="45" selection-start-column="5" selection-end-line="45" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/Song_actions.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="13" column="58" lean-forward="false" selection-start-line="13" selection-start-column="58" selection-end-line="13" selection-end-column="58" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/Song_categories.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="483">
+          <caret line="36" column="5" lean-forward="true" selection-start-line="36" selection-start-column="5" selection-end-line="36" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/Song_comments.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="501">
+          <caret line="36" column="1" lean-forward="true" selection-start-line="36" selection-start-column="1" selection-end-line="36" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/Song_fans.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="411">
+          <caret line="56" column="17" lean-forward="true" selection-start-line="56" selection-start-column="17" selection-end-line="56" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/Songs.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="447">
+          <caret line="35" column="9" lean-forward="true" selection-start-line="35" selection-start-column="9" selection-end-line="35" selection-end-column="9" />
+          <folding>
+            <marker date="1529745880496" expanded="true" signature="1036:1215" ph="..." />
+            <marker date="1529745880496" expanded="true" signature="1084:1109" ph="..." />
+            <marker date="1529745880496" expanded="true" signature="1084:1200" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/User_invites.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="49" column="0" lean-forward="true" selection-start-line="49" selection-start-column="0" selection-end-line="49" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/User_blacklist.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="429">
+          <caret line="43" column="37" lean-forward="true" selection-start-line="43" selection-start-column="37" selection-end-line="43" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/Song_suggestions.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="465">
+          <caret line="48" column="29" lean-forward="true" selection-start-line="48" selection-start-column="29" selection-end-line="48" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/User_image_actions.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="20" column="4" lean-forward="false" selection-start-line="20" selection-start-column="4" selection-end-line="20" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/User_images.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="20" column="0" lean-forward="false" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/Stake_categories.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/Stake_fans.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="37" column="34" lean-forward="true" selection-start-line="37" selection-start-column="34" selection-end-line="37" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/Users.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1149">
+          <caret line="247" column="1" lean-forward="true" selection-start-line="247" selection-start-column="1" selection-end-line="247" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/User_notifications.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="738">
+          <caret line="41" column="1" lean-forward="true" selection-start-line="41" selection-start-column="1" selection-end-line="41" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/Book_emotions.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="378">
+          <caret line="60" column="34" lean-forward="true" selection-start-line="60" selection-start-column="34" selection-end-line="60" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/Event_emotions.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="483">
+          <caret line="63" column="34" lean-forward="true" selection-start-line="63" selection-start-column="34" selection-end-line="63" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/Song_emotions.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="465">
+          <caret line="63" column="30" lean-forward="true" selection-start-line="63" selection-start-column="30" selection-end-line="63" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/Publication_emotions.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="483">
+          <caret line="64" column="86" lean-forward="false" selection-start-line="64" selection-start-column="86" selection-end-line="64" selection-end-column="86" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/User_page_emotions.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="447">
+          <caret line="73" column="0" lean-forward="false" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/User_image_comments.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="267">
+          <caret line="41" column="10" lean-forward="false" selection-start-line="41" selection-start-column="10" selection-end-line="41" selection-end-column="10" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/User_image_emotions.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="414">
+          <caret line="47" column="77" lean-forward="true" selection-start-line="37" selection-start-column="0" selection-end-line="47" selection-end-column="77" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/Book_complaints.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/Event_complaints.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/Song_complaints.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="5" lean-forward="true" selection-start-line="0" selection-start-column="5" selection-end-line="0" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/Publication_complaints.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="447">
+          <caret line="34" column="90" lean-forward="false" selection-start-line="34" selection-start-column="90" selection-end-line="34" selection-end-column="90" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/models/Users_model.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="18">
+          <caret line="84" column="36" lean-forward="true" selection-start-line="84" selection-start-column="36" selection-end-line="84" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/controllers/User_complaints.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="34" column="0" lean-forward="true" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
           <folding />
         </state>
       </provider>

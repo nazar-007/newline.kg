@@ -11,11 +11,11 @@ class Song_comments extends CI_Controller {
     public function Index() {
         $song_id = $this->input->post('song_id');
         $data = array(
-            'book_comments' => $this->books_model->getEventComments($song_id),
+            'song_comments' => $this->songs_model->getSongCommentsBySongId($song_id),
             'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
-        $this->load->view('songs', $data);
+        $this->load->view('song_comments', $data);
     }
 
     public function insert_song_comment() {

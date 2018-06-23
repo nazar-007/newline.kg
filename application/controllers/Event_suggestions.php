@@ -11,7 +11,7 @@ class Event_suggestions extends CI_Controller {
     public function Index() {
         $admin_id = 1;
         $data = array(
-            'event_suggestions' => $this->events_model->getEventSuggestions($admin_id),
+            'event_suggestions' => $this->events_model->getEventSuggestionsByAdminId($admin_id),
             'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
@@ -39,7 +39,7 @@ class Event_suggestions extends CI_Controller {
         // надо удалять файлы тоже
 
 //        $id = $this->input->post('id');
-//        $this->users_model->deleteUserBlacklist($id);
+//        $this->users_model->deleteEventSuggestionById($id);
 //        $delete_json = array(
 //            'id' => $id,
 //            'csrf_name' => $this->security->get_csrf_token_name (),

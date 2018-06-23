@@ -11,7 +11,7 @@ class Albums extends CI_Controller {
     public function Index() {
         $user_id = 1;
         $data = array(
-            'albums' => $this->albums_model->getAlbums($user_id),
+            'albums' => $this->albums_model->getAlbumsByUserId($user_id),
             'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );

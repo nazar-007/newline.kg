@@ -50,7 +50,7 @@ class Gift_sent extends CI_Controller {
 
     public function delete_gift_sent() {
         $id = $this->input->post('id');
-        $this->gifts_model->deleteGiftSent($id);
+        $this->gifts_model->deleteGiftSentById($id);
         $delete_json = array(
             'id' => $id,
             'csrf_name' => $this->security->get_csrf_token_name (),

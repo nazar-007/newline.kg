@@ -8,11 +8,43 @@ class Messages_model extends CI_Model {
         $this->load->helper('url');
     }
 
-    public function getPrivateMessages($user_id) {
-        $this->db->where('from_id', $user_id);
+    public function getPrivateMessagesByUserIdAndTalkerId($user_id, $talker_id) {
+        $this->db->or_where('imagine_id', $user_id);
+        $this->db->where('talker_id', $talker_id);
+        $this->db->or_where('talker_id', $user_id);
+        $this->db->where('user_id', $user_id);
+        $this->db->or_where('user_id', $talker_id);
+
         $query = $this->db->get('private_messages');
-        return $query->result();
+        $messages = $query->result();
+
+        echo "<pre>";
+        print_r($messages);
+        echo "</pre>";
+
+        foreach ($messages as $message) {
+            echo "<h3>". $message->message_text . " " . $message->user_id . "</h3><br>";
+        }
     }
+//  SELECT * FROM `private_messages` WHERE imagine_id = 1 AND talker_id = 2 OR talker_id = 1 AND imagine_id = 1 AND user_id = 1 OR user_id = 2 AND imagine_id = 1
+//  SELECT * FROM `private_messages` WHERE talker_id = 2 AND imagine_id = 1 OR talker_id = 1 AND imagine_id = 1 AND user_id = 1 OR user_id = 2 AND imagine_id = 1
+//    public function getPrivateMessagesByUserIdAndTalkerId($user_id, $talker_id) {
+//        $this->db->where('user_id', $user_id);
+//        $this->db->where('user_id', $talker_id);
+//        $this->db->where('talker_id', $talker_id);
+//        $this->db->or_where('imagine_id', $user_id);
+//        $query = $this->db->get('private_messages');
+//        $messages = $query->result();
+//
+//        echo "<pre>";
+//        print_r($messages);
+//        echo "</pre>";
+//
+//        foreach ($messages as $message) {
+//            echo "<h3>". $message->message_text . " " . $message->user_id . "</h3><br>";
+//        }
+//    }
+
     public function insertPrivateMessage($data) {
         $this->db->insert('private_messages', $data);
     }

@@ -11,11 +11,11 @@ class Event_comments extends CI_Controller {
     public function Index() {
         $event_id = $this->input->post('event_id');
         $data = array(
-            'book_comments' => $this->books_model->getEventComments($event_id),
+            'event_comments' => $this->events_model->getEventCommentsByEventId($event_id),
             'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
-        $this->load->view('events', $data);
+        $this->load->view('event_comments', $data);
     }
 
     public function insert_event_comment() {

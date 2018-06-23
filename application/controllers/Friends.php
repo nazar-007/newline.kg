@@ -11,7 +11,7 @@ class Friends extends CI_Controller {
     public function Index() {
         $user_id = 5;
         $data = array(
-            'friends' => $this->users_model->getFriends($user_id),
+            'friends' => $this->users_model->getFriendsByUserId($user_id),
             'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
@@ -31,6 +31,7 @@ class Friends extends CI_Controller {
             'user_id' => $user_id,
             'friend_id' => $friend_id
         );
+        $this->users_model->insertFriend($data_friends_1);
 
         $data_friends_2 = array(
             'friend_date' => $friend_date,
@@ -38,9 +39,19 @@ class Friends extends CI_Controller {
             'user_id' => $friend_id,
             'friend_id' => $user_id
         );
-
-        $this->users_model->insertFriend($data_friends_1);
         $this->users_model->insertFriend($data_friends_2);
+        $this->users_model->deleteUserInviteByUserIdAndInvitedId($user_id, $friend_id);
+
+        $notification_text = 'Пользователь Назар принял Вас в друзья';
+        $data_user_notifications = array(
+            'notification_type' => 'Принятие дружбы',
+            'notification_text' => $notification_text,
+            'notification_date' => $friend_date,
+            'notification_time' => $friend_time,
+            'notification_viewed' => 'Не просмотрено',
+            'user_id' => $user_id
+        );
+        $this->users_model->insertUserNotification($data_user_notifications);
     }
 
     public function delete_friend() {

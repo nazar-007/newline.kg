@@ -15,11 +15,11 @@ class Emotions_model extends CI_Model {
     public function insertEmotion($data) {
         $this->db->insert('emotions', $data);
     }
-    public function deleteEmotion($id) {
+    public function deleteEmotionById($id) {
         $this->db->where('id', $id);
         $this->db->delete('emotions');
     }
-    public function updateEmotion($id, $data) {
+    public function updateEmotionById($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('emotions', $data);
     }

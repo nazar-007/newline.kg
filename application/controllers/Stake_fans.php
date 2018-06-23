@@ -9,30 +9,13 @@ class Stake_fans extends CI_Controller {
     }
 
     public function Index() {
-        $category_ids = array();
+        $stake_id = 3;
         $data = array(
-            'books' => $this->books_model->getBooks($category_ids),
+            'stake_fans' => $this->stakes_model->getStakeFansByStakeId($stake_id),
             'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
-        $this->load->view('books', $data);
-    }
-
-    public function choose_event_categories() {
-        $choose_category_ids = $this->input->post('category_ids');
-        $category_ids = array();
-        if (isset($choose_category_ids)) {
-            $category_ids = $choose_category_ids;
-        }
-        $books = $this->books_model->getBooks($category_ids);
-        foreach ($books as $book) {
-            echo "<tr>
-            <td>$book->id</td>
-            <td>
-                <a href='" . base_url() . "models/" . $book->id . "'>" . $book->book_name . "</a>
-            </td>
-         </tr>";
-        }
+        $this->load->view('stake_fans', $data);
     }
 
     public function insert_stake_fan() {
@@ -52,7 +35,7 @@ class Stake_fans extends CI_Controller {
 
     public function delete_stake_fan() {
         $id = $this->input->post('id');
-        $this->stakes_model->deleteStakeFan($id);
+        $this->stakes_model->deleteStakeFanById($id);
         $delete_json = array(
             'id' => $id,
             'csrf_name' => $this->security->get_csrf_token_name (),

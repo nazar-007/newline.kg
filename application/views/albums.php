@@ -1,1 +1,1 @@
-<a style="font-size: 100px; color: green" href="/user_invites/delete_user_invite">Запрос!!!</a>
+<a style="font-size: 100px; color: green" href="/private_messages/get_messages">Запрос!!!</a>

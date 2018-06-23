@@ -11,7 +11,7 @@ class Book_suggestions extends CI_Controller {
     public function Index() {
         $admin_id = 1;
         $data = array(
-            'book_suggestions' => $this->books_model->getBookSuggestions($admin_id),
+            'book_suggestions' => $this->books_model->getBookSuggestionsByAdminId($admin_id),
             'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
@@ -39,7 +39,7 @@ class Book_suggestions extends CI_Controller {
         // надо удалять файлы тоже
 
 //        $id = $this->input->post('id');
-//        $this->users_model->deleteUserBlacklist($id);
+//        $this->users_model->deleteUserSuggestionById($id);
 //        $delete_json = array(
 //            'id' => $id,
 //            'csrf_name' => $this->security->get_csrf_token_name (),

@@ -9,13 +9,13 @@ class Book_fans extends CI_Controller {
     }
 
     public function Index() {
-        $category_ids = array();
+        $book_id = 1;
         $data = array(
-            'books' => $this->books_model->getBooks($category_ids),
+            'book_fans' => $this->books_model->getBookFansByBookId($book_id),
             'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
-        $this->load->view('books', $data);
+        $this->load->view('book_fans', $data);
     }
 
     public function insert_book_fan() {
@@ -28,15 +28,29 @@ class Book_fans extends CI_Controller {
             'fan_date' => $fan_date,
             'fan_time' => $fan_time,
             'user_id' => $user_id,
-            'book_id' => $book_id,
+            'book_id' => $book_id
         );
         $this->books_model->insertBookFan($data_book_fans);
+
+        // НАДО ДОДЕЛАТЬ ЭКШН
+
+        $book_action = 'Пользователь Назар добавил книгу "Убить пересмешника" в свою библиотеку';
+
+        $data_book_actions = array(
+            'book_action' => $book_action,
+            'book_date' => $fan_date,
+            'book_time' => $fan_time,
+            'user_id' => $user_id,
+            'book_id' => $book_id
+        );
+        $this->books_model->insertBookAction($data_book_actions);
     }
 
     public function delete_book_fan() {
+        // НАДО ДОДЕЛАТЬ!!!
 //        $id = $this->input->post('id');
         $id = 22;
-        $this->books_model->deleteBookFan($id);
+        $this->books_model->deleteBookFanById($id);
         $delete_json = array(
             'id' => $id,
             'csrf_name' => $this->security->get_csrf_token_name (),

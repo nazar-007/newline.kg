@@ -11,7 +11,7 @@ class Song_categories extends CI_Controller {
     public function Index() {
         $category_ids = array();
         $data = array(
-            'songs' => $this->songs_model->getSongs($category_ids),
+            'songs' => $this->songs_model->getSongsByCategoryIds($category_ids),
             'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
@@ -27,7 +27,7 @@ class Song_categories extends CI_Controller {
     }
     public function delete_song_category() {
         $id = $this->input->post('id');
-        $this->songs_model->deleteSongCategory($id);
+        $this->songs_model->deleteSongCategoryById($id);
         $delete_json = array(
             'id' => $id,
             'csrf_name' => $this->security->get_csrf_token_name (),

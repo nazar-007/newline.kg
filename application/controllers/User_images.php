@@ -18,8 +18,4 @@ class User_images extends CI_Controller {
         $this->load->view('albums', $data);
     }
 
-    public function insert_album() {
-        $data = array();
-        $this->albums_model->insertAlbum($data);
-    }
 }

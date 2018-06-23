@@ -9,13 +9,13 @@ class Publication_image_emotions extends CI_Controller {
     }
 
     public function Index() {
-        $user_id = 1;
+        $category_ids = array();
         $data = array(
-            'albums' => $this->albums_model->getAlbums($user_id),
+            'publications' => $this->publications_model->getPublicationsByCategoryIds($category_ids),
             'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
-        $this->load->view('albums', $data);
+        $this->load->view('publication_image_emotions', $data);
     }
 
 

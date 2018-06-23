@@ -11,11 +11,11 @@ class Guests extends CI_Controller {
     public function Index() {
         $user_id = 1;
         $data = array(
-            'guests' => $this->users_model->getGuests($user_id),
+            'guests' => $this->users_model->getGuestsByUserId($user_id),
             'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
-        $this->load->view('publications', $data);
+        $this->load->view('guests', $data);
     }
 
     public function insert_guest() {
@@ -39,7 +39,7 @@ class Guests extends CI_Controller {
 
     public function delete_guest() {
         $id = $this->input->post('id');
-        $this->users_model->deleteGuest($id);
+        $this->users_model->deleteGuestById($id);
         $delete_json = array(
             'id' => $id,
             'csrf_name' => $this->security->get_csrf_token_name (),

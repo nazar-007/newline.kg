@@ -11,7 +11,7 @@ class Book_comments extends CI_Controller {
     public function Index() {
         $book_id = 1;
         $data = array(
-            'book_comments' => $this->books_model->getBookComments($book_id),
+            'book_comments' => $this->books_model->getBookCommentsByBookId($book_id),
             'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );

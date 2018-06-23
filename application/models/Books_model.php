@@ -8,7 +8,7 @@ class Books_model extends CI_Model {
         $this->load->helper('url');
 
     }
-    public function getBooks($category_ids) {
+    public function getBooksByCategoryIds($category_ids) {
         foreach ($category_ids as $key => $category_id) {
             if ($key == 0) {
                 $this->db->where('category_id', $category_id);
@@ -22,13 +22,32 @@ class Books_model extends CI_Model {
     public function insertBook($data) {
         $this->db->insert('books', $data);
     }
-    public function deleteBook($id) {
+    public function deleteBookById($id) {
         $this->db->where('id', $id);
         $this->db->delete('books');
     }
-    public function updateBook($id, $data) {
+    public function updateBookById($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('books', $data);
+    }
+
+    public function getBookActionsByFriendIds($friend_ids) {
+        foreach ($friend_ids as $key => $friend_id) {
+            if ($key == 0) {
+                $this->db->where('user_id', $friend_id);
+            } else {
+                $this->db->or_where('user_id', $friend_id);
+            }
+        }
+        $query = $this->db->get('book_actions');
+        return $query->result();
+    }
+    public function insertBookAction($data) {
+        $this->db->insert('book_actions', $data);
+    }
+    public function deleteBookActionById($id) {
+        $this->db->where('id', $id);
+        $this->db->delete('book_actions');
     }
 
     public function getBookCategories() {
@@ -38,16 +57,16 @@ class Books_model extends CI_Model {
     public function insertBookCategory($data) {
         $this->db->insert('book_categories', $data);
     }
-    public function deleteBookCategory($id) {
+    public function deleteBookCategoryById($id) {
         $this->db->where('id', $id);
         $this->db->delete('book_categories');
     }
-    public function updateBookCategory($id, $data) {
+    public function updateBookCategoryById($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('book_categories', $data);
     }
 
-    public function getBookComments($book_id) {
+    public function getBookCommentsByBookId($book_id) {
         $this->db->where('book_id', $book_id);
         $query = $this->db->get('book_comments');
         return $query->result();
@@ -55,19 +74,24 @@ class Books_model extends CI_Model {
     public function insertBookComment($data) {
         $this->db->insert('book_comments', $data);
     }
-    public function deleteBookComment($id) {
+    public function deleteBookCommentById($id) {
         $this->db->where('id', $id);
         $this->db->delete('book_comments');
     }
-    public function updateBookComment($id, $data) {
+    public function updateBookCommentById($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('book_comments', $data);
     }
 
+    public function getBookComplaintsByAdminId($admin_id) {
+        $this->db->where('admin_id', $admin_id);
+        $query = $this->db->get('book_complaints');
+        return $query->result();
+    }
     public function insertBookComplaint($data) {
         $this->db->insert('book_complaints', $data);
     }
-    public function deleteBookComplaint($id) {
+    public function deleteBookComplaintById($id) {
         $this->db->where('id', $id);
         $this->db->delete('book_complaints');
     }
@@ -75,32 +99,29 @@ class Books_model extends CI_Model {
     public function insertBookEmotion($data) {
         $this->db->insert('book_emotions', $data);
     }
-    public function deleteBookEmotion($id) {
+    public function deleteBookEmotionById($id) {
         $this->db->where('id', $id);
         $this->db->delete('book_emotions');
     }
-    public function updateBookEmotion($id, $data) {
+    public function updateBookEmotionById($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('book_emotions', $data);
     }
 
+    public function getBookFansByBookId($book_id) {
+        $this->db->where('book_id', $book_id);
+        $query = $this->db->get('book_fans');
+        return $query->result();
+    }
     public function insertBookFan($data) {
         $this->db->insert('book_fans', $data);
     }
-    public function deleteBookFan($id) {
+    public function deleteBookFanById($id) {
         $this->db->where('id', $id);
         $this->db->delete('book_fans');
     }
 
-    public function insertBookNotification($data) {
-        $this->db->insert('book_notifications', $data);
-    }
-    public function deleteBookNotification($id) {
-        $this->db->where('id', $id);
-        $this->db->delete('book_notifications');
-    }
-
-    public function getBookSuggestions($admin_id) {
+    public function getBookSuggestionsByAdminId($admin_id) {
         $this->db->where('admin_id', $admin_id);
         $query = $this->db->get('book_suggestions');
         return $query->result();
@@ -108,7 +129,7 @@ class Books_model extends CI_Model {
     public function insertBookSuggestion($data) {
         $this->db->insert('book_suggestions', $data);
     }
-    public function deleteBookSuggestion($id) {
+    public function deleteBookSuggestionById($id) {
         $this->db->where('id', $id);
         $this->db->delete('book_suggestions');
     }

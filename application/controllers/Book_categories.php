@@ -11,7 +11,7 @@ class Book_categories extends CI_Controller {
     public function Index() {
         $category_ids = array();
         $data = array(
-            'books' => $this->events_model->getEvents($category_ids),
+            'book_categories' => $this->books_model->getBooksByCategoryIds($category_ids),
             'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
@@ -29,7 +29,7 @@ class Book_categories extends CI_Controller {
 
     public function delete_book_category() {
         $id = $this->input->post('id');
-        $this->books_model->deleteBookCategory($id);
+        $this->books_model->deleteBookCategoryById($id);
         $delete_json = array(
             'id' => $id,
             'csrf_name' => $this->security->get_csrf_token_name (),

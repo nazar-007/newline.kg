@@ -11,7 +11,7 @@ class Song_emotions extends CI_Controller {
     public function Index() {
         $category_ids = array();
         $data = array(
-            'songs' => $this->songs_model->getSongs($category_ids),
+            'songs' => $this->songs_model->getSongsByCategoryIds($category_ids),
             'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
@@ -37,12 +37,30 @@ class Song_emotions extends CI_Controller {
 
     public function delete_song_emotion() {
         $id = $this->input->post('id');
-        $this->songs_model->deleteSongEmotion($id);
+        $this->songs_model->deleteSongEmotionById($id);
         $delete_json = array(
             'id' => $id,
             'csrf_name' => $this->security->get_csrf_token_name (),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($delete_json);
+    }
+
+    public function update_song_emotion() {
+        $id = $this->input->post('id');
+        $emotion_date = date('d.m.Y');
+        $emotion_time = date('H:i:s');
+        $user_id = $this->input->post('user_id');
+        $song_id = $this->input->post('song_id');
+        $emotion_id = $this->input->post('emotion_id');
+
+        $data_song_emotions = array(
+            'emotion_date' => $emotion_date,
+            'emotion_time' => $emotion_time,
+            'user_id' => $user_id,
+            'song_id' => $song_id,
+            'emotion_id' => $emotion_id
+        );
+        $this->songs_model->updateSongEmotionById($id, $data_song_emotions);
     }
 }

@@ -36,16 +36,16 @@ class Users_model extends CI_Model {
     public function insertUser($data) {
         $this->db->insert('users', $data);
     }
-    public function deleteUser($id) {
+    public function deleteUserById($id) {
         $this->db->where('id', $id);
         $this->db->delete('users');
     }
-    public function updateUser($id, $data) {
+    public function updateUserById($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('users', $data);
     }
 
-    public function getUserBlacklist($user_id) {
+    public function getUserBlacklistByUserId($user_id) {
         $this->db->where('user_id', $user_id);
         $query = $this->db->get('user_blacklist');
         return $query->result();
@@ -53,12 +53,12 @@ class Users_model extends CI_Model {
     public function insertUserBlacklist($data) {
         $this->db->insert('user_blacklist', $data);
     }
-    public function deleteUserBlacklist($id) {
+    public function deleteUserBlacklistById($id) {
         $this->db->where('id', $id);
         $this->db->delete('user_blacklist');
     }
 
-    public function getFriends($user_id) {
+    public function getFriendsByUserId($user_id) {
         $this->db->where('user_id', $user_id);
         $query = $this->db->get('friends');
         return $query->result();
@@ -66,13 +66,13 @@ class Users_model extends CI_Model {
     public function insertFriend($data) {
         $this->db->insert('friends', $data);
     }
-    public function deleteFriends($user_id, $friend_id) {
+    public function deleteFriendByUserIdAndFriendId($user_id, $friend_id) {
         $this->db->where('user_id', $user_id);
         $this->db->where('friend_id', $friend_id);
         $this->db->delete('friends');
     }
 
-    public function getGuests($user_id) {
+    public function getGuestsByUserId($user_id) {
         $this->db->where('user_id', $user_id);
         $query = $this->db->get('guests');
         return $query->result();
@@ -80,19 +80,24 @@ class Users_model extends CI_Model {
     public function insertGuest($data) {
         $this->db->insert('guests', $data);
     }
-    public function deleteGuest($id) {
+    public function deleteGuestById($id) {
         $this->db->where('id', $id);
         $this->db->delete('guests');
     }
-    public function updateGuest($id, $data) {
+    public function updateGuestById($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('guests', $data);
     }
 
+    public function getUserComplaintsByAdminId($admin_id) {
+        $this->db->where('admin_id', $admin_id);
+        $query = $this->db->get('user_complaints');
+        return $query->result();
+    }
     public function insertUserComplaint($data) {
         $this->db->insert('user_complaints', $data);
     }
-    public function deleteUserComplaint($id) {
+    public function deleteUserComplaintById($id) {
         $this->db->where('id', $id);
         $this->db->delete('user_complaints');
     }
@@ -100,19 +105,45 @@ class Users_model extends CI_Model {
     public function insertUserImage($data) {
         $this->db->insert('user_images', $data);
     }
-    public function deleteUserImage($id) {
+    public function deleteUserImageById($id) {
         $this->db->where('id', $id);
         $this->db->delete('user_images');
+    }
+
+    public function getUserImageActionsByFriendIds($friend_ids) {
+        foreach ($friend_ids as $key => $friend_id) {
+            if ($key == 0) {
+                $this->db->where('user_id', $friend_id);
+            } else {
+                $this->db->or_where('user_id', $friend_id);
+            }
+        }
+        $query = $this->db->get('user_image_actions');
+        return $query->result();
+    }
+    public function insertUserImageAction($data) {
+        $this->db->insert('user_image_actions', $data);
+    }
+    public function deleteUserImageActionById($id) {
+        $this->db->where('id', $id);
+        $this->db->delete('user_image_actions');
+    }
+
+
+    public function getUserImageCommentsByUserImageId($user_image_id) {
+        $this->db->where('user_image_id', $user_image_id);
+        $query = $this->db->get('user_image_comments');
+        return $query->result();
     }
 
     public function insertUserImageComment($data) {
         $this->db->insert('user_image_comments', $data);
     }
-    public function deleteUserImageComment($id) {
+    public function deleteUserImageCommentById($id) {
         $this->db->where('id', $id);
         $this->db->delete('user_image_comments');
     }
-    public function updateUserImageComment($id, $data) {
+    public function updateUserImageCommentById($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('user_image_comments', $data);
     }
@@ -120,47 +151,43 @@ class Users_model extends CI_Model {
     public function insertUserImageEmotion($data) {
         $this->db->insert('user_image_emotions', $data);
     }
-    public function deleteUserImageEmotion($id) {
+    public function deleteUserImageEmotionById($id) {
         $this->db->where('id', $id);
         $this->db->delete('user_image_emotions');
     }
-    public function updateUserImageEmotion($id, $data) {
+    public function updateUserImageEmotionById($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('user_image_emotions', $data);
-    }
-
-    public function insertUserImageNotification($data) {
-        $this->db->insert('user_image_notifications', $data);
-    }
-    public function deleteUserImageNotification($id) {
-        $this->db->where('id', $id);
-        $this->db->delete('user_image_notifications');
     }
 
     public function insertUserInvite($data) {
         $this->db->insert('user_invites', $data);
     }
-    public function deleteUserInvite($id) {
-        $this->db->where('id', $id);
+    public function deleteUserInviteByUserIdAndInvitedId($user_id, $invited_id) {
+        $this->db->where('user_id', $user_id);
+        $this->db->where('invited_id', $invited_id);
         $this->db->delete('user_invites');
     }
-
     public function insertUserNotification($data) {
         $this->db->insert('user_notifications', $data);
     }
-    public function deleteUserNotification($id) {
+    public function deleteUserNotificationById($id) {
         $this->db->where('id', $id);
+        $this->db->delete('user_notifications');
+    }
+    public function deleteUserNotificationsByUserId($user_id) {
+        $this->db->where('user_id', $user_id);
         $this->db->delete('user_notifications');
     }
 
     public function insertUserPageEmotion($data) {
         $this->db->insert('user_page_emotions', $data);
     }
-    public function deleteUserPageEmotion($id) {
+    public function deleteUserPageEmotionById($id) {
         $this->db->where('id', $id);
         $this->db->delete('user_page_emotions');
     }
-    public function updateUserPageEmotion($id, $data) {
+    public function updateUserPageEmotionById($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('user_page_emotions', $data);
     }

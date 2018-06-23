@@ -8,7 +8,7 @@ class Albums_model extends CI_Model {
         $this->load->helper('url');
 
     }
-    public function getAlbums($user_id) {
+    public function getAlbumsByUserId($user_id) {
         $this->db->where('user_id', $user_id);
         $query = $this->db->get('albums');
         return $query->result();
@@ -16,11 +16,11 @@ class Albums_model extends CI_Model {
     public function insertAlbum($data) {
         $this->db->insert('albums', $data);
     }
-    public function deleteAlbum($id) {
+    public function deleteAlbumById($id) {
         $this->db->where('id', $id);
         $this->db->delete('albums');
     }
-    public function updateAlbum($id, $data) {
+    public function updateAlbumById($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('albums', $data);
     }

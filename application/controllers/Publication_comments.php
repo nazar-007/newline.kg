@@ -11,7 +11,7 @@ class Publication_comments extends CI_Controller {
     public function Index() {
         $publication_id = 1;
         $data = array(
-            'publication_comments' => $this->publications_model->getPublicationComments($publication_id),
+            'publication_comments' => $this->publications_model->getPublicationCommentsByPublicationId($publication_id),
             'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );

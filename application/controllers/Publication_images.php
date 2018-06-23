@@ -9,17 +9,13 @@ class Publication_images extends CI_Controller {
     }
 
     public function Index() {
-        $user_id = 1;
+        $publication_id = 1;
         $data = array(
-            'albums' => $this->albums_model->getAlbums($user_id),
+            'publication_images' => $this->albums_model->getPublicationImagesByPublicationId($publication_id),
             'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
-        $this->load->view('albums', $data);
+        $this->load->view('publication_images', $data);
     }
 
-    public function insert_album() {
-        $data = array();
-        $this->albums_model->insertAlbum($data);
-    }
 }

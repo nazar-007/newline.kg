@@ -40,7 +40,7 @@ class Documents extends CI_Controller {
 
     public function delete_document() {
         $id = $this->input->post('id');
-        $this->documents_model->deleteDocument($id);
+        $this->documents_model->deleteDocumentById($id);
         $delete_json = array(
             'id' => $id,
             'csrf_name' => $this->security->get_csrf_token_name (),

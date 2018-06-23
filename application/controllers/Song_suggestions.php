@@ -11,7 +11,7 @@ class Song_suggestions extends CI_Controller {
     public function Index() {
         $admin_id = 1;
         $data = array(
-            'song_suggestions' => $this->songs_model->getSongSuggestions($admin_id),
+            'song_suggestions' => $this->songs_model->getSongSuggestionsByAdminId($admin_id),
             'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
@@ -40,7 +40,7 @@ class Song_suggestions extends CI_Controller {
         // надо удалять файлы тоже
 
 //        $id = $this->input->post('id');
-//        $this->users_model->deleteUserBlacklist($id);
+//        $this->users_model->deleteSongSuggestionById($id);
 //        $delete_json = array(
 //            'id' => $id,
 //            'csrf_name' => $this->security->get_csrf_token_name (),

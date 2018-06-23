@@ -8,7 +8,7 @@ class Stakes_model extends CI_Model {
         $this->load->helper('url');
 
     }
-    public function getStakes($category_ids) {
+    public function getStakesByCategoryIds($category_ids) {
         foreach ($category_ids as $key => $category_id) {
             if ($key == 0) {
                 $this->db->where('category_id', $category_id);
@@ -23,11 +23,11 @@ class Stakes_model extends CI_Model {
     public function insertStake($data) {
         $this->db->insert('stakes', $data);
     }
-    public function deleteStake($id) {
+    public function deleteStakeById($id) {
         $this->db->where('id', $id);
         $this->db->delete('stakes');
     }
-    public function updateStake($id, $data) {
+    public function updateStakeById($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('stakes', $data);
     }
@@ -39,11 +39,11 @@ class Stakes_model extends CI_Model {
     public function insertStakeCategory($data) {
         $this->db->insert('stake_categories', $data);
     }
-    public function deleteStakeCategory($id) {
+    public function deleteStakeCategoryById($id) {
         $this->db->where('id', $id);
         $this->db->delete('stake_categories');
     }
-    public function updateStakeCategory($id, $data) {
+    public function updateStakeCategoryById($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('stake_categories', $data);
     }
@@ -51,11 +51,11 @@ class Stakes_model extends CI_Model {
     public function insertStakeFan($data) {
         $this->db->insert('stake_fans', $data);
     }
-    public function deleteStakeFan($id) {
+    public function deleteStakeFanById($id) {
         $this->db->where('id', $id);
         $this->db->delete('stake_fans');
     }
-    public function updateStakeFan($id, $data) {
+    public function updateStakeFanById($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('stake_fans', $data);
     }

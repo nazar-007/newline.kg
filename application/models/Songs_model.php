@@ -7,7 +7,7 @@ class Songs_model extends CI_Model {
         $this->load->database();
         $this->load->helper('url');
     }
-    public function getSongs($category_ids) {
+    public function getSongsByCategoryIds($category_ids) {
         foreach ($category_ids as $key => $category_id) {
             if ($key == 0) {
                 $this->db->where('category_id', $category_id);
@@ -21,13 +21,32 @@ class Songs_model extends CI_Model {
     public function insertSong($data) {
         $this->db->insert('songs', $data);
     }
-    public function deleteSong($id) {
+    public function deleteSongById($id) {
         $this->db->where('id', $id);
         $this->db->delete('songs');
     }
-    public function updateSong($id, $data) {
+    public function updateSongById($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('songs', $data);
+    }
+
+    public function getSongActionsByFriendIds($friend_ids) {
+        foreach ($friend_ids as $key => $friend_id) {
+            if ($key == 0) {
+                $this->db->where('user_id', $friend_id);
+            } else {
+                $this->db->or_where('user_id', $friend_id);
+            }
+        }
+        $query = $this->db->get('song_actions');
+        return $query->result();
+    }
+    public function insertSongAction($data) {
+        $this->db->insert('song_actions', $data);
+    }
+    public function deleteSongActionById($id) {
+        $this->db->where('id', $id);
+        $this->db->delete('song_actions');
     }
 
     public function getSongCategories() {
@@ -37,16 +56,16 @@ class Songs_model extends CI_Model {
     public function insertSongCategory($data) {
         $this->db->insert('song_categories', $data);
     }
-    public function deleteSongCategory($id) {
+    public function deleteSongCategoryById($id) {
         $this->db->where('id', $id);
         $this->db->delete('song_categories');
     }
-    public function updateSongCategory($id, $data) {
+    public function updateSongCategoryById($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('song_categories', $data);
     }
 
-    public function getSongComments($song_id) {
+    public function getSongCommentsBySongId($song_id) {
         $this->db->where('song_id', $song_id);
         $query = $this->db->get('song_comments');
         return $query->result();
@@ -54,19 +73,24 @@ class Songs_model extends CI_Model {
     public function insertSongComment($data) {
         $this->db->insert('song_comments', $data);
     }
-    public function deleteSongComment($id) {
+    public function deleteSongCommentById($id) {
         $this->db->where('id', $id);
         $this->db->delete('song_comments');
     }
-    public function updateSongComment($id, $data) {
+    public function updateSongCommentById($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('song_comments', $data);
     }
 
+    public function getSongComplaintsByAdminId($admin_id) {
+        $this->db->where('admin_id', $admin_id);
+        $query = $this->db->get('song_complaints');
+        return $query->result();
+    }
     public function insertSongComplaint($data) {
         $this->db->insert('song_complaints', $data);
     }
-    public function deleteSongComplaint($id) {
+    public function deleteSongComplaintById($id) {
         $this->db->where('id', $id);
         $this->db->delete('song_complaints');
     }
@@ -74,11 +98,11 @@ class Songs_model extends CI_Model {
     public function insertSongEmotion($data) {
         $this->db->insert('song_emotions', $data);
     }
-    public function deleteSongEmotion($id) {
+    public function deleteSongEmotionById($id) {
         $this->db->where('id', $id);
         $this->db->delete('song_emotions');
     }
-    public function updateSongEmotion($id, $data) {
+    public function updateSongEmotionById($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('song_emotions', $data);
     }
@@ -86,20 +110,12 @@ class Songs_model extends CI_Model {
     public function insertSongFan($data) {
         $this->db->insert('song_fans', $data);
     }
-    public function deleteSongFan($id) {
+    public function deleteSongFanById($id) {
         $this->db->where('id', $id);
         $this->db->delete('song_fans');
     }
 
-    public function insertSongNotification($data) {
-        $this->db->insert('song_notifications', $data);
-    }
-    public function deleteSongNotification($id) {
-        $this->db->where('id', $id);
-        $this->db->delete('song_notifications');
-    }
-
-    public function getSongSuggestions($admin_id) {
+    public function getSongSuggestionsByAdminId($admin_id) {
         $this->db->where('admin_id', $admin_id);
         $query = $this->db->get('song_suggestions');
         return $query->result();
@@ -107,7 +123,7 @@ class Songs_model extends CI_Model {
     public function insertSongSuggestion($data) {
         $this->db->insert('song_suggestions', $data);
     }
-    public function deleteSongSuggestion($id) {
+    public function deleteSongSuggestionById($id) {
         $this->db->where('id', $id);
         $this->db->delete('song_suggestions');
     }

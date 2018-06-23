@@ -32,14 +32,14 @@ class User_invites extends CI_Controller {
         $this->users_model->insertUserInvite($data_user_invites);
     }
 
-    public function delete_user_invite() {
+    public function delete_user_invite_by_user_id() {
         $id = $this->input->post('id');
         $user_id = $this->input->post('user_id');
         $invited_id = $this->input->post('invited_id');
 
         $invite_date = date('d.m.Y');
         $invite_time = date("H:i:s");
-        $this->users_model->deleteUserInvite($id);
+        $this->users_model->deleteUserInviteByUserIdAndInvitedId($user_id, $invited_id);
 
         $notification_text = 'Пользователь Назар отказался принимать Вас в друзья.';
         $data_user_notifications = array(
@@ -54,6 +54,18 @@ class User_invites extends CI_Controller {
 
         $delete_json = array(
             'id' => $id,
+            'csrf_name' => $this->security->get_csrf_token_name (),
+            'csrf_hash' => $this->security->get_csrf_hash()
+        );
+        echo json_encode($delete_json);
+    }
+
+    public function delete_user_invite_by_invited_id() {
+        $user_id = $this->input->post('user_id');
+        $invited_id = $this->input->post('invited_id');
+        $this->users_model->deleteUserInviteByUserIdAndInvitedId($user_id, $invited_id);
+        $delete_json = array(
+            'invited_id' => $invited_id,
             'csrf_name' => $this->security->get_csrf_token_name (),
             'csrf_hash' => $this->security->get_csrf_hash()
         );

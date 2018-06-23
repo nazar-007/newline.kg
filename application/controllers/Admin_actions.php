@@ -1,20 +1,20 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Stake_categories extends CI_Controller {
+class Admin_actions extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
-        $this->load->model('stakes_model');
+        $this->load->model('admins_model');
     }
 
     public function Index() {
-        $category_ids = array();
         $data = array(
-            'stakes' => $this->stakes_model->getStakesByCategoryIds($category_ids),
+            'admin_actions' => $this->admins_model->getAdminActions(),
             'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
-        $this->load->view('stakes', $data);
+        $this->load->view('admin_notifications', $data);
     }
+
 }

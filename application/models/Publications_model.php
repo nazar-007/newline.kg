@@ -13,7 +13,7 @@ class Publications_model extends CI_Model {
         );
         $this->session->set_userdata($sessions);
     }
-    public function getPublications($friend_ids) {
+    public function getPublicationsByFriendIds($friend_ids) {
         foreach ($friend_ids as $key => $friend_id) {
             if ($key == 0) {
                 $this->db->where('user_id', $friend_id);
@@ -28,7 +28,7 @@ class Publications_model extends CI_Model {
     public function insertPublication($data) {
         $this->db->insert('publications', $data);
     }
-    public function deletePublication($id) {
+    public function deletePublicationById($id) {
         $this->db->where('id', $id);
         $this->db->delete('publications');
     }
@@ -36,12 +36,12 @@ class Publications_model extends CI_Model {
         $this->db->where('user_id', $user_id);
         $this->db->delete('publications');
     }
-    public function updatePublication($id, $data) {
+    public function updatePublicationById($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('publications', $data);
     }
 
-    public function getPublicationComments($publication_id) {
+    public function getPublicationCommentsByPublicationId($publication_id) {
         $this->db->where('publication_id', $publication_id);
         $query = $this->db->get('publication_comments');
         return $query->result();
@@ -49,19 +49,24 @@ class Publications_model extends CI_Model {
     public function insertPublicationComment($data) {
         $this->db->insert('publication_comments', $data);
     }
-    public function deletePublicationComment($id) {
+    public function deletePublicationCommentById($id) {
         $this->db->where('id', $id);
         $this->db->delete('publication_comments');
     }
-    public function updatePublicationComment($id, $data) {
+    public function updatePublicationCommentById($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('publication_comments', $data);
     }
 
+    public function getPublicationComplaintsByAdminId($admin_id) {
+        $this->db->where('admin_id', $admin_id);
+        $query = $this->db->get('publication_complaints');
+        return $query->result();
+    }
     public function insertPublicationComplaint($data) {
         $this->db->insert('publication_complaints', $data);
     }
-    public function deletePublicationComplaint($id) {
+    public function deletePublicationComplaintById($id) {
         $this->db->where('id', $id);
         $this->db->delete('publication_complaints');
     }
@@ -69,19 +74,24 @@ class Publications_model extends CI_Model {
     public function insertPublicationEmotion($data) {
         $this->db->insert('publication_emotions', $data);
     }
-    public function deletePublicationEmotion($id) {
+    public function deletePublicationEmotionById($id) {
         $this->db->where('id', $id);
         $this->db->delete('publication_emotions');
     }
-    public function updatePublicationEmotion($id, $data) {
+    public function updatePublicationEmotionById($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('publication_emotions', $data);
     }
 
+    public function getPublicationImagesByPublicationId($publication_id) {
+        $this->db->where('publication_id', $publication_id);
+        $query = $this->db->get('publication_images');
+        return $query->result();
+    }
     public function insertPublicationImage($data) {
         $this->db->insert('publication_images', $data);
     }
-    public function deletePublicationImage($id) {
+    public function deletePublicationImageById($id) {
         $this->db->where('id', $id);
         $this->db->delete('publication_images');
     }
@@ -89,19 +99,24 @@ class Publications_model extends CI_Model {
     public function insertPublicationImageEmotion($data) {
         $this->db->insert('publication_image_emotions', $data);
     }
-    public function deletePublicationImageEmotion($id) {
+    public function deletePublicationImageEmotionById($id) {
         $this->db->where('id', $id);
         $this->db->delete('publication_image_emotions');
     }
-    public function updatePublicationImageEmotion($id, $data) {
+    public function updatePublicationImageEmotionById($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('publication_image_emotions', $data);
     }
 
+    public function getPublicationSharesByPublicationId($publication_id) {
+        $this->db->where('publication_id', $publication_id);
+        $query = $this->db->get('publication_shares');
+        return $query->result();
+    }
     public function insertPublicationShare($data) {
         $this->db->insert('publication_shares', $data);
     }
-    public function deletePublicationShare($id) {
+    public function deletePublicationShareById($id) {
         $this->db->where('id', $id);
         $this->db->delete('publication_shares');
     }
@@ -109,7 +124,7 @@ class Publications_model extends CI_Model {
     public function insertPublicationShareEmotion($data) {
         $this->db->insert('publication_share_emotions', $data);
     }
-    public function deletePublicationShareEmotion($id) {
+    public function deletePublicationShareEmotionById($id) {
         $this->db->where('id', $id);
         $this->db->delete('publication_share_emotions');
     }
@@ -117,7 +132,7 @@ class Publications_model extends CI_Model {
         $this->db->where('publication_share_id', $publication_share_id);
         $this->db->delete('publication_share_emotions');
     }
-    public function updatePublicationShareEmotion($id, $data) {
+    public function updatePublicationShareEmotionById($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('publication_share_emotions', $data);
     }

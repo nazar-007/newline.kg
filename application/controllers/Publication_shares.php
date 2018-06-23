@@ -9,12 +9,13 @@ class Publication_shares extends CI_Controller {
     }
 
     public function Index() {
+        $publication_id = 2;
         $data = array(
-            'publication_shares' => $this->publications_model->getPublications(),
+            'publication_shares' => $this->publications_model->getPublicationSharesByPublicationId($publication_id),
             'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
-        $this->load->view('publications', $data);
+        $this->load->view('publication_shares', $data);
     }
 
     public function insert_publication_share() {
@@ -34,7 +35,7 @@ class Publication_shares extends CI_Controller {
 
     public function delete_publication_share() {
         $id = $this->input->post('id');
-        $this->publications_model->deletePublicationShare($id);
+        $this->publications_model->deletePublicationShareById($id);
         $this->publications_model->deletePublicationShareEmotionsByPublicationShareId($id);
         $delete_json = array(
             'id' => $id,

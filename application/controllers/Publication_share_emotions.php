@@ -9,8 +9,9 @@ class Publication_share_emotions extends CI_Controller {
     }
 
     public function Index() {
+        $friend_ids = array();
         $data = array(
-            'publications' => $this->publications_model->getPublications(),
+            'publications' => $this->publications_model->getPublicationsByFriendIds($friend_ids),
             'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
@@ -36,7 +37,7 @@ class Publication_share_emotions extends CI_Controller {
 
     public function delete_publication_share_emotion() {
         $id = $this->input->post('id');
-        $this->publications_model->deletePublicationShareEmotion($id);
+        $this->publications_model->deletePublicationShareEmotionById($id);
         $delete_json = array(
             'id' => $id,
             'csrf_name' => $this->security->get_csrf_token_name(),

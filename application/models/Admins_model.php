@@ -10,28 +10,27 @@ class Admins_model extends CI_Model {
 
     }
 
-//    public function getAllBooks() {
-//        $query = $this->db->get('books');
-//        return $query->result();
-//    }
-
     public function insertAdmin($data) {
         $this->db->insert('admins', $data);
     }
-    public function deleteAdmin($id) {
+    public function deleteAdminById($id) {
         $this->db->where('id', $id);
         $this->db->delete('admins');
     }
-    public function updateAdmin($id, $data) {
+    public function updateAdminById($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('admins', $data);
     }
 
-    public function insertAdminNotification($data) {
-        $this->db->insert('admin_notifications', $data);
+    public function getAdminActions() {
+        $query = $this->db->get('admin_actions');
+        return $query->result();
     }
-    public function deleteAdminNotification($id) {
+    public function insertAdminAction($data) {
+        $this->db->insert('admin_actions', $data);
+    }
+    public function deleteAdminActionById($id) {
         $this->db->where('id', $id);
-        $this->db->delete('admin_notifications');
+        $this->db->delete('admin_actions');
     }
 }

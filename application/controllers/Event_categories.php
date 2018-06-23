@@ -11,7 +11,7 @@ class Event_categories extends CI_Controller {
     public function Index() {
         $category_ids = array();
         $data = array(
-            'events' => $this->events_model->getEvents($category_ids),
+            'events' => $this->events_model->getEventsByCategoryIds($category_ids),
             'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
@@ -29,7 +29,7 @@ class Event_categories extends CI_Controller {
 
     public function delete_event_category() {
         $id = $this->input->post('id');
-        $this->events_model->deleteEventCategory($id);
+        $this->events_model->deleteEventCategoryById($id);
         $delete_json = array(
             'id' => $id,
             'csrf_name' => $this->security->get_csrf_token_name (),

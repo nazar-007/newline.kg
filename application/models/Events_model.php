@@ -7,7 +7,7 @@ class Events_model extends CI_Model {
         $this->load->database();
         $this->load->helper('url');
     }
-    public function getEvents($category_ids) {
+    public function getEventsByCategoryIds($category_ids) {
         foreach ($category_ids as $key => $category_id) {
             if ($key == 0) {
                 $this->db->where('category_id', $category_id);
@@ -22,13 +22,32 @@ class Events_model extends CI_Model {
     public function insertEvent($data) {
         $this->db->insert('events', $data);
     }
-    public function deleteEvent($id) {
+    public function deleteEventById($id) {
         $this->db->where('id', $id);
         $this->db->delete('events');
     }
-    public function updateEvent($id, $data) {
+    public function updateEventById($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('events', $data);
+    }
+
+    public function getEventActionsByFriendIds($friend_ids) {
+        foreach ($friend_ids as $key => $friend_id) {
+            if ($key == 0) {
+                $this->db->where('user_id', $friend_id);
+            } else {
+                $this->db->or_where('user_id', $friend_id);
+            }
+        }
+        $query = $this->db->get('event_actions');
+        return $query->result();
+    }
+    public function insertEventAction($data) {
+        $this->db->insert('event_actions', $data);
+    }
+    public function deleteEventActionById($id) {
+        $this->db->where('id', $id);
+        $this->db->delete('event_actions');
     }
 
     public function getEventCategories() {
@@ -38,36 +57,41 @@ class Events_model extends CI_Model {
     public function insertEventCategory($data) {
         $this->db->insert('event_categories', $data);
     }
-    public function deleteEventCategory($id) {
+    public function deleteEventCategoryById($id) {
         $this->db->where('id', $id);
         $this->db->delete('event_categories');
     }
-    public function updateEventCategory($id, $data) {
+    public function updateEventCategoryById($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('event_categories', $data);
     }
 
-    public function getEventComments($book_id) {
-        $this->db->where('event_id', $book_id);
+    public function getEventCommentsByEventId($event_id) {
+        $this->db->where('event_id', $event_id);
         $query = $this->db->get('event_comments');
         return $query->result();
     }
     public function insertEventComment($data) {
         $this->db->insert('event_comments', $data);
     }
-    public function deleteEventComment($id) {
+    public function deleteEventCommentById($id) {
         $this->db->where('id', $id);
         $this->db->delete('event_comments');
     }
-    public function updateEventComment($id, $data) {
+    public function updateEventCommentById($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('event_comments', $data);
     }
 
+    public function getEventComplaintsByAdminId($admin_id) {
+        $this->db->where('admin_id', $admin_id);
+        $query = $this->db->get('event_complaints');
+        return $query->result();
+    }
     public function insertEventComplaint($data) {
         $this->db->insert('event_complaints', $data);
     }
-    public function deleteEventComplaint($id) {
+    public function deleteEventComplaintById($id) {
         $this->db->where('id', $id);
         $this->db->delete('event_complaints');
     }
@@ -75,32 +99,29 @@ class Events_model extends CI_Model {
     public function insertEventEmotion($data) {
         $this->db->insert('event_emotions', $data);
     }
-    public function deleteEventEmotion($id) {
+    public function deleteEventEmotionById($id) {
         $this->db->where('id', $id);
         $this->db->delete('event_emotions');
     }
-    public function updateEventEmotion($id, $data) {
+    public function updateEventEmotionById($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('event_emotions', $data);
     }
 
+    public function getEventFansByEventId($event_id) {
+        $this->db->where('event_id', $event_id);
+        $query = $this->db->get('event_fans');
+        return $query->result();
+    }
     public function insertEventFan($data) {
         $this->db->insert('event_fans', $data);
     }
-    public function deleteEventFan($id) {
+    public function deleteEventFanById($id) {
         $this->db->where('id', $id);
         $this->db->delete('event_fans');
     }
 
-    public function insertEventNotification($data) {
-        $this->db->insert('event_notifications', $data);
-    }
-    public function deleteEventNotification($id) {
-        $this->db->where('id', $id);
-        $this->db->delete('event_notifications');
-    }
-
-    public function getEventSuggestions($admin_id) {
+    public function getEventSuggestionsByAdminId($admin_id) {
         $this->db->where('admin_id', $admin_id);
         $query = $this->db->get('event_suggestions');
         return $query->result();
@@ -108,7 +129,7 @@ class Events_model extends CI_Model {
     public function insertEventSuggestion($data) {
         $this->db->insert('event_suggestions', $data);
     }
-    public function deleteEventSuggestion($id) {
+    public function deleteEventSuggestionById($id) {
         $this->db->where('id', $id);
         $this->db->delete('event_suggestions');
     }

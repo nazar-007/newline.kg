@@ -7,7 +7,7 @@ class Gifts_model extends CI_Model {
         $this->load->database();
         $this->load->helper('url');
     }
-    public function getGifts($category_ids) {
+    public function getGiftsByCategoryIds($category_ids) {
         foreach ($category_ids as $key => $category_id) {
             if ($key == 0) {
                 $this->db->where('category_id', $category_id);
@@ -21,11 +21,11 @@ class Gifts_model extends CI_Model {
     public function insertGift($data) {
         $this->db->insert('gifts', $data);
     }
-    public function deleteGift($id) {
+    public function deleteGiftById($id) {
         $this->db->where('id', $id);
         $this->db->delete('gifts');
     }
-    public function updateGift($id, $data) {
+    public function updateGiftById($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('gifts', $data);
     }
@@ -37,11 +37,11 @@ class Gifts_model extends CI_Model {
     public function insertGiftCategory($data) {
         $this->db->insert('gift_categories', $data);
     }
-    public function deleteGiftCategory($id) {
+    public function deleteGiftCategoryById($id) {
         $this->db->where('id', $id);
         $this->db->delete('gift_categories');
     }
-    public function updateGiftCategory($id, $data) {
+    public function updateGiftCategoryById($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('gift_categories', $data);
     }
@@ -49,7 +49,7 @@ class Gifts_model extends CI_Model {
     public function insertGiftSent($data) {
         $this->db->insert('gift_sent', $data);
     }
-    public function deleteGiftSent($id) {
+    public function deleteGiftSentById($id) {
         $this->db->where('id', $id);
         $this->db->delete('gift_sent');
     }
