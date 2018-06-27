@@ -22,16 +22,41 @@ class Event_comments extends CI_Controller {
         $comment_text = $this->input->post('comment_text');
         $comment_date = date("d.m.Y");
         $comment_time = date("H:i:s");
-        $user_id = $this->input->post('user_id');
+        $commented_user_id = $this->input->post('commented_user_id');
         $event_id = $this->input->post('event_id');
 
         $data_event_comments = array(
             'comment_text' => $comment_text,
             'comment_date' => $comment_date,
             'comment_time' => $comment_time,
-            'user_id' => $user_id,
+            'commented_user_id' => $commented_user_id,
             'event_id' => $event_id
         );
         $this->events_model->insertEventComment($data_event_comments);
+
+        // НАДО ДОДЕЛАТЬ ЭКШН
+
+        $event_action = 'Пользователь Назар прокомментировал событие "Встреча крутых IT-специалистов"';
+
+        $data_event_actions = array(
+            'event_action' => $event_action,
+            'event_time_unix' => time(),
+            'action_user_id' => $commented_user_id,
+            'event_id' => $event_id
+        );
+        $this->events_model->insertEventAction($data_event_actions);
+    }
+
+    public function delete_event_comment() {
+        $id = $this->input->post('id');
+        $this->events_model->deleteEventCommentById($id);
+        $this->events_model->deleteEventCommentComplaintsByEventCommentId($id);
+        $this->events_model->deleteEventCommentEmotionsByEventCommentId($id);
+        $delete_json = array(
+            'id' => $id,
+            'csrf_name' => $this->security->get_csrf_token_name (),
+            'csrf_hash' => $this->security->get_csrf_hash()
+        );
+        echo json_encode($delete_json);
     }
 }

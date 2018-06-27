@@ -58,6 +58,43 @@ class Publications_model extends CI_Model {
         $this->db->update('publication_comments', $data);
     }
 
+    public function getPublicationCommentComplaintsByAdminId($admin_id) {
+        $this->db->where('admin_id', $admin_id);
+        $query = $this->db->get('publication_comment_complaints');
+        return $query->result();
+    }
+    public function insertPublicationCommentComplaint($data) {
+        $this->db->insert('publication_comment_complaints', $data);
+    }
+    public function deletePublicationCommentComplaintById($id) {
+        $this->db->where('id', $id);
+        $this->db->delete('publication_comment_complaints');
+    }
+    public function deletePublicationCommentComplaintsByPublicationCommentId($publication_comment_id) {
+        $this->db->where('publication_comment_id', $publication_comment_id);
+        $this->db->delete('publication_comment_complaints');
+    }
+    public function deletePublicationCommentComplaintsByComplainedUserId($complained_user_id) {
+        $this->db->where('complaint_user_id', $complained_user_id);
+        $this->db->delete('publication_comment_complaints');
+    }
+
+    public function insertPublicationCommentEmotion($data) {
+        $this->db->insert('publication_comment_emotions', $data);
+    }
+    public function deletePublicationCommentEmotionById($id) {
+        $this->db->where('id', $id);
+        $this->db->delete('publication_comment_emotions');
+    }
+    public function deletePublicationCommentEmotionsByPublicationCommentId($publication_comment_id) {
+        $this->db->where('publication_comment_id', $publication_comment_id);
+        $this->db->delete('publication_comment_emotions');
+    }
+    public function updatePublicationCommentEmotionById($id, $data) {
+        $this->db->where('id', $id);
+        $this->db->update('publication_comment_emotions', $data);
+    }
+
     public function getPublicationComplaintsByAdminId($admin_id) {
         $this->db->where('admin_id', $admin_id);
         $query = $this->db->get('publication_complaints');
@@ -68,6 +105,10 @@ class Publications_model extends CI_Model {
     }
     public function deletePublicationComplaintById($id) {
         $this->db->where('id', $id);
+        $this->db->delete('publication_complaints');
+    }
+    public function deletePublicationComplaintsByComplainedUserId($complained_user_id) {
+        $this->db->where('complained_user_id', $complained_user_id);
         $this->db->delete('publication_complaints');
     }
 

@@ -1,44 +1,48 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Song_complaints extends CI_Controller {
+class Book_comment_complaints extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
-        $this->load->model('songs_model');
+        $this->load->model('books_model');
     }
 
     public function Index() {
         $admin_id = 2;
         $data = array(
-            'song_complaints' => $this->songs_model->getSongComplaintsByAdminId($admin_id),
+            'book_comment_complaints' => $this->books_model->getBookCommentComplaintsByAdminId($admin_id),
             'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
-        $this->load->view('song_complaints', $data);
+        $this->load->view('book_comment_complaints', $data);
     }
 
-    public function insert_song_complaint() {
+    public function insert_book_comment_complaint() {
         $complaint_text = $this->input->post('complaint_text');
         $complaint_time_unix = time();
         $admin_id = $this->input->post('admin_id');
-        $song_id = $this->input->post('song_id');
+        $book_id = $this->input->post('book_id');
+        $book_comment_id = $this->input->post('book_comment_id');
+        $commented_user_id = $this->input->post('commented_user_id');
         $complained_user_id = $this->input->post('complained_user_id');
 
-        $data_song_complaints = array(
+        $data_book_comment_complaints = array(
             'complaint_text' => $complaint_text,
             'complaint_time_unix' => $complaint_time_unix,
             'admin_id' => $admin_id,
-            'song_id' => $song_id,
+            'book_id' => $book_id,
+            'book_comment_id' => $book_comment_id,
+            'commented_user_id' => $commented_user_id,
             'complained_user_id' => $complained_user_id
         );
 
-        $this->songs_model->insertSongComplaint($data_song_complaints);
+        $this->books_model->insertBookCommentComplaint($data_book_comment_complaints);
     }
 
-    public function delete_song_complaint() {
+    public function delete_book_comment_complaint() {
         $id = $this->input->post('id');
-        $this->songs_model->deleteSongComplaintById($id);
+        $this->books_model->deleteBookCommentComplaintById($id);
         $delete_json = array(
             'id' => $id,
             'csrf_name' => $this->security->get_csrf_token_name (),
@@ -47,9 +51,9 @@ class Song_complaints extends CI_Controller {
         echo json_encode($delete_json);
     }
 
-    public function delete_song_complaints_by_complained_user_id() {
+    public function delete_book_comment_complaints_by_complained_user_id() {
         $complained_user_id = $this->input->post('complained_user_id');
-        $this->songs_model->deleteSongComplaintsByComplainedUserId($complained_user_id);
+        $this->books_model->deleteBookCommentComplaintsByComplainedUserId($complained_user_id);
         $delete_json = array(
             'complained_user_id' => $complained_user_id,
             'csrf_name' => $this->security->get_csrf_token_name (),
@@ -57,5 +61,4 @@ class Song_complaints extends CI_Controller {
         );
         echo json_encode($delete_json);
     }
-
 }

@@ -22,16 +22,40 @@ class Publication_complaints extends CI_Controller {
         $complaint_text = $this->input->post('complaint_text');
         $complaint_time_unix = time();
         $admin_id = $this->input->post('admin_id');
+        $published_user_id = $this->input->post('published_user_id');
         $publication_id = $this->input->post('publication_id');
-        $complained_id = $this->input->post('complained_id');
+        $complained_user_id = $this->input->post('complained_user_id');
 
         $data_publication_complaints = array(
             'complaint_text' => $complaint_text,
             'complaint_time_unix' => $complaint_time_unix,
             'admin_id' => $admin_id,
+            'published_user_id' => $published_user_id,
             'publication_id' => $publication_id,
-            'complained_id' => $complained_id
+            'complained_user_id' => $complained_user_id
         );
         $this->publications_model->insertPublicationComplaint($data_publication_complaints);
+    }
+
+    public function delete_publication_complaint() {
+        $id = $this->input->post('id');
+        $this->publications_model->deletePublicationComplaintById($id);
+        $delete_json = array(
+            'id' => $id,
+            'csrf_name' => $this->security->get_csrf_token_name (),
+            'csrf_hash' => $this->security->get_csrf_hash()
+        );
+        echo json_encode($delete_json);
+    }
+
+    public function delete_publication_complaints_by_complained_user_id() {
+        $complained_user_id = $this->input->post('complained_user_id');
+        $this->publications_model->deletePublicationComplaintsByComplainedUserId($complained_user_id);
+        $delete_json = array(
+            'complained_user_id' => $complained_user_id,
+            'csrf_name' => $this->security->get_csrf_token_name (),
+            'csrf_hash' => $this->security->get_csrf_hash()
+        );
+        echo json_encode($delete_json);
     }
 }

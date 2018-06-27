@@ -21,18 +21,31 @@ class Song_emotions extends CI_Controller {
     public function insert_song_emotion() {
         $emotion_date = date('d.m.Y');
         $emotion_time = date('H:i:s');
-        $user_id = $this->input->post('user_id');
+        $emotioned_user_id = $this->input->post('emotioned_user_id');
         $song_id = $this->input->post('song_id');
         $emotion_id = $this->input->post('emotion_id');
 
         $data_song_emotions = array(
             'emotion_date' => $emotion_date,
             'emotion_time' => $emotion_time,
-            'user_id' => $user_id,
+            'emotioned_user_id' => $emotioned_user_id,
             'song_id' => $song_id,
             'emotion_id' => $emotion_id
         );
         $this->songs_model->insertSongEmotion($data_song_emotions);
+
+        // НАДО ДОДЕЛАТЬ ЭКШН
+
+        $song_action = 'Пользователь Назар поставил эмоцию на песню "A MILLION VOICES"';
+
+        $data_song_actions = array(
+            'song_action' => $song_action,
+            'song_date' => $emotion_date,
+            'song_time_unix' => time(),
+            'action_user_id' => $emotioned_user_id,
+            'song_id' => $song_id
+        );
+        $this->songs_model->insertSongAction($data_song_actions);
     }
 
     public function delete_song_emotion() {
@@ -50,14 +63,14 @@ class Song_emotions extends CI_Controller {
         $id = $this->input->post('id');
         $emotion_date = date('d.m.Y');
         $emotion_time = date('H:i:s');
-        $user_id = $this->input->post('user_id');
+        $emotioned_user_id = $this->input->post('emotioned_user_id');
         $song_id = $this->input->post('song_id');
         $emotion_id = $this->input->post('emotion_id');
 
         $data_song_emotions = array(
             'emotion_date' => $emotion_date,
             'emotion_time' => $emotion_time,
-            'user_id' => $user_id,
+            'emotioned_user_id' => $emotioned_user_id,
             'song_id' => $song_id,
             'emotion_id' => $emotion_id
         );

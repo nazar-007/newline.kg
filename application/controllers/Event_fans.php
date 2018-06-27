@@ -21,13 +21,13 @@ class Event_fans extends CI_Controller {
     public function insert_event_fan() {
         $fan_date = date('d.m.Y');
         $fan_time = date('H:i:s');
-        $user_id = $this->input->post('user_id');
+        $fan_user_id = $this->input->post('fan_user_id');
         $event_id = $this->input->post('event_id');
 
         $data_event_fans = array(
             'fan_date' => $fan_date,
             'fan_time' => $fan_time,
-            'user_id' => $user_id,
+            'fan_user_id' => $fan_user_id,
             'event_id' => $event_id
         );
         $this->events_model->insertEventFan($data_event_fans);
@@ -38,9 +38,8 @@ class Event_fans extends CI_Controller {
 
         $data_event_actions = array(
             'event_action' => $event_action,
-            'event_date' => $fan_date,
-            'event_time' => $fan_time,
-            'user_id' => $user_id,
+            'event_time_unix' => time(),
+            'action_user_id' => $fan_user_id,
             'event_id' => $event_id
         );
         $this->events_model->insertEventAction($data_event_actions);

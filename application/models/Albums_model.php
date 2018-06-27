@@ -6,8 +6,8 @@ class Albums_model extends CI_Model {
         parent::__construct();
         $this->load->database();
         $this->load->helper('url');
-
     }
+
     public function getAlbumsByUserId($user_id) {
         $this->db->where('user_id', $user_id);
         $query = $this->db->get('albums');

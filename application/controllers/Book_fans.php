@@ -21,13 +21,13 @@ class Book_fans extends CI_Controller {
     public function insert_book_fan() {
         $fan_date = date('d.m.Y');
         $fan_time = date('H:i:s');
-        $user_id = $this->input->post('user_id');
+        $fan_user_id = $this->input->post('fan_user_id');
         $book_id = $this->input->post('book_id');
 
         $data_book_fans = array(
             'fan_date' => $fan_date,
             'fan_time' => $fan_time,
-            'user_id' => $user_id,
+            'fan_user_id' => $fan_user_id,
             'book_id' => $book_id
         );
         $this->books_model->insertBookFan($data_book_fans);
@@ -38,9 +38,8 @@ class Book_fans extends CI_Controller {
 
         $data_book_actions = array(
             'book_action' => $book_action,
-            'book_date' => $fan_date,
-            'book_time' => $fan_time,
-            'user_id' => $user_id,
+            'book_time_unix' => time(),
+            'action_user_id' => $fan_user_id,
             'book_id' => $book_id
         );
         $this->books_model->insertBookAction($data_book_actions);

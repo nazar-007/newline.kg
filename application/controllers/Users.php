@@ -164,7 +164,7 @@ class Users extends CI_Controller {
                     }
                 }
             } else {
-                $education_schools = "Не указано!";
+                $education_schools = "Не указано";
             }
             if (count($universities) > 0) {
                 $education_universities = '';
@@ -179,8 +179,11 @@ class Users extends CI_Controller {
                     }
                 }
             } else {
-                $education_universities = "Не указано!";
+                $education_universities = "Не указано";
             }
+
+            $education_schools = $education_schools == '' ? "Не указано" : $education_schools;
+            $education_universities = $education_universities == '' ? "Не указано" : $education_universities;
 
             $data_users = array(
                 'email' => $email,

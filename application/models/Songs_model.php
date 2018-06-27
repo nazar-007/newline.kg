@@ -33,9 +33,9 @@ class Songs_model extends CI_Model {
     public function getSongActionsByFriendIds($friend_ids) {
         foreach ($friend_ids as $key => $friend_id) {
             if ($key == 0) {
-                $this->db->where('user_id', $friend_id);
+                $this->db->where('action_user_id', $friend_id);
             } else {
-                $this->db->or_where('user_id', $friend_id);
+                $this->db->or_where('action_user_id', $friend_id);
             }
         }
         $query = $this->db->get('song_actions');
@@ -82,6 +82,43 @@ class Songs_model extends CI_Model {
         $this->db->update('song_comments', $data);
     }
 
+    public function getSongCommentComplaintsByAdminId($admin_id) {
+        $this->db->where('admin_id', $admin_id);
+        $query = $this->db->get('song_comment_complaints');
+        return $query->result();
+    }
+    public function insertSongCommentComplaint($data) {
+        $this->db->insert('song_comment_complaints', $data);
+    }
+    public function deleteSongCommentComplaintById($id) {
+        $this->db->where('id', $id);
+        $this->db->delete('song_comment_complaints');
+    }
+    public function deleteSongCommentComplaintsBySongCommentId($song_comment_id) {
+        $this->db->where('song_comment_id', $song_comment_id);
+        $this->db->delete('song_comment_complaints');
+    }
+    public function deleteSongCommentComplaintsByComplainedUserId($complained_user_id) {
+        $this->db->where('complaint_user_id', $complained_user_id);
+        $this->db->delete('song_comment_complaints');
+    }
+
+    public function insertSongCommentEmotion($data) {
+        $this->db->insert('song_comment_emotions', $data);
+    }
+    public function deleteSongCommentEmotionById($id) {
+        $this->db->where('id', $id);
+        $this->db->delete('song_comment_emotions');
+    }
+    public function deleteSongCommentEmotionsBySongCommentId($song_comment_id) {
+        $this->db->where('song_comment_id', $song_comment_id);
+        $this->db->delete('song_comment_emotions');
+    }
+    public function updateSongCommentEmotionById($id, $data) {
+        $this->db->where('id', $id);
+        $this->db->update('song_comment_emotions', $data);
+    }
+
     public function getSongComplaintsByAdminId($admin_id) {
         $this->db->where('admin_id', $admin_id);
         $query = $this->db->get('song_complaints');
@@ -92,6 +129,10 @@ class Songs_model extends CI_Model {
     }
     public function deleteSongComplaintById($id) {
         $this->db->where('id', $id);
+        $this->db->delete('song_complaints');
+    }
+    public function deleteSongComplaintsByComplainedUserId($complained_user_id) {
+        $this->db->where('complained_user_id', $complained_user_id);
         $this->db->delete('song_complaints');
     }
 
@@ -107,6 +148,11 @@ class Songs_model extends CI_Model {
         $this->db->update('song_emotions', $data);
     }
 
+    public function getSongFansBySongId($song_id) {
+        $this->db->where('song_id', $song_id);
+        $query = $this->db->get('song_fans');
+        return $query->result();
+    }
     public function insertSongFan($data) {
         $this->db->insert('song_fans', $data);
     }

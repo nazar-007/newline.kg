@@ -34,9 +34,9 @@ class Books_model extends CI_Model {
     public function getBookActionsByFriendIds($friend_ids) {
         foreach ($friend_ids as $key => $friend_id) {
             if ($key == 0) {
-                $this->db->where('user_id', $friend_id);
+                $this->db->where('action_user_id', $friend_id);
             } else {
-                $this->db->or_where('user_id', $friend_id);
+                $this->db->or_where('action_user_id', $friend_id);
             }
         }
         $query = $this->db->get('book_actions');
@@ -83,6 +83,43 @@ class Books_model extends CI_Model {
         $this->db->update('book_comments', $data);
     }
 
+    public function getBookCommentComplaintsByAdminId($admin_id) {
+        $this->db->where('admin_id', $admin_id);
+        $query = $this->db->get('book_comment_complaints');
+        return $query->result();
+    }
+    public function insertBookCommentComplaint($data) {
+        $this->db->insert('book_comment_complaints', $data);
+    }
+    public function deleteBookCommentComplaintById($id) {
+        $this->db->where('id', $id);
+        $this->db->delete('book_comment_complaints');
+    }
+    public function deleteBookCommentComplaintsByBookCommentId($book_comment_id) {
+        $this->db->where('book_comment_id', $book_comment_id);
+        $this->db->delete('book_comment_complaints');
+    }
+    public function deleteBookCommentComplaintsByComplainedUserId($complained_user_id) {
+        $this->db->where('complaint_user_id', $complained_user_id);
+        $this->db->delete('book_comment_complaints');
+    }
+
+    public function insertBookCommentEmotion($data) {
+        $this->db->insert('book_comment_emotions', $data);
+    }
+    public function deleteBookCommentEmotionById($id) {
+        $this->db->where('id', $id);
+        $this->db->delete('book_comment_emotions');
+    }
+    public function deleteBookCommentEmotionsByBookCommentId($book_comment_id) {
+        $this->db->where('book_comment_id', $book_comment_id);
+        $this->db->delete('book_comment_emotions');
+    }
+    public function updateBookCommentEmotionById($id, $data) {
+        $this->db->where('id', $id);
+        $this->db->update('book_comment_emotions', $data);
+    }
+
     public function getBookComplaintsByAdminId($admin_id) {
         $this->db->where('admin_id', $admin_id);
         $query = $this->db->get('book_complaints');
@@ -93,6 +130,10 @@ class Books_model extends CI_Model {
     }
     public function deleteBookComplaintById($id) {
         $this->db->where('id', $id);
+        $this->db->delete('book_complaints');
+    }
+    public function deleteBookComplaintsByComplainedUserId($complained_user_id) {
+        $this->db->where('complained_user_id', $complained_user_id);
         $this->db->delete('book_complaints');
     }
 

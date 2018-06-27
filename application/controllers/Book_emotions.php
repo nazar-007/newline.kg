@@ -21,18 +21,30 @@ class Book_emotions extends CI_Controller {
     public function insert_book_emotion() {
         $emotion_date = date('d.m.Y');
         $emotion_time = date('H:i:s');
-        $user_id = $this->input->post('user_id');
+        $emotioned_user_id = $this->input->post('emotioned_user_id');
         $book_id = $this->input->post('book_id');
         $emotion_id = $this->input->post('emotion_id');
 
         $data_book_emotions = array(
             'emotion_date' => $emotion_date,
             'emotion_time' => $emotion_time,
-            'user_id' => $user_id,
+            'emotioned_user_id' => $emotioned_user_id,
             'book_id' => $book_id,
             'emotion_id' => $emotion_id
         );
         $this->books_model->insertBookEmotion($data_book_emotions);
+
+        // НАДО ДОДЕЛАТЬ ЭКШН
+
+        $book_action = 'Пользователь Назар поставил эмоцию на книгу "Убить пересмешника".';
+
+        $data_book_actions = array(
+            'book_action' => $book_action,
+            'book_time_unix' => time(),
+            'action_user_id' => $emotioned_user_id,
+            'book_id' => $book_id
+        );
+        $this->books_model->insertBookAction($data_book_actions);
     }
 
     public function delete_book_emotion() {
@@ -50,14 +62,14 @@ class Book_emotions extends CI_Controller {
         $id = $this->input->post('id');
         $emotion_date = date('d.m.Y');
         $emotion_time = date('H:i:s');
-        $user_id = $this->input->post('user_id');
+        $emotioned_user_id = $this->input->post('emotioned_user_id');
         $book_id = $this->input->post('book_id');
         $emotion_id = $this->input->post('emotion_id');
 
         $data_book_emotions = array(
             'emotion_date' => $emotion_date,
             'emotion_time' => $emotion_time,
-            'user_id' => $user_id,
+            'emotioned_user_id' => $emotioned_user_id,
             'book_id' => $book_id,
             'emotion_id' => $emotion_id
         );

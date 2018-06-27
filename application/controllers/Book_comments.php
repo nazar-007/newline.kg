@@ -22,16 +22,46 @@ class Book_comments extends CI_Controller {
         $comment_text = $this->input->post('comment_text');
         $comment_date = date("d.m.Y");
         $comment_time = date("H:i:s");
-        $user_id = $this->input->post('user_id');
+        $commented_user_id = $this->input->post('commented_user_id');
         $book_id = $this->input->post('book_id');
 
         $data_book_comments = array(
             'comment_text' => $comment_text,
             'comment_date' => $comment_date,
             'comment_time' => $comment_time,
-            'user_id' => $user_id,
+            'commented_user_id' => $commented_user_id,
             'book_id' => $book_id
         );
         $this->books_model->insertBookComment($data_book_comments);
+
+        // НАДО ДОДЕЛАТЬ ЭКШН
+
+        $book_action = 'Пользователь Назар прокомментировал книгу "Убить пересмешника".';
+
+        $data_book_actions = array(
+            'book_action' => $book_action,
+            'book_time_unix' => time(),
+            'action_user_id' => $commented_user_id,
+            'book_id' => $book_id
+        );
+        $this->books_model->insertBookAction($data_book_actions);
+    }
+
+    public function delete_book_comment() {
+        $id = $this->input->post('id');
+        $this->books_model->deleteBookCommentById($id);
+        $this->books_model->deleteBookCommentComplaintsByBookCommentId($id);
+        $this->books_model->deleteBookCommentEmotionsByBookCommentId($id);
+        $delete_json = array(
+            'id' => $id,
+            'csrf_name' => $this->security->get_csrf_token_name (),
+            'csrf_hash' => $this->security->get_csrf_hash()
+        );
+        echo json_encode($delete_json);
+    }
+
+    public function delete_book_comment_by_admin() {
+        $this->delete_book_comment();
+
     }
 }

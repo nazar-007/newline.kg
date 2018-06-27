@@ -21,18 +21,30 @@ class Event_emotions extends CI_Controller {
     public function insert_event_emotion() {
         $emotion_date = date('d.m.Y');
         $emotion_time = date('H:i:s');
-        $user_id = $this->input->post('user_id');
+        $emotioned_user_id = $this->input->post('emotioned_user_id');
         $event_id = $this->input->post('event_id');
         $emotion_id = $this->input->post('emotion_id');
 
         $data_event_emotions = array(
             'emotion_date' => $emotion_date,
             'emotion_time' => $emotion_time,
-            'user_id' => $user_id,
+            'emotioned_user_id' => $emotioned_user_id,
             'event_id' => $event_id,
             'emotion_id' => $emotion_id
         );
         $this->events_model->insertEventEmotion($data_event_emotions);
+
+        // НАДО ДОДЕЛАТЬ ЭКШН
+
+        $event_action = 'Пользователь Назар поставил эмоцию на событие "Встреча крутых IT-специалистов"';
+
+        $data_event_actions = array(
+            'event_action' => $event_action,
+            'event_time' => time(),
+            'action_user_id' => $emotioned_user_id,
+            'event_id' => $event_id
+        );
+        $this->events_model->insertEventAction($data_event_actions);
     }
 
     public function delete_event_emotion() {
@@ -50,14 +62,14 @@ class Event_emotions extends CI_Controller {
         $id = $this->input->post('id');
         $emotion_date = date('d.m.Y');
         $emotion_time = date('H:i:s');
-        $user_id = $this->input->post('user_id');
+        $emotioned_user_id = $this->input->post('emotioned_user_id');
         $event_id = $this->input->post('event_id');
         $emotion_id = $this->input->post('emotion_id');
 
         $data_event_emotions = array(
             'emotion_date' => $emotion_date,
             'emotion_time' => $emotion_time,
-            'user_id' => $user_id,
+            'emotioned_user_id' => $emotioned_user_id,
             'event_id' => $event_id,
             'emotion_id' => $emotion_id
         );

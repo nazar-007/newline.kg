@@ -6,6 +6,7 @@ class Book_suggestions extends CI_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->model('books_model');
+        $this->load->model('users_model');
     }
 
     public function Index() {
@@ -19,33 +20,58 @@ class Book_suggestions extends CI_Controller {
     }
 
     public function insert_book_suggestion() {
-        $suggestion_json = $this->input->post('suggestion_json');
-        $suggestion_file = $this->input->post('suggestion_file');
-        $suggestion_time_unix = time();
+        $book_name = $this->input->post('book_name');
+        $book_author = $this->input->post('book_author');
+        $book_description = $this->input->post('book_description');
+        $book_year = $this->input->post('book_year');
+        $book_http_link = $this->input->post('book_http_link');
+        $category_id = $this->input->post('category_id');
+        $suggestion_json = "[{'book_name': '$book_name', 'book_author': '$book_author', 'book_description': '$book_description', 
+            'book_year': '$book_year', 'book_http_link': '$book_http_link', 'category_id': '$category_id'}]";
+        $book_file = $this->input->post('book_file');
+        $book_image = $this->input->post('book_image');
+        $suggestion_date = date('d.m.Y');
+        $suggestion_time = date('H:i:s');
         $admin_id = $this->input->post('admin_id');
-        $user_id = $this->input->post('user_id');
+        $suggested_user_id = $this->input->post('suggested_user_id');
 
         $data_book_suggestions = array(
             'suggestion_json' => $suggestion_json,
-            'suggestion_file' => $suggestion_file,
-            'suggestion_time_unix' => $suggestion_time_unix,
+            'suggestion_file' => $book_file,
+            'suggestion_image' => $book_image,
+            'suggestion_date' => $suggestion_date,
+            'suggestion_time' => $suggestion_time,
             'admin_id' => $admin_id,
-            'user_id' => $user_id
+            'suggestion_user_id' => $suggested_user_id
         );
         $this->books_model->insertBookSuggestion($data_book_suggestions);
+
     }
 
     public function delete_book_suggestion() {
-        // надо удалять файлы тоже
+        $id = $this->input->post('id');
+        $suggestion_file = $this->input->post('suggestion_file');
+        $book_name = $this->input->post('book_name');
+        $user_id = $this->input->post('user_id');
+        unlink("./uploads/book_files/$suggestion_file");
+        $this->books_model->deleteBookSuggestionById($id);
+        $notification_text = 'Админ не одобрил Вашу предложенную книгу ' . $book_name . '.';
 
-//        $id = $this->input->post('id');
-//        $this->users_model->deleteUserSuggestionById($id);
-//        $delete_json = array(
-//            'id' => $id,
-//            'csrf_name' => $this->security->get_csrf_token_name (),
-//            'csrf_hash' => $this->security->get_csrf_hash()
-//        );
-//        echo json_encode($delete_json);
+        $data_user_notifications = array(
+            'notification_type' => 'Отказ от предложенной книги',
+            'notification_text' => $notification_text,
+            'notification_date' => date('d.m.Y'),
+            'notification_time' => date('d.m.Y'),
+            'notification_viewed' => 'Не просмотрено',
+            'user_id' => $user_id
+        );
+        $this->users_model->insertUserNotification($data_user_notifications);
+        $delete_json = array(
+            'id' => $id,
+            'csrf_name' => $this->security->get_csrf_token_name (),
+            'csrf_hash' => $this->security->get_csrf_hash()
+        );
+        echo json_encode($delete_json);
     }
 
 

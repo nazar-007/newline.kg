@@ -19,15 +19,15 @@ class User_page_emotions extends CI_Controller {
     public function insert_user_page_emotion() {
         $emotion_date = date('d.m.Y');
         $emotion_time = date('H:i:s');
-        $emotioned_user_id = $this->input->post('emotioned_user_id');
         $user_id = $this->input->post('user_id');
+        $emotioned_user_id = $this->input->post('emotioned_user_id');
         $emotion_id = $this->input->post('emotion_id');
 
         $data_user_page_emotions = array(
             'emotion_date' => $emotion_date,
             'emotion_time' => $emotion_time,
-            'emotioned_user_id' => $emotioned_user_id,
             'user_id' => $user_id,
+            'emotioned_user_id' => $emotioned_user_id,
             'emotion_id' => $emotion_id
         );
         $this->users_model->insertUserPageEmotion($data_user_page_emotions);
@@ -60,15 +60,15 @@ class User_page_emotions extends CI_Controller {
         $id = $this->input->post('id');
         $emotion_date = date('d.m.Y');
         $emotion_time = date('H:i:s');
-        $emotioned_user_id = $this->input->post('emotioned_user_id');
         $user_id = $this->input->post('user_id');
+        $emotioned_user_id = $this->input->post('emotioned_user_id');
         $emotion_id = $this->input->post('emotion_id');
 
         $data_user_page_emotions = array(
             'emotion_date' => $emotion_date,
             'emotion_time' => $emotion_time,
-            'emotioned_user_id' => $emotioned_user_id,
             'user_id' => $user_id,
+            'emotioned_user_id' => $emotioned_user_id,
             'emotion_id' => $emotion_id
         );
         $this->users_model->updateUserPageEmotionById($id, $data_user_page_emotions);

@@ -21,13 +21,13 @@ class Song_fans extends CI_Controller {
     public function insert_song_fan() {
         $fan_date = date('d.m.Y');
         $fan_time = date('H:i:s');
-        $user_id = $this->input->post('user_id');
+        $fan_user_id = $this->input->post('fan_user_id');
         $song_id = $this->input->post('song_id');
 
         $data_song_fans = array(
             'fan_date' => $fan_date,
             'fan_time' => $fan_time,
-            'user_id' => $user_id,
+            'fan_user_id' => $fan_user_id,
             'song_id' => $song_id
         );
         $this->songs_model->insertSongFan($data_song_fans);
@@ -38,9 +38,8 @@ class Song_fans extends CI_Controller {
 
         $data_song_actions = array(
             'song_action' => $song_action,
-            'song_date' => $fan_date,
-            'song_time' => $fan_time,
-            'user_id' => $user_id,
+            'song_time_unix' => time(),
+            'action_user_id' => $fan_user_id,
             'song_id' => $song_id
         );
         $this->songs_model->insertSongAction($data_song_actions);

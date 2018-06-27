@@ -6,6 +6,7 @@ class Events extends CI_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->model('events_model');
+        $this->load->model('users_model');
     }
 
     public function Index() {
@@ -36,4 +37,19 @@ class Events extends CI_Controller {
         }
     }
 
+    public function insert_event() {
+
+        // dodelat!!!!!!!!!!!!
+        $notification_text = 'Админ одобрил Вашу предложенное событие ' . $event_name . '.';
+
+        $data_user_notifications = array(
+            'notification_type' => 'Добавление предложенного Вами события',
+            'notification_text' => $notification_text,
+            'notification_date' => date('d.m.Y'),
+            'notification_time' => date('d.m.Y'),
+            'notification_viewed' => 'Не просмотрено',
+            'user_id' => $user_id
+        );
+        $this->users_model->insertUserNotification($data_user_notifications);
+    }
 }

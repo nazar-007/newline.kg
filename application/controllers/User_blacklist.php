@@ -23,14 +23,14 @@ class User_blacklist extends CI_Controller {
         $black_date = date('d.m.Y');
         $black_time = date('H:i:s');
         $user_id = $this->input->post('user_id');
-        $black_id = $this->input->post('black_id');
+        $black_user_id = $this->input->post('black_user_id');
 
         $data_user_blacklist = array(
             'black_reason' => $black_reason,
             'black_date' => $black_date,
             'black_time' => $black_time,
             'user_id' => $user_id,
-            'black_id' => $black_id
+            'black_user_id' => $black_user_id
         );
         $this->users_model->insertUserBlacklist($data_user_blacklist);
     }

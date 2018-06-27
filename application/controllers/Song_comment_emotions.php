@@ -1,67 +1,59 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class User_image_emotions extends CI_Controller {
+class Song_comment_emotions extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
-        $this->load->model('users_model');
+        $this->load->model('songs_model');
     }
 
     public function Index() {
+        $category_ids = array();
         $data = array(
+            'songs' => $this->songs_model->getSongsByCategoryIds($category_ids),
             'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
-        $this->load->view('user_image_emotions', $data);
+        $this->load->view('song_comment_emotions', $data);
     }
 
-
-    public function insert_user_image_emotion() {
+    public function insert_song_comment_emotion() {
         $emotion_date = date('d.m.Y');
         $emotion_time = date('H:i:s');
-        $user_id = $this->input->post('user_id');
         $emotioned_user_id = $this->input->post('emotioned_user_id');
-        $user_image_id = $this->input->post('user_image_id');
+        $song_id = $this->input->post('song_id');
+        $song_comment_id = $this->input->post('song_comment_id');
+        $commented_user_id = $this->input->post('commented_user_id');
         $emotion_id = $this->input->post('emotion_id');
 
-        $data_user_image_emotions = array(
+        $data_song_comment_emotions = array(
             'emotion_date' => $emotion_date,
             'emotion_time' => $emotion_time,
-            'user_id' => $user_id,
             'emotioned_user_id' => $emotioned_user_id,
-            'user_image_id' => $user_image_id,
+            'song_id' => $song_id,
+            'song_comment_id' => $song_comment_id,
+            'commented_user_id' => $commented_user_id,
             'emotion_id' => $emotion_id
         );
-        $this->users_model->insertUserImageEmotion($data_user_image_emotions);
+        $this->songs_model->insertSongCommentEmotion($data_song_comment_emotions);
 
-        $notification_text = 'Пользователь Назар оставил эмоцию на Вашу фотку';
+        $notification_text = 'Пользователь Назар поставил эмоцию на Ваш коммент "Супер!" к песне "A million voices"';
 
         $data_user_notifications = array(
-            'notification_type' => 'Эмоция на Вашу фотку',
+            'notification_type' => 'Эмоция на Ваш коммент',
             'notification_text' => $notification_text,
             'notification_date' => $emotion_date,
             'notification_time' => $emotion_time,
             'notification_viewed' => 'Не просмотрено',
-            'user_id' => $user_id
+            'user_id' => $commented_user_id
         );
         $this->users_model->insertUserNotification($data_user_notifications);
-
-        $user_image_action = 'Пользователь Назар поставил эмоцию на фотку пользователя Edil';
-
-        $data_user_image_actions = array(
-            'user_image_action' => $user_image_action,
-            'user_image_time_unix' => time(),
-            'user_id' => $user_id,
-            'action_user_id' => $emotioned_user_id,
-            'user_image_id' => $user_image_id
-        );
-        $this->users_model->insertUserImageAction($data_user_image_actions);
     }
 
-    public function delete_user_image_emotion() {
+    public function delete_song_comment_emotion() {
         $id = $this->input->post('id');
-        $this->users_model->deleteUserImageEmotionById($id);
+        $this->songs_model->deleteSongCommentEmotionById($id);
         $delete_json = array(
             'id' => $id,
             'csrf_name' => $this->security->get_csrf_token_name (),
@@ -70,23 +62,25 @@ class User_image_emotions extends CI_Controller {
         echo json_encode($delete_json);
     }
 
-    public function update_user_image_emotion() {
+    public function update_song_comment_emotion() {
         $id = $this->input->post('id');
         $emotion_date = date('d.m.Y');
         $emotion_time = date('H:i:s');
-        $user_id = $this->input->post('user_id');
         $emotioned_user_id = $this->input->post('emotioned_user_id');
-        $user_image_id = $this->input->post('user_image_id');
+        $song_id = $this->input->post('song_id');
+        $song_comment_id = $this->input->post('song_comment_id');
+        $commented_user_id = $this->input->post('commented_user_id');
         $emotion_id = $this->input->post('emotion_id');
 
-        $data_user_image_emotions = array(
+        $data_song_comment_emotions = array(
             'emotion_date' => $emotion_date,
             'emotion_time' => $emotion_time,
-            'user_id' => $user_id,
             'emotioned_user_id' => $emotioned_user_id,
-            'user_image_id' => $user_image_id,
+            'song_id' => $song_id,
+            'song_comment_id' => $song_comment_id,
+            'commented_user_id' => $commented_user_id,
             'emotion_id' => $emotion_id
         );
-        $this->users_model->updateUserImageEmotionById($id, $data_user_image_emotions);
+        $this->songs_model->updateSongCommentEmotionById($id, $data_song_comment_emotions);
     }
 }

@@ -1,1 +1,1 @@
-<a style="font-size: 100px; color: green" href="/private_messages/get_messages">Запрос!!!</a>
+<a style="font-size: 100px; color: green" href="/albums/minus">Запрос!!!</a>

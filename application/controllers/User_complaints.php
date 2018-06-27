@@ -23,17 +23,39 @@ class User_complaints extends CI_Controller {
         $complaint_time_unix = time();
         $admin_id = $this->input->post('admin_id');
         $user_id = $this->input->post('user_id');
-        $complained_id = $this->input->post('complained_id');
+        $complained_user_id = $this->input->post('complained_user_id');
 
         $data_user_complaints = array(
             'complaint_text' => $complaint_text,
             'complaint_time_unix' => $complaint_time_unix,
             'admin_id' => $admin_id,
             'user_id' => $user_id,
-            'complained_id' => $complained_id
+            'complained_user_id' => $complained_user_id
         );
 
         $this->users_model->insertUserComplaint($data_user_complaints);
+    }
+
+    public function delete_user_complaint() {
+        $id = $this->input->post('id');
+        $this->users_model->deleteUserComplaintById($id);
+        $delete_json = array(
+            'id' => $id,
+            'csrf_name' => $this->security->get_csrf_token_name (),
+            'csrf_hash' => $this->security->get_csrf_hash()
+        );
+        echo json_encode($delete_json);
+    }
+
+    public function delete_user_complaints_by_complained_user_id() {
+        $complained_user_id = $this->input->post('complained_user_id');
+        $this->users_model->deleteUserComplaintsByComplainedUserId($complained_user_id);
+        $delete_json = array(
+            'complained_user_id' => $complained_user_id,
+            'csrf_name' => $this->security->get_csrf_token_name (),
+            'csrf_hash' => $this->security->get_csrf_hash()
+        );
+        echo json_encode($delete_json);
     }
 
 }

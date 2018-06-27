@@ -19,6 +19,26 @@ class Users_model extends CI_Model {
         }
         return $user_id;
     }
+    public function getCurrencyById($id) {
+        $this->db->select('id, currency');
+        $this->db->where('id', $id);
+        $query = $this->db->get("users");
+        $users = $query->result();
+        foreach ($users as $user) {
+            $currency = $user->currency;
+        }
+        return $currency;
+    }
+    public function getRatingById($id) {
+        $this->db->select('id, rating');
+        $this->db->where('id', $id);
+        $query = $this->db->get("users");
+        $users = $query->result();
+        foreach ($users as $user) {
+            $rating = $user->rating;
+        }
+        return $rating;
+    }
     public function getNumRowsByEmail($email) {
         $this->db->select('email');
         $this->db->where('email', $email);
@@ -101,7 +121,16 @@ class Users_model extends CI_Model {
         $this->db->where('id', $id);
         $this->db->delete('user_complaints');
     }
+    public function deleteUserComplaintsByComplainedUserId($complained_user_id) {
+        $this->db->where('complained_user_id', $complained_user_id);
+        $this->db->delete('user_complaints');
+    }
 
+    public function getUserImagesByAlbumId($album_id) {
+        $this->db->where('album_id', $album_id);
+        $query = $this->db->get('user_images');
+        return $query->result();
+    }
     public function insertUserImage($data) {
         $this->db->insert('user_images', $data);
     }
@@ -109,16 +138,25 @@ class Users_model extends CI_Model {
         $this->db->where('id', $id);
         $this->db->delete('user_images');
     }
+    public function deleteUserImagesByAlbumId($album_id) {
+        $this->db->where('album_id', $album_id);
+        $this->db->delete('user_images');
+    }
 
     public function getUserImageActionsByFriendIds($friend_ids) {
         foreach ($friend_ids as $key => $friend_id) {
             if ($key == 0) {
-                $this->db->where('user_id', $friend_id);
+                $this->db->where('action_user_id', $friend_id);
             } else {
-                $this->db->or_where('user_id', $friend_id);
+                $this->db->or_where('action_user_id', $friend_id);
             }
         }
         $query = $this->db->get('user_image_actions');
+        return $query->result();
+    }
+    public function getUserImageActionsByUserImageId($user_image_id) {
+        $this->db->where('user_image_id', $user_image_id);
+        $query = $this->db->get('user_actions');
         return $query->result();
     }
     public function insertUserImageAction($data) {
@@ -128,7 +166,10 @@ class Users_model extends CI_Model {
         $this->db->where('id', $id);
         $this->db->delete('user_image_actions');
     }
-
+    public function deleteUserImageActionsByUserImageId($user_image_id) {
+        $this->db->where('user_image_id', $user_image_id);
+        $this->db->delete('user_image_actions');
+    }
 
     public function getUserImageCommentsByUserImageId($user_image_id) {
         $this->db->where('user_image_id', $user_image_id);
@@ -143,9 +184,33 @@ class Users_model extends CI_Model {
         $this->db->where('id', $id);
         $this->db->delete('user_image_comments');
     }
+    public function deleteUserImageCommentsByUserImageId($user_image_id) {
+        $this->db->where('user_image_id', $user_image_id);
+        $this->db->delete('user_image_comments');
+    }
     public function updateUserImageCommentById($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('user_image_comments', $data);
+    }
+
+    public function insertUserImageCommentEmotion($data) {
+        $this->db->insert('user_image_comment_emotions', $data);
+    }
+    public function deleteUserImageCommentEmotionById($id) {
+        $this->db->where('id', $id);
+        $this->db->delete('user_image_comment_emotions');
+    }
+    public function deleteUserImageCommentEmotionsByUserImageId($user_image_id) {
+        $this->db->where('user_image_id', $user_image_id);
+        $this->db->delete('user_image_comment_emotions');
+    }
+    public function deleteUserImageCommentEmotionsByUserImageCommentId($user_image_comment_id) {
+        $this->db->where('user_image_comment_id', $user_image_comment_id);
+        $this->db->delete('user_image_comment_emotions');
+    }
+    public function updateUserImageCommentEmotionById($id, $data) {
+        $this->db->where('id', $id);
+        $this->db->update('user_image_comment_emotions', $data);
     }
 
     public function insertUserImageEmotion($data) {
@@ -153,6 +218,10 @@ class Users_model extends CI_Model {
     }
     public function deleteUserImageEmotionById($id) {
         $this->db->where('id', $id);
+        $this->db->delete('user_image_emotions');
+    }
+    public function deleteUserImageEmotionsByUserImageId($user_image_id) {
+        $this->db->where('user_image_id', $user_image_id);
         $this->db->delete('user_image_emotions');
     }
     public function updateUserImageEmotionById($id, $data) {

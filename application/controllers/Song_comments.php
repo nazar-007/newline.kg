@@ -22,16 +22,41 @@ class Song_comments extends CI_Controller {
         $comment_text = $this->input->post('comment_text');
         $comment_date = date("d.m.Y");
         $comment_time = date("H:i:s");
-        $user_id = $this->input->post('user_id');
+        $commented_user_id = $this->input->post('commented_user_id');
         $song_id = $this->input->post('song_id');
 
         $data_song_comments = array(
             'comment_text' => $comment_text,
             'comment_date' => $comment_date,
             'comment_time' => $comment_time,
-            'user_id' => $user_id,
+            'commented_user_id' => $commented_user_id,
             'song_id' => $song_id
         );
         $this->songs_model->insertSongComment($data_song_comments);
+
+        // НАДО ДОДЕЛАТЬ ЭКШН
+
+        $song_action = 'Пользователь Назар прокомментировал песню "A MILLION VOICES"';
+
+        $data_song_actions = array(
+            'song_action' => $song_action,
+            'song_time_unix' => time(),
+            'action_user_id' => $commented_user_id,
+            'song_id' => $song_id
+        );
+        $this->songs_model->insertSongAction($data_song_actions);
+    }
+
+    public function delete_song_comment() {
+        $id = $this->input->post('id');
+        $this->songs_model->deleteSongCommentById($id);
+        $this->songs_model->deleteSongCommentComplaintsBySongCommentId($id);
+        $this->songs_model->deleteSongCommentEmotionsBySongCommentId($id);
+        $delete_json = array(
+            'id' => $id,
+            'csrf_name' => $this->security->get_csrf_token_name (),
+            'csrf_hash' => $this->security->get_csrf_hash()
+        );
+        echo json_encode($delete_json);
     }
 }

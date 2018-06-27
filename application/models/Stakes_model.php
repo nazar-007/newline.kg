@@ -48,6 +48,11 @@ class Stakes_model extends CI_Model {
         $this->db->update('stake_categories', $data);
     }
 
+    public function getStakeFansByStakeId($stake_id) {
+        $this->db->where('stake_id', $stake_id);
+        $query = $this->db->get('stake_fans');
+        return $query->result();
+    }
     public function insertStakeFan($data) {
         $this->db->insert('stake_fans', $data);
     }

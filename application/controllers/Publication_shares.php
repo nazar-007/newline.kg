@@ -21,13 +21,13 @@ class Publication_shares extends CI_Controller {
     public function insert_publication_share() {
         $share_date = date("d.m.Y");
         $share_time = date("H:i:s");
-        $user_id = $this->input->post('user_id');
+        $share_user_id = $this->input->post('share_user_id');
         $publication_id = $this->input->post('publication_id');
 
         $data_publication_shares = array(
             'share_date' => $share_date,
             'share_time' => $share_time,
-            'user_id' => $user_id,
+            'share_user_id' => $share_user_id,
             'publication_id' => $publication_id
         );
         $this->publications_model->insertPublicationShare($data_publication_shares);

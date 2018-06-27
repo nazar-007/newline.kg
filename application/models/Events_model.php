@@ -34,9 +34,9 @@ class Events_model extends CI_Model {
     public function getEventActionsByFriendIds($friend_ids) {
         foreach ($friend_ids as $key => $friend_id) {
             if ($key == 0) {
-                $this->db->where('user_id', $friend_id);
+                $this->db->where('action_user_id', $friend_id);
             } else {
-                $this->db->or_where('user_id', $friend_id);
+                $this->db->or_where('action_user_id', $friend_id);
             }
         }
         $query = $this->db->get('event_actions');
@@ -83,6 +83,43 @@ class Events_model extends CI_Model {
         $this->db->update('event_comments', $data);
     }
 
+    public function getEventCommentComplaintsByAdminId($admin_id) {
+        $this->db->where('admin_id', $admin_id);
+        $query = $this->db->get('event_comment_complaints');
+        return $query->result();
+    }
+    public function insertEventCommentComplaint($data) {
+        $this->db->insert('event_comment_complaints', $data);
+    }
+    public function deleteEventCommentComplaintById($id) {
+        $this->db->where('id', $id);
+        $this->db->delete('event_comment_complaints');
+    }
+    public function deleteEventCommentComplaintsByEventCommentId($event_comment_id) {
+        $this->db->where('event_comment_id', $event_comment_id);
+        $this->db->delete('event_comment_complaints');
+    }
+    public function deleteEventCommentComplaintsByComplainedUserId($complained_user_id) {
+        $this->db->where('complaint_user_id', $complained_user_id);
+        $this->db->delete('event_comment_complaints');
+    }
+
+    public function insertEventCommentEmotion($data) {
+        $this->db->insert('event_comment_emotions', $data);
+    }
+    public function deleteEventCommentEmotionById($id) {
+        $this->db->where('id', $id);
+        $this->db->delete('event_comment_emotions');
+    }
+    public function deleteEventCommentEmotionsByEventCommentId($event_comment_id) {
+        $this->db->where('event_comment_id', $event_comment_id);
+        $this->db->delete('event_comment_emotions');
+    }
+    public function updateEventCommentEmotionById($id, $data) {
+        $this->db->where('id', $id);
+        $this->db->update('event_comment_emotions', $data);
+    }
+
     public function getEventComplaintsByAdminId($admin_id) {
         $this->db->where('admin_id', $admin_id);
         $query = $this->db->get('event_complaints');
@@ -93,6 +130,10 @@ class Events_model extends CI_Model {
     }
     public function deleteEventComplaintById($id) {
         $this->db->where('id', $id);
+        $this->db->delete('event_complaints');
+    }
+    public function deleteEventComplaintsByComplainedUserId($complained_user_id) {
+        $this->db->where('complained_user_id', $complained_user_id);
         $this->db->delete('event_complaints');
     }
 
