@@ -38,4 +38,14 @@ class Book_categories extends CI_Controller {
         echo json_encode($delete_json);
     }
 
+    public function update_book_category() {
+        $id = $this->input->post('id');
+        $category_name = $this->input->post('category_name');
+
+        $data_book_categories = array(
+            'category_name' => $category_name,
+        );
+        $this->books_model->updateBookCategoryById($id, $data_book_categories);
+    }
+
 }

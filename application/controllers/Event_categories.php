@@ -37,4 +37,14 @@ class Event_categories extends CI_Controller {
         );
         echo json_encode($delete_json);
     }
+
+    public function update_event_category() {
+        $id = $this->input->post('id');
+        $category_name = $this->input->post('category_name');
+
+        $data_event_categories = array(
+            'category_name' => $category_name,
+        );
+        $this->events_model->updateEventCategoryById($id, $data_event_categories);
+    }
 }

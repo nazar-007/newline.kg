@@ -47,8 +47,7 @@ class Book_fans extends CI_Controller {
 
     public function delete_book_fan() {
         // НАДО ДОДЕЛАТЬ!!!
-//        $id = $this->input->post('id');
-        $id = 22;
+        $id = $this->input->post('id');
         $this->books_model->deleteBookFanById($id);
         $delete_json = array(
             'id' => $id,

@@ -22,9 +22,7 @@ class Publication_comment_emotions extends CI_Controller {
     public function insert_publication_comment_emotion() {
         $emotion_date = date('d.m.Y');
         $emotion_time = date('H:i:s');
-        $published_user_id = $this->input->post('published_user_id');
         $emotioned_user_id = $this->input->post('emotioned_user_id');
-        $publication_id = $this->input->post('publication_id');
         $publication_comment_id = $this->input->post('publication_comment_id');
         $commented_user_id = $this->input->post('commented_user_id');
         $emotion_id = $this->input->post('emotion_id');
@@ -32,9 +30,7 @@ class Publication_comment_emotions extends CI_Controller {
         $data_publication_comment_emotions = array(
             'emotion_date' => $emotion_date,
             'emotion_time' => $emotion_time,
-            'published_user_id' => $published_user_id,
             'emotioned_user_id' => $emotioned_user_id,
-            'publication_id' => $publication_id,
             'publication_comment_id' => $publication_comment_id,
             'commented_user_id' => $commented_user_id,
             'emotion_id' => $emotion_id
@@ -72,7 +68,6 @@ class Publication_comment_emotions extends CI_Controller {
         $emotion_time = date('H:i:s');
         $published_user_id = $this->input->post('published_user_id');
         $emotioned_user_id = $this->input->post('emotioned_user_id');
-        $publication_id = $this->input->post('publication_id');
         $publication_comment_id = $this->input->post('publication_comment_id');
         $commented_user_id = $this->input->post('commented_user_id');
         $emotion_id = $this->input->post('emotion_id');
@@ -82,7 +77,6 @@ class Publication_comment_emotions extends CI_Controller {
             'emotion_time' => $emotion_time,
             'published_user_id' => $published_user_id,
             'emotioned_user_id' => $emotioned_user_id,
-            'publication_id' => $publication_id,
             'publication_comment_id' => $publication_comment_id,
             'commented_user_id' => $commented_user_id,
             'emotion_id' => $emotion_id

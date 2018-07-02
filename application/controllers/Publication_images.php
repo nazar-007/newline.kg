@@ -18,4 +18,18 @@ class Publication_images extends CI_Controller {
         $this->load->view('publication_images', $data);
     }
 
+    public function delete_publication_image() {
+        $id = $this->input->post('id');
+        $publication_image_file = $this->publications_model->getPublicationImageFileById($id);
+        unlink("./uploads/images/publication_images/$publication_image_file");
+        $this->publications_model->deletePublicationImageEmotionsByPublicationImageId($id);
+        $this->publications_model->deletePublicationImageById($id);
+        $delete_json = array(
+            'id' => $id,
+            'csrf_name' => $this->security->get_csrf_token_name (),
+            'csrf_hash' => $this->security->get_csrf_hash()
+        );
+        echo json_encode($delete_json);
+    }
+
 }

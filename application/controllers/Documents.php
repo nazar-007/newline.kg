@@ -48,4 +48,20 @@ class Documents extends CI_Controller {
         );
         echo json_encode($delete_json);
     }
+
+    public function update_document() {
+        $id = $this->input->post('id');
+        $document_name = $this->input->post('document_name');
+        $document_file = $this->input->post('document_file');
+        $document_date = date("d.m.Y");
+        $document_time = date("H:i:s");
+
+        $data_documents = array(
+            'document_name' => $document_name,
+            'document_file' => $document_file,
+            'document_date' => $document_date,
+            'document_time' => $document_time,
+        );
+        $this->documents_model->updateDocumentById($id, $data_documents);
+    }
 }

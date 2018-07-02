@@ -6,6 +6,7 @@ class Song_complaints extends CI_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->model('songs_model');
+        $this->load->model('admins_model');
     }
 
     public function Index() {
@@ -21,7 +22,7 @@ class Song_complaints extends CI_Controller {
     public function insert_song_complaint() {
         $complaint_text = $this->input->post('complaint_text');
         $complaint_time_unix = time();
-        $admin_id = $this->input->post('admin_id');
+        $admin_id = $this->admins_model->getRandomAdminIdByAdminTable('songs');
         $song_id = $this->input->post('song_id');
         $complained_user_id = $this->input->post('complained_user_id');
 
@@ -56,6 +57,18 @@ class Song_complaints extends CI_Controller {
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($delete_json);
+    }
+
+    public function update_song_complaint() {
+        $id = $this->input->post('id');
+        $admin_table = $this->input->post('admin_table');
+        $admin_id = $this->admins_model->getRandomAdminIdByAdminTable($admin_table);
+
+        $data_song_complaints = array(
+            'complaint_time_unix' => time(),
+            'admin_id' => $admin_id
+        );
+        $this->songs_model->updateSongComplaintById($id, $data_song_complaints);
     }
 
 }

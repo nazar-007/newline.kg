@@ -7,6 +7,7 @@ class Book_suggestions extends CI_Controller {
         parent::__construct();
         $this->load->model('books_model');
         $this->load->model('users_model');
+        $this->load->model('admins_model');
     }
 
     public function Index() {
@@ -32,7 +33,7 @@ class Book_suggestions extends CI_Controller {
         $book_image = $this->input->post('book_image');
         $suggestion_date = date('d.m.Y');
         $suggestion_time = date('H:i:s');
-        $admin_id = $this->input->post('admin_id');
+        $admin_id = $this->admins_model->getRandomAdminIdByAdminTable('books');
         $suggested_user_id = $this->input->post('suggested_user_id');
 
         $data_book_suggestions = array(
@@ -50,10 +51,13 @@ class Book_suggestions extends CI_Controller {
 
     public function delete_book_suggestion() {
         $id = $this->input->post('id');
-        $suggestion_file = $this->input->post('suggestion_file');
+        $book_suggestion_file = $this->books_model->getBookSuggestionFileById($id);
+        $book_suggestion_image = $this->books_model->getBookSuggestionImageById($id);
         $book_name = $this->input->post('book_name');
         $user_id = $this->input->post('user_id');
-        unlink("./uploads/book_files/$suggestion_file");
+        unlink("./uploads/book_files/$book_suggestion_file");
+        unlink("./uploads/images/book_images/$book_suggestion_image");
+        unlink("./uploads/images/book_images/thumb/$book_suggestion_image");
         $this->books_model->deleteBookSuggestionById($id);
         $notification_text = 'Админ не одобрил Вашу предложенную книгу ' . $book_name . '.';
 
@@ -74,5 +78,16 @@ class Book_suggestions extends CI_Controller {
         echo json_encode($delete_json);
     }
 
+    public function update_book_suggestion() {
+        $id = $this->input->post('id');
+        $admin_table = $this->input->post('admin_table');
+        $admin_id = $this->admins_model->getRandomAdminIdByAdminTable($admin_table);
+
+        $data_book_suggestions = array(
+            'complaint_time_unix' => time(),
+            'admin_id' => $admin_id
+        );
+        $this->books_model->updateBookSuggestionById($id, $data_book_suggestions);
+    }
 
 }

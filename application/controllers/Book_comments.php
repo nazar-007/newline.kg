@@ -60,8 +60,13 @@ class Book_comments extends CI_Controller {
         echo json_encode($delete_json);
     }
 
-    public function delete_book_comment_by_admin() {
-        $this->delete_book_comment();
+    public function update_book_comment() {
+        $id = $this->input->post('id');
+        $comment_text = $this->input->post('comment_text');
 
+        $data_book_comments = array(
+            'comment_text' => $comment_text
+        );
+        $this->books_model->updateBookCommentById($id, $data_book_comments);
     }
 }

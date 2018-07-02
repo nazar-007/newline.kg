@@ -35,4 +35,42 @@ class Stakes extends CI_Controller {
          </tr>";
         }
     }
+
+    public function insert_stake() {
+        $stake_name = $this->input->post('stake_name');
+        $stake_file = $this->input->post('stake_file');
+        $category_id = $this->input->post('category_id');
+
+        $data_stakes = array(
+            'stake_name' => $stake_name,
+            'stake_file' => $stake_file,
+            'category_id' => $category_id
+        );
+        $this->stakes_model->insertStake($data_stakes);
+    }
+
+    public function delete_stake() {
+        $id = $this->input->post('id');
+        $this->stakes_model->deleteStakeById($id);
+        $delete_json = array(
+            'id' => $id,
+            'csrf_name' => $this->security->get_csrf_token_name (),
+            'csrf_hash' => $this->security->get_csrf_hash()
+        );
+        echo json_encode($delete_json);
+    }
+
+    public function update_stake() {
+        $id = $this->input->post('id');
+        $stake_name = $this->input->post('stake_name');
+        $stake_file = $this->input->post('stake_file');
+        $category_id = $this->input->post('category_id');
+
+        $data_gifts = array(
+            'stake_name' => $stake_name,
+            'stake_file' => $stake_file,
+            'category_id' => $category_id
+        );
+        $this->stakes_model->updateStakeById($id, $data_gifts);
+    }
 }

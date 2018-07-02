@@ -6,6 +6,7 @@ class Publication_complaints extends CI_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->model('publications_model');
+        $this->load->model('admins_model');
     }
 
     public function Index() {
@@ -21,7 +22,7 @@ class Publication_complaints extends CI_Controller {
     public function insert_publication_complaint() {
         $complaint_text = $this->input->post('complaint_text');
         $complaint_time_unix = time();
-        $admin_id = $this->input->post('admin_id');
+        $admin_id = $this->admins_model->getRandomAdminIdByAdminTable('publications');
         $published_user_id = $this->input->post('published_user_id');
         $publication_id = $this->input->post('publication_id');
         $complained_user_id = $this->input->post('complained_user_id');
@@ -57,5 +58,17 @@ class Publication_complaints extends CI_Controller {
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($delete_json);
+    }
+
+    public function update_publication_complaint() {
+        $id = $this->input->post('id');
+        $admin_table = $this->input->post('admin_table');
+        $admin_id = $this->admins_model->getRandomAdminIdByAdminTable($admin_table);
+
+        $data_publication_complaints = array(
+            'complaint_time_unix' => time(),
+            'admin_id' => $admin_id
+        );
+        $this->publications_model->updatePublicationComplaintById($id, $data_publication_complaints);
     }
 }

@@ -36,4 +36,41 @@ class Gifts extends CI_Controller {
         }
     }
 
+    public function insert_gift() {
+        $gift_name = $this->input->post('gift_name');
+        $gift_file = $this->input->post('gift_file');
+        $category_id = $this->input->post('category_id');
+
+        $data_gifts = array(
+            'gift_name' => $gift_name,
+            'gift_file' => $gift_file,
+            'category_id' => $category_id
+        );
+        $this->gifts_model->insertGift($data_gifts);
+    }
+
+    public function delete_gift() {
+        $id = $this->input->post('id');
+        $this->gifts_model->deleteGiftById($id);
+        $delete_json = array(
+            'id' => $id,
+            'csrf_name' => $this->security->get_csrf_token_name (),
+            'csrf_hash' => $this->security->get_csrf_hash()
+        );
+        echo json_encode($delete_json);
+    }
+
+    public function update_gift() {
+        $id = $this->input->post('id');
+        $gift_name = $this->input->post('gift_name');
+        $gift_file = $this->input->post('gift_file');
+        $category_id = $this->input->post('category_id');
+
+        $data_gifts = array(
+            'gift_name' => $gift_name,
+            'gift_file' => $gift_file,
+            'category_id' => $category_id
+        );
+        $this->gifts_model->updateGiftById($id, $data_gifts);
+    }
 }

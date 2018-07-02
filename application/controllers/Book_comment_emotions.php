@@ -23,7 +23,6 @@ class Book_comment_emotions extends CI_Controller {
         $emotion_date = date('d.m.Y');
         $emotion_time = date('H:i:s');
         $emotioned_user_id = $this->input->post('emotioned_user_id');
-        $book_id = $this->input->post('book_id');
         $book_comment_id = $this->input->post('book_comment_id');
         $commented_user_id = $this->input->post('commented_user_id');
         $emotion_id = $this->input->post('emotion_id');
@@ -32,7 +31,6 @@ class Book_comment_emotions extends CI_Controller {
             'emotion_date' => $emotion_date,
             'emotion_time' => $emotion_time,
             'emotioned_user_id' => $emotioned_user_id,
-            'book_id' => $book_id,
             'book_comment_id' => $book_comment_id,
             'commented_user_id' => $commented_user_id,
             'emotion_id' => $emotion_id
@@ -68,7 +66,6 @@ class Book_comment_emotions extends CI_Controller {
         $emotion_date = date('d.m.Y');
         $emotion_time = date('H:i:s');
         $emotioned_user_id = $this->input->post('emotioned_user_id');
-        $book_id = $this->input->post('book_id');
         $book_comment_id = $this->input->post('book_comment_id');
         $commented_user_id = $this->input->post('commented_user_id');
         $emotion_id = $this->input->post('emotion_id');
@@ -77,7 +74,6 @@ class Book_comment_emotions extends CI_Controller {
             'emotion_date' => $emotion_date,
             'emotion_time' => $emotion_time,
             'emotioned_user_id' => $emotioned_user_id,
-            'book_id' => $book_id,
             'book_comment_id' => $book_comment_id,
             'commented_user_id' => $commented_user_id,
             'emotion_id' => $emotion_id

@@ -18,6 +18,16 @@ class Songs_model extends CI_Model {
         $query = $this->db->get('songs');
         return $query->result();
     }
+    public function getSongFileById($id) {
+        $this->db->select('id, song_file');
+        $this->db->where('id', $id);
+        $query = $this->db->get('songs');
+        $songs = $query->result();
+        foreach ($songs as $song) {
+            $song_file = $song->song_file;
+        }
+        return $song_file;
+    }
     public function insertSong($data) {
         $this->db->insert('songs', $data);
     }
@@ -46,6 +56,10 @@ class Songs_model extends CI_Model {
     }
     public function deleteSongActionById($id) {
         $this->db->where('id', $id);
+        $this->db->delete('song_actions');
+    }
+    public function deleteSongActionsBySongId($song_id) {
+        $this->db->where('song_id', $song_id);
         $this->db->delete('song_actions');
     }
 
@@ -77,6 +91,10 @@ class Songs_model extends CI_Model {
         $this->db->where('id', $id);
         $this->db->delete('song_comments');
     }
+    public function deleteSongCommentsBySongId($song_id) {
+        $this->db->where('song_id', $song_id);
+        $this->db->delete('song_comments');
+    }
     public function updateSongCommentById($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('song_comments', $data);
@@ -101,6 +119,10 @@ class Songs_model extends CI_Model {
     public function deleteSongCommentComplaintsByComplainedUserId($complained_user_id) {
         $this->db->where('complaint_user_id', $complained_user_id);
         $this->db->delete('song_comment_complaints');
+    }
+    public function updateSongCommentComplaintById($id, $data) {
+        $this->db->where('id', $id);
+        $this->db->update('song_comment_complaints', $data);
     }
 
     public function insertSongCommentEmotion($data) {
@@ -131,9 +153,17 @@ class Songs_model extends CI_Model {
         $this->db->where('id', $id);
         $this->db->delete('song_complaints');
     }
+    public function deleteSongComplaintsBySongId($song_id) {
+        $this->db->where('song_id', $song_id);
+        $this->db->delete('song_complaints');
+    }
     public function deleteSongComplaintsByComplainedUserId($complained_user_id) {
         $this->db->where('complained_user_id', $complained_user_id);
         $this->db->delete('song_complaints');
+    }
+    public function updateSongComplaintById($id, $data) {
+        $this->db->where('id', $id);
+        $this->db->update('song_complaints', $data);
     }
 
     public function insertSongEmotion($data) {
@@ -141,6 +171,10 @@ class Songs_model extends CI_Model {
     }
     public function deleteSongEmotionById($id) {
         $this->db->where('id', $id);
+        $this->db->delete('song_emotions');
+    }
+    public function deleteSongEmotionsBySongId($song_id) {
+        $this->db->where('song_id', $song_id);
         $this->db->delete('song_emotions');
     }
     public function updateSongEmotionById($id, $data) {
@@ -160,17 +194,55 @@ class Songs_model extends CI_Model {
         $this->db->where('id', $id);
         $this->db->delete('song_fans');
     }
-
+    public function deleteSongFansBySongId($song_id) {
+        $this->db->where('song_id', $song_id);
+        $this->db->delete('song_fans');
+    }
     public function getSongSuggestionsByAdminId($admin_id) {
         $this->db->where('admin_id', $admin_id);
         $query = $this->db->get('song_suggestions');
         return $query->result();
     }
+    public function getSongSuggestionFileById($id) {
+        $this->db->select('id, suggestion_file');
+        $this->db->where('id', $id);
+        $query = $this->db->get('song_suggestions');
+        $songs = $query->result();
+        foreach ($songs as $song) {
+            $song_suggestion_file = $song->suggestion_file;
+        }
+        return $song_suggestion_file;
+    }
+    public function getSongSuggestionImageById($id) {
+        $this->db->select('id, suggestion_image');
+        $this->db->where('id', $id);
+        $query = $this->db->get('song_suggestions');
+        $songs = $query->result();
+        foreach ($songs as $song) {
+            $song_suggestion_image = $song->suggestion_image;
+        }
+        return $song_suggestion_image;
+    }
+    public function getSongSuggestionsBySuggestedUserId($suggested_user_id) {
+        $this->db->select('id, suggestion_file, suggestion_image');
+        $this->db->where('suggested_user_id', $suggested_user_id);
+        $query = $this->db->get('song_suggestions');
+        return $query->result();
+    }
+
     public function insertSongSuggestion($data) {
         $this->db->insert('song_suggestions', $data);
     }
     public function deleteSongSuggestionById($id) {
         $this->db->where('id', $id);
         $this->db->delete('song_suggestions');
+    }
+    public function deleteSongSuggestionsBySuggestedUserId($suggested_user_id) {
+        $this->db->where('suggested_user_id', $suggested_user_id);
+        $this->db->delete('song_suggestions');
+    }
+    public function updateSongSuggestionById($id, $data) {
+        $this->db->where('id', $id);
+        $this->db->update('song_suggestions', $data);
     }
 }

@@ -24,7 +24,6 @@ class Publication_image_emotions extends CI_Controller {
         $emotion_time = date('H:i:s');
         $published_user_id = $this->input->post('published_user_id');
         $emotioned_user_id = $this->input->post('emotioned_user_id');
-        $publication_id = $this->input->post('publication_id');
         $publication_image_id = $this->input->post('publication_image_id');
         $emotion_id = $this->input->post('emotion_id');
 
@@ -33,7 +32,6 @@ class Publication_image_emotions extends CI_Controller {
             'emotion_time' => $emotion_time,
             'published_user_id' => $published_user_id,
             'emotioned_user_id' => $emotioned_user_id,
-            'publication_id' => $publication_id,
             'publication_image_id' => $publication_image_id,
             'emotion_id' => $emotion_id
         );
@@ -57,7 +55,6 @@ class Publication_image_emotions extends CI_Controller {
         $emotion_time = date('H:i:s');
         $published_user_id = $this->input->post('published_user_id');
         $emotioned_user_id = $this->input->post('emotioned_user_id');
-        $publication_id = $this->input->post('publication_id');
         $publication_image_id = $this->input->post('publication_image_id');
         $emotion_id = $this->input->post('emotion_id');
 
@@ -66,7 +63,6 @@ class Publication_image_emotions extends CI_Controller {
             'emotion_time' => $emotion_time,
             'published_user_id' => $published_user_id,
             'emotioned_user_id' => $emotioned_user_id,
-            'publication_id' => $publication_id,
             'publication_image_id' => $publication_image_id,
             'emotion_id' => $emotion_id
         );

@@ -35,4 +35,14 @@ class Song_categories extends CI_Controller {
         );
         echo json_encode($delete_json);
     }
+
+    public function update_song_category() {
+        $id = $this->input->post('id');
+        $category_name = $this->input->post('category_name');
+
+        $data_song_categories = array(
+            'category_name' => $category_name,
+        );
+        $this->songs_model->updateSongCategoryById($id, $data_song_categories);
+    }
 }

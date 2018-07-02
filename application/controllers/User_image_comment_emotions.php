@@ -20,7 +20,6 @@ class User_image_comment_emotions extends CI_Controller {
     public function insert_user_image_comment_emotion() {
         $emotion_date = date('d.m.Y');
         $emotion_time = date('H:i:s');
-        $user_id = $this->input->post('user_id');
         $emotioned_user_id = $this->input->post('emotioned_user_id');
         $user_image_id = $this->input->post('user_image_id');
         $user_image_comment_id = $this->input->post('user_image_comment_id');
@@ -30,7 +29,6 @@ class User_image_comment_emotions extends CI_Controller {
         $data_user_image_comment_emotions = array(
             'emotion_date' => $emotion_date,
             'emotion_time' => $emotion_time,
-            'user_id' => $user_id,
             'emotioned_user_id' => $emotioned_user_id,
             'user_image_id' => $user_image_id,
             'user_image_comment_id' => $user_image_comment_id,
@@ -67,7 +65,6 @@ class User_image_comment_emotions extends CI_Controller {
         $id = $this->input->post('id');
         $emotion_date = date('d.m.Y');
         $emotion_time = date('H:i:s');
-        $user_id = $this->input->post('user_id');
         $emotioned_user_id = $this->input->post('emotioned_user_id');
         $user_image_id = $this->input->post('user_image_id');
         $user_image_comment_id = $this->input->post('user_image_comment_id');
@@ -77,7 +74,6 @@ class User_image_comment_emotions extends CI_Controller {
         $data_user_image_comment_emotions = array(
             'emotion_date' => $emotion_date,
             'emotion_time' => $emotion_time,
-            'user_id' => $user_id,
             'emotioned_user_id' => $emotioned_user_id,
             'user_image_id' => $user_image_id,
             'user_image_comment_id' => $user_image_comment_id,

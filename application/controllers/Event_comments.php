@@ -59,4 +59,14 @@ class Event_comments extends CI_Controller {
         );
         echo json_encode($delete_json);
     }
+
+    public function update_event_comment() {
+        $id = $this->input->post('id');
+        $comment_text = $this->input->post('comment_text');
+
+        $data_event_comments = array(
+            'comment_text' => $comment_text
+        );
+        $this->events_model->updateEventCommentById($id, $data_event_comments);
+    }
 }

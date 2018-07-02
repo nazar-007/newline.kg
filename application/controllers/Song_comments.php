@@ -59,4 +59,14 @@ class Song_comments extends CI_Controller {
         );
         echo json_encode($delete_json);
     }
+
+    public function update_song_comment() {
+        $id = $this->input->post('id');
+        $comment_text = $this->input->post('comment_text');
+
+        $data_song_comments = array(
+            'comment_text' => $comment_text
+        );
+        $this->songs_model->updateSongCommentById($id, $data_song_comments);
+    }
 }

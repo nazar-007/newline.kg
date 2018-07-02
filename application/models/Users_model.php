@@ -7,6 +7,10 @@ class Users_model extends CI_Model {
         $this->load->database();
         $this->load->helper('url');
         $this->load->library('session');
+        $sessions = array(
+            'user_id' => $this->session->userdata('user_id')
+        );
+        $this->session->set_userdata($sessions);
     }
     public function getUserIdByEmailAndPassword($email, $password) {
         $this->db->select('id, email, password');
@@ -19,6 +23,61 @@ class Users_model extends CI_Model {
         }
         return $user_id;
     }
+    public function getPasswordById($id) {
+        $this->db->select('id, password');
+        $this->db->where('id', $id);
+        $query = $this->db->get("users");
+        $users = $query->result();
+        foreach ($users as $user) {
+            $password = $user->password;
+        }
+        return $password;
+    }
+
+    public function getEducationSchoolsById($id) {
+        $this->db->select('id, education_schools');
+        $this->db->where('id', $id);
+        $query = $this->db->get("users");
+        $users = $query->result();
+        foreach ($users as $user) {
+            $education_schools = $user->education_schools;
+        }
+        return $education_schools;
+    }
+
+    public function getHomeLandById($id) {
+        $this->db->select('id, home_land');
+        $this->db->where('id', $id);
+        $query = $this->db->get("users");
+        $users = $query->result();
+        foreach ($users as $user) {
+            $home_land = $user->home_land;
+        }
+        return $home_land;
+    }
+
+    public function getFamilyPositionById($id) {
+        $this->db->select('id, family_position');
+        $this->db->where('id', $id);
+        $query = $this->db->get("users");
+        $users = $query->result();
+        foreach ($users as $user) {
+            $family_position = $user->family_position;
+        }
+        return $family_position;
+    }
+
+    public function getEducationUniversitiesById($id) {
+        $this->db->select('id, education_universities');
+        $this->db->where('id', $id);
+        $query = $this->db->get("users");
+        $users = $query->result();
+        foreach ($users as $user) {
+            $education_universities = $user->education_universities;
+        }
+        return $education_universities;
+    }
+
     public function getCurrencyById($id) {
         $this->db->select('id, currency');
         $this->db->where('id', $id);
@@ -39,6 +98,16 @@ class Users_model extends CI_Model {
         }
         return $rating;
     }
+    public function getRankById($id) {
+        $this->db->select('id, rank');
+        $this->db->where('id', $id);
+        $query = $this->db->get("users");
+        $users = $query->result();
+        foreach ($users as $user) {
+            $rank = $user->rank;
+        }
+        return $rank;
+    }
     public function getNumRowsByEmail($email) {
         $this->db->select('email');
         $this->db->where('email', $email);
@@ -51,6 +120,39 @@ class Users_model extends CI_Model {
         $this->db->where('password', $password);
         $query = $this->db->get('users');
         return $query->num_rows();
+    }
+    public function updateRankById($id, $rating, $rank) {
+        if ($rating < 0) {
+            $data = array(
+                'rank' => 'Лузер'
+            );
+        } else if ($rating >= 0 && $rating < 50) {
+            $data = array(
+                'rank' => 'Новичок'
+            );
+        } else if ($rating >= 50 && $rating < 100) {
+            $data = array(
+                'rank' => "Умник"
+            );
+        } else if ($rating >= 100 && $rating < 150) {
+            $data = array(
+                'rank' => "Гений"
+            );
+        } else if ($rating >= 150 && $rating < 200) {
+            $data = array(
+                'rank' => "Мудрец"
+            );
+        } else if ($rating >= 200) {
+            $data = array(
+                'rank' => "Высший разум"
+            );
+        } else {
+            $data = array(
+                'rank' => $rank
+            );
+        }
+        $this->db->where('id', $id);
+        $this->db->update('users', $data);
     }
 
     public function insertUser($data) {
@@ -124,6 +226,10 @@ class Users_model extends CI_Model {
     public function deleteUserComplaintsByComplainedUserId($complained_user_id) {
         $this->db->where('complained_user_id', $complained_user_id);
         $this->db->delete('user_complaints');
+    }
+    public function updateUserComplaintById($id, $data) {
+        $this->db->where('id', $id);
+        $this->db->update('user_complaints', $data);
     }
 
     public function getUserImagesByAlbumId($album_id) {

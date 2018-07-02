@@ -63,4 +63,14 @@ class User_image_comments extends CI_Controller {
         echo json_encode($delete_json);
     }
 
+    public function update_user_image_comment() {
+        $id = $this->input->post('id');
+        $comment_text = $this->input->post('comment_text');
+
+        $data_user_image_comments = array(
+            'comment_text' => $comment_text
+        );
+        $this->users_model->updateUserImageCommentById($id, $data_user_image_comments);
+    }
+
 }

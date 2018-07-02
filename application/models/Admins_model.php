@@ -9,6 +9,24 @@ class Admins_model extends CI_Model {
         $this->load->helper('url');
     }
 
+    public function getAdminIdByEmailAndPassword($email, $password) {
+        $this->db->select('id, email, password');
+        $this->db->where('email', $email);
+        $this->db->where('password', $password);
+        $query = $this->db->get("admins");
+        $admins = $query->result();
+        foreach ($admins as $admin) {
+            $admin_id = $admin->id;
+        }
+        return $admin_id;
+    }
+    public function getNumRowsByEmail($email) {
+        $this->db->select('email');
+        $this->db->where('email', $email);
+        $query = $this->db->get('admins');
+        return $query->num_rows();
+    }
+
     public function getRandomAdminIdByAdminTable($admin_table) {
         $this->db->select('id, admin_table');
         $this->db->where('admin_table', $admin_table);

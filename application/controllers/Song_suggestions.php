@@ -7,6 +7,7 @@ class Song_suggestions extends CI_Controller {
         parent::__construct();
         $this->load->model('songs_model');
         $this->load->model('users_model');
+        $this->load->model('admins_model');
     }
 
     public function Index() {
@@ -32,7 +33,7 @@ class Song_suggestions extends CI_Controller {
         $song_image = $this->input->post('song_image');
         $suggestion_date = date('d.m.Y');
         $suggestion_time = date('H:i:s');
-        $admin_id = $this->input->post('admin_id');
+        $admin_id = $this->admins_model->getRandomAdminIdByAdminTable('songs');
         $suggested_user_id = $this->input->post('suggested_user_id');
 
         $data_song_suggestions = array(
@@ -49,10 +50,13 @@ class Song_suggestions extends CI_Controller {
 
     public function delete_song_suggestion() {
         $id = $this->input->post('id');
-        $suggestion_file = $this->input->post('suggestion_file');
+        $song_suggestion_file = $this->songs_model->getSongSuggestionFileById($id);
+        $song_suggestion_image = $this->songs_model->getSongSuggestionImageById($id);
         $song_name = $this->input->post('song_name');
         $user_id = $this->input->post('user_id');
-        unlink("./uploads/song_files/$suggestion_file");
+        unlink("./uploads/song_files/$song_suggestion_file");
+        unlink("./uploads/images/song_images/$song_suggestion_image");
+        unlink("./uploads/images/song_images/thumb/$song_suggestion_image");
         $this->songs_model->deleteSongSuggestionById($id);
 
         $notification_text = 'Админ не одобрил Вашу предложенную песню ' . $song_name . '.';
@@ -72,5 +76,17 @@ class Song_suggestions extends CI_Controller {
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($delete_json);
+    }
+
+    public function update_song_suggestion() {
+        $id = $this->input->post('id');
+        $admin_table = $this->input->post('admin_table');
+        $admin_id = $this->admins_model->getRandomAdminIdByAdminTable($admin_table);
+
+        $data_song_suggestions = array(
+            'complaint_time_unix' => time(),
+            'admin_id' => $admin_id
+        );
+        $this->songs_model->updateSongSuggestionById($id, $data_song_suggestions);
     }
 }

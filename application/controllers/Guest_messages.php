@@ -46,11 +46,22 @@ class Guest_messages extends CI_Controller {
     }
 
     public function delete_all_guest_messages() {
-        $this->messages_model->deleteAllGuestMessages();
+        $user_id = $this->input->post('user_id');
+        $this->messages_model->deleteAllGuestMessagesByUserId($user_id);
         $delete_json = array(
+            'user_id' => $user_id,
             'csrf_name' => $this->security->get_csrf_token_name (),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($delete_json);
+    }
+
+    public function update_guest_message() {
+        $message_text = $this->input->post('message_text');
+
+        $data_guest_messages = array(
+            'message_text' => $message_text
+        );
+        $this->messages_model->updateGuestMessageById($id, $data_guest_messages);
     }
 }

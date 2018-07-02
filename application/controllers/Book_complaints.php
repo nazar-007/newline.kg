@@ -6,6 +6,7 @@ class Book_complaints extends CI_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->model('books_model');
+        $this->load->model('admins_model');
     }
 
     public function Index() {
@@ -21,7 +22,7 @@ class Book_complaints extends CI_Controller {
     public function insert_book_complaint() {
         $complaint_text = $this->input->post('complaint_text');
         $complaint_time_unix = time();
-        $admin_id = $this->input->post('admin_id');
+        $admin_id = $this->admins_model->getRandomAdminIdByAdminTable('books');
         $book_id = $this->input->post('book_id');
         $complained_user_id = $this->input->post('complained_user_id');
 
@@ -56,5 +57,17 @@ class Book_complaints extends CI_Controller {
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($delete_json);
+    }
+
+    public function update_book_complaint() {
+        $id = $this->input->post('id');
+        $admin_table = $this->input->post('admin_table');
+        $admin_id = $this->admins_model->getRandomAdminIdByAdminTable($admin_table);
+
+        $data_book_complaints = array(
+            'complaint_time_unix' => time(),
+            'admin_id' => $admin_id
+        );
+        $this->books_model->updateBookComplaintById($id, $data_book_complaints);
     }
 }

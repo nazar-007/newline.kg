@@ -7,6 +7,7 @@ class Event_suggestions extends CI_Controller {
         parent::__construct();
         $this->load->model('events_model');
         $this->load->model('users_model');
+        $this->load->model('admins_model');
     }
 
     public function Index() {
@@ -30,7 +31,7 @@ class Event_suggestions extends CI_Controller {
             'event_start_date': '$event_start_date', 'event_start_time': '$event_start_time', 'category_id': '$category_id'}]";
         $suggestion_date = date('d.m.Y');
         $suggestion_time = date('H:i:s');
-        $admin_id = $this->input->post('admin_id');
+        $admin_id = $this->admins_model->getRandomAdminIdByAdminTable('events');
         $suggested_user_id = $this->input->post('suggested_user_id');
 
         $data_event_suggestions = array(
@@ -68,4 +69,15 @@ class Event_suggestions extends CI_Controller {
         echo json_encode($delete_json);
     }
 
+    public function update_event_suggestion() {
+        $id = $this->input->post('id');
+        $admin_table = $this->input->post('admin_table');
+        $admin_id = $this->admins_model->getRandomAdminIdByAdminTable($admin_table);
+
+        $data_event_suggestions = array(
+            'complaint_time_unix' => time(),
+            'admin_id' => $admin_id
+        );
+        $this->events_model->updateEventSuggestionById($id, $data_event_suggestions);
+    }
 }

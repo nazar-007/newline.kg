@@ -19,6 +19,16 @@ class Books_model extends CI_Model {
         $query = $this->db->get('books');
         return $query->result();
     }
+    public function getBookFileById($id) {
+        $this->db->select('id, book_file');
+        $this->db->where('id', $id);
+        $query = $this->db->get('books');
+        $books = $query->result();
+        foreach ($books as $book) {
+            $book_file = $book->book_file;
+        }
+        return $book_file;
+    }
     public function insertBook($data) {
         $this->db->insert('books', $data);
     }
@@ -47,6 +57,10 @@ class Books_model extends CI_Model {
     }
     public function deleteBookActionById($id) {
         $this->db->where('id', $id);
+        $this->db->delete('book_actions');
+    }
+    public function deleteBookActionsByBookId($book_id) {
+        $this->db->where('book_id', $book_id);
         $this->db->delete('book_actions');
     }
 
@@ -78,6 +92,10 @@ class Books_model extends CI_Model {
         $this->db->where('id', $id);
         $this->db->delete('book_comments');
     }
+    public function deleteBookCommentsByBookId($book_id) {
+        $this->db->where('book_id', $book_id);
+        $this->db->delete('book_comments');
+    }
     public function updateBookCommentById($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('book_comments', $data);
@@ -103,7 +121,10 @@ class Books_model extends CI_Model {
         $this->db->where('complaint_user_id', $complained_user_id);
         $this->db->delete('book_comment_complaints');
     }
-
+    public function updateBookCommentComplaintById($id, $data) {
+        $this->db->where('id', $id);
+        $this->db->update('book_comment_complaints', $data);
+    }
     public function insertBookCommentEmotion($data) {
         $this->db->insert('book_comment_emotions', $data);
     }
@@ -132,9 +153,17 @@ class Books_model extends CI_Model {
         $this->db->where('id', $id);
         $this->db->delete('book_complaints');
     }
+    public function deleteBookComplaintsByBookId($book_id) {
+        $this->db->where('book_id', $book_id);
+        $this->db->delete('book_complaints');
+    }
     public function deleteBookComplaintsByComplainedUserId($complained_user_id) {
         $this->db->where('complained_user_id', $complained_user_id);
         $this->db->delete('book_complaints');
+    }
+    public function updateBookComplaintById($id, $data) {
+        $this->db->where('id', $id);
+        $this->db->update('book_complaints', $data);
     }
 
     public function insertBookEmotion($data) {
@@ -142,6 +171,10 @@ class Books_model extends CI_Model {
     }
     public function deleteBookEmotionById($id) {
         $this->db->where('id', $id);
+        $this->db->delete('book_emotions');
+    }
+    public function deleteBookEmotionsByBookId($book_id) {
+        $this->db->where('book_id', $book_id);
         $this->db->delete('book_emotions');
     }
     public function updateBookEmotionById($id, $data) {
@@ -161,9 +194,39 @@ class Books_model extends CI_Model {
         $this->db->where('id', $id);
         $this->db->delete('book_fans');
     }
+    public function deleteBookFansByBookId($book_id) {
+        $this->db->where('book_id', $book_id);
+        $this->db->delete('book_fans');
+    }
 
     public function getBookSuggestionsByAdminId($admin_id) {
         $this->db->where('admin_id', $admin_id);
+        $query = $this->db->get('book_suggestions');
+        return $query->result();
+    }
+    public function getBookSuggestionFileById($id) {
+        $this->db->select('id, suggestion_file');
+        $this->db->where('id', $id);
+        $query = $this->db->get('book_suggestions');
+        $books = $query->result();
+        foreach ($books as $book) {
+            $book_suggestion_file = $book->suggestion_file;
+        }
+        return $book_suggestion_file;
+    }
+    public function getBookSuggestionImageById($id) {
+        $this->db->select('id, suggestion_image');
+        $this->db->where('id', $id);
+        $query = $this->db->get('book_suggestions');
+        $books = $query->result();
+        foreach ($books as $book) {
+            $book_suggestion_image = $book->suggestion_image;
+        }
+        return $book_suggestion_image;
+    }
+    public function getBookSuggestionsBySuggestedUserId($suggested_user_id) {
+        $this->db->select('id, suggestion_file, suggestion_image');
+        $this->db->where('suggested_user_id', $suggested_user_id);
         $query = $this->db->get('book_suggestions');
         return $query->result();
     }
@@ -173,5 +236,13 @@ class Books_model extends CI_Model {
     public function deleteBookSuggestionById($id) {
         $this->db->where('id', $id);
         $this->db->delete('book_suggestions');
+    }
+    public function deleteBookSuggestionsBySuggestedUserId($suggested_user_id) {
+        $this->db->where('suggested_user_id', $suggested_user_id);
+        $this->db->delete('book_suggestions');
+    }
+    public function updateBookSuggestionById($id, $data) {
+        $this->db->where('id', $id);
+        $this->db->update('book_suggestions', $data);
     }
 }

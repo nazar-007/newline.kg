@@ -19,9 +19,6 @@ class Albums extends CI_Controller {
         $this->load->view('albums', $data);
     }
 
-    public function random_admin() {
-
-    }
 
     public function insert_album() {
         $album_name = $this->input->post('album_name');
@@ -57,4 +54,16 @@ class Albums extends CI_Controller {
             echo json_encode($delete_json);
         }
     }
+
+    public function update_album() {
+        $id = $this->input->post('id');
+        $album_name = $this->input->post('album_name');
+        $data_albums = array(
+            'album_name' => $album_name
+        );
+        if ($album_name != 'User Album' || $album_name != 'Publication Album') {
+            $this->albums_model->updateAlbumById($id, $data_albums);
+        }
+    }
+
 }

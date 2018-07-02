@@ -50,4 +50,17 @@ class Folders extends CI_Controller {
         );
         echo json_encode($delete_json);
     }
+
+    public function update_folder() {
+        $id = $this->input->post('id');
+        $folder_name = $this->input->post('folder_name');
+
+        $data_folders = array(
+            'folder_name' => $folder_name
+        );
+
+        if ($folder_name != 'User Folder') {
+            $this->folders_model->updateFolderById($id, $data_folders);
+        }
+    }
 }

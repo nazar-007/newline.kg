@@ -6,6 +6,7 @@ class Event_comment_complaints extends CI_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->model('events_model');
+        $this->load->model('admins_model');
     }
 
     public function Index() {
@@ -21,8 +22,7 @@ class Event_comment_complaints extends CI_Controller {
     public function insert_event_comment_complaint() {
         $complaint_text = $this->input->post('complaint_text');
         $complaint_time_unix = time();
-        $admin_id = $this->input->post('admin_id');
-        $event_id = $this->input->post('event_id');
+        $admin_id = $this->admins_model->getRandomAdminIdByAdminTable('events');
         $event_comment_id = $this->input->post('event_comment_id');
         $commented_user_id = $this->input->post('commented_user_id');
         $complained_user_id = $this->input->post('complained_user_id');
@@ -31,7 +31,6 @@ class Event_comment_complaints extends CI_Controller {
             'complaint_text' => $complaint_text,
             'complaint_time_unix' => $complaint_time_unix,
             'admin_id' => $admin_id,
-            'event_id' => $event_id,
             'event_comment_id' => $event_comment_id,
             'commented_user_id' => $commented_user_id,
             'complained_user_id' => $complained_user_id
@@ -60,5 +59,17 @@ class Event_comment_complaints extends CI_Controller {
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($delete_json);
+    }
+
+    public function update_event_comment_complaint() {
+        $id = $this->input->post('id');
+        $admin_table = $this->input->post('admin_table');
+        $admin_id = $this->admins_model->getRandomAdminIdByAdminTable($admin_table);
+
+        $data_event_comment_complaints = array(
+            'complaint_time_unix' => time(),
+            'admin_id' => $admin_id
+        );
+        $this->events_model->updateEventCommentComplaintById($id, $data_event_comment_complaints);
     }
 }

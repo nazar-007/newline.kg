@@ -24,17 +24,45 @@ class Gift_categories extends CI_Controller {
         if (isset($choose_category_ids)) {
             $category_ids = $choose_category_ids;
         }
-        $books = $this->gifts_model->getGiftsByCategoryIds($category_ids);
-        foreach ($books as $book) {
+        $gifts = $this->gifts_model->getGiftsByCategoryIds($category_ids);
+        foreach ($gifts as $gift) {
             echo "<tr>
-            <td>$book->id</td>
+            <td>$gift->id</td>
             <td>
-                <a href='" . base_url() . "models/" . $book->id . "'>" . $book->book_name . "</a>
+                <a href='" . base_url() . "models/" . $gift->id . "'>" . $gift->gift_name . "</a>
             </td>
          </tr>";
         }
     }
 
+    public function insert_gift_category() {
+        $category_name = $this->input->post('category_name');
 
+        $data_gift_categories = array(
+            'category_name' => $category_name,
+        );
+        $this->gifts_model->insertGiftCategory($data_gift_categories);
+    }
+
+    public function delete_gift_category() {
+        $id = $this->input->post('id');
+        $this->gifts_model->deleteGiftCategoryById($id);
+        $delete_json = array(
+            'id' => $id,
+            'csrf_name' => $this->security->get_csrf_token_name (),
+            'csrf_hash' => $this->security->get_csrf_hash()
+        );
+        echo json_encode($delete_json);
+    }
+
+    public function update_gift_category() {
+        $id = $this->input->post('id');
+        $category_name = $this->input->post('category_name');
+
+        $data_gift_categories = array(
+            'category_name' => $category_name,
+        );
+        $this->books_model->updateGiftCategoryById($id, $data_gift_categories);
+    }
 
 }

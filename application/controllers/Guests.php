@@ -47,4 +47,24 @@ class Guests extends CI_Controller {
         );
         echo json_encode($delete_json);
     }
+
+    public function update_guest() {
+        $id = $this->input->post('id');
+        $guest_date = date('d.m.Y');
+        $guest_time = date('H:i:s');
+        $guest_time_unix = time();
+        $user_viewed = 'not viewed';
+        $user_id = $this->input->post('user_id');
+        $guest_id = $this->input->post('guest_id');
+
+        $data_guests = array(
+            'guest_date' => $guest_date,
+            'guest_time' => $guest_time,
+            'guest_time_unix' => $guest_time_unix,
+            'user_viewed' => $user_viewed,
+            'user_id' => $user_id,
+            'guest_id' => $guest_id
+        );
+        $this->users_model->updateGuestById($id, $data_guests);
+    }
 }

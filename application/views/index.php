@@ -11,13 +11,6 @@
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/index.css">
 </head>
 <body>
-<?php
-//if ($_SESSION['user_id']) {
-//    redirect('/publications');
-//} else {
-//    echo 'sessii net';
-//}
-?>
 
 <div class="container">
     <div class="col-md-6">
