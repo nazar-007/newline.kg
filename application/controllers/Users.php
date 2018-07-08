@@ -17,12 +17,10 @@ class Users extends CI_Controller {
         $this->load->model('songs_model');
         $this->load->model('stakes_model');
         $this->load->model('users_model');
-
-        // 11
         $this->load->library('session');
     }
     public function Index() {
-        if ($_SESSION['user_id']) {
+        if ($_SESSION['user_id'] && $_SESSION['user_email']) {
             redirect('/publications');
         }
         $data = array(
@@ -39,21 +37,59 @@ class Users extends CI_Controller {
         $num_rows = $this->users_model->getNumRowsByEmailAndPassword($email, $password);
         if($num_rows > 0) {
             $_SESSION['user_id'] = $user_id;
+            $_SESSION['user_email'] = $email;
             redirect('/publications');
         } else {
             redirect('/');
         }
     }
+
+    public function One_user($email) {
+        $user_num_rows = $this->users_model->getUserNumRowsByEmail($email);
+        if ($user_num_rows == 1) {
+            $data_users = array(
+                'one_user' => $this->users_model->getOneUserByEmail($email),
+                'user_num_rows' => $user_num_rows
+            );
+        } else {
+            echo "Страница удалена или ещё не создана!";
+            $data_users = array(
+                'user_num_rows' => $user_num_rows
+            );
+        }
+        $this->load->view('one_user', $data_users);
+    }
+
     public function Logout() {
-//        session_start();
-//        session_destroy();
-//        redirect('/');
+        session_start();
+        session_destroy();
+        redirect('/');
+    }
+
+    public function Online() {
         $id = $this->input->post('id');
         $data = array(
-            'last_visit' => 'заходил в ' . date('d.m.Y') . ' ' . date("H:i:s")
+            'last_visit' => 'Онлайн'
+        );
+        $json = array(
+            'csrf_hash' => $this->security->get_csrf_hash()
         );
         $this->users_model->updateUserById($id, $data);
+        echo json_encode($json);
     }
+
+    public function Last_visit() {
+        $id = $this->input->post('id');
+        $data = array(
+            'last_visit' => 'заходил(а) в ' . date('d.m.Y') . ' ' . date("H:i:s")
+        );
+        $json = array(
+            'csrf_hash' => $this->security->get_csrf_hash()
+        );
+        $this->users_model->updateUserById($id, $data);
+        echo json_encode($json);
+    }
+
     public function insert_user() {
         $email = $this->input->post('email');
         $password = $_POST['password'];
@@ -251,6 +287,7 @@ class Users extends CI_Controller {
             $this->folders_model->insertFolder($data_folders);
 
             $_SESSION['user_id'] = $insert_user_id;
+            $_SESSION['user_email'] = $email;
             $messages['success_registration'] = "Регистрация прошла успешно!";
         }
         $messages_json = json_encode($messages);
@@ -259,7 +296,6 @@ class Users extends CI_Controller {
 
     public function delete_user() {
         $id = $this->input->post('id');
-
         $book_suggestions = $this->books_model->getBookSuggestionsBySuggestedUserId($id);
         foreach ($book_suggestions as $book_suggestion) {
             $book_suggestion_file = $book_suggestion->suggestion_file;
@@ -268,7 +304,6 @@ class Users extends CI_Controller {
             unlink("./uploads/images/book_images/$book_suggestion_image");
             unlink("./uploads/images/book_images/thumb/$book_suggestion_image");
         }
-
         $song_suggestions = $this->songs_model->getSongSuggestionsBySuggestedUserId($id);
         foreach ($song_suggestions as $song_suggestion) {
             $song_suggestion_file = $song_suggestion->suggestion_file;
@@ -277,18 +312,9 @@ class Users extends CI_Controller {
             unlink("./uploads/images/song_images/$song_suggestion_image");
             unlink("./uploads/images/song_images/thumb/$song_suggestion_image");
         }
-
         $publications = $this->publications_model->getPublicationsByPublishedUserId($id);
         foreach ($publications as $publication) {
             $publication_id = $publication->id;
-
-            $publication_comments = $this->publications_model->getPublicationCommentsByPublicationId($publication_id);
-            foreach ($publication_comments as $publication_comment) {
-                $publication_comment_id = $publication_comment->id;
-                $this->publications_model->deletePublicationCommentComplaintsByPublicationCommentId($publication_comment_id);
-                $this->publications_model->deletePublicationCommentEmotionsByPublicationCommentId($publication_comment_id);
-            }
-
             $publication_images = $this->publications_model->getPublicationImagesByPublicationId($publication_id);
             foreach ($publication_images as $publication_image) {
                 $publication_image_id = $publication_image->id;
@@ -297,7 +323,6 @@ class Users extends CI_Controller {
                 unlink("./uploads/images/publication_images/thumb/$publication_image_file");
                 $this->publications_model->deletePublicationImageEmotionsByPublicationImageId($publication_image_id);
             }
-
             $publication_shares = $this->publications_model->getPublicationSharesByPublicationId($publication_id);
             foreach ($publication_shares as $publication_share) {
                 $publication_share_id = $publication_share->id;
@@ -309,28 +334,19 @@ class Users extends CI_Controller {
             $this->publications_model->deletePublicationImagesByPublicationId($publication_id);
             $this->publications_model->deletePublicationSharesByPublicationId($publication_id);
         }
-
-
         $user_images = $this->users_model->getUserImagesByUserId($id);
         foreach ($user_images as $user_image) {
             $user_image_id = $user_image->id;
             $user_image_file = $this->users_model->getUserImageFileById($user_image_id);
             unlink("./uploads/images/user_images/$user_image_file");
             unlink("./uploads/images/user_images/thumb/$user_image_file");
-            $user_image_comments = $this->users_model->getUserImageCommentsByUserImageId($user_image_id);
-            foreach ($user_image_comments as $user_image_comment) {
-                $user_image_comment_id = $user_image_comment->id;
-                $this->users_model->deleteUserImageCommentEmotionsByUserImageCommentId($user_image_comment_id);
-            }
             $this->users_model->deleteUserImageActionsByUserImageId($user_image_id);
             $this->users_model->deleteUserImageCommentsByUserImageId($user_image_id);
+            $this->users_model->deleteUserImageCommentEmotionsByUserImageId($user_image_id);
             $this->users_model->deleteUserImageEmotionsByUserImageId($user_image_id);
         }
-
         $this->albums_model->deleteAlbumsByUserId($id);
         $this->books_model->deleteBookActionsByActionUserId($id);
-        $this->books_model->deleteBookCommentComplaintsByCommentedUserIdOrComplainedUser($id);
-        $this->books_model->deleteBookCommentEmotionsByCommentedUserIdOrEmotionedUserId($id);
         $this->books_model->deleteBookCommentsByCommentedUserId($id);
         $this->books_model->deleteBookComplaintsByComplainedUserId($id);
         $this->books_model->deleteBookEmotionsByEmotionedUserId($id);
@@ -338,8 +354,6 @@ class Users extends CI_Controller {
         $this->books_model->deleteBookSuggestionsBySuggestedUserId($id);
         $this->documents_model->deleteDocumentsByUserId($id);
         $this->events_model->deleteEventActionsByActionUserId($id);
-        $this->events_model->deleteEventCommentComplaintsByCommentedUserIdOrComplainedUser($id);
-        $this->events_model->deleteEventCommentEmotionsByCommentedUserIdOrEmotionedUserId($id);
         $this->events_model->deleteEventCommentsByCommentedUserId($id);
         $this->events_model->deleteEventComplaintsByComplainedUserId($id);
         $this->events_model->deleteEventEmotionsByEmotionedUserId($id);
@@ -354,15 +368,12 @@ class Users extends CI_Controller {
         $this->messages_model->deletePrivateMessagesByUserIdOrTalkerId($id);
         $this->publications_model->deletePublicationsByPublishedUserId($id);
         $this->publications_model->deletePublicationCommentsByCommentedUserId($id);
-        $this->publications_model->deletePublicationCommentComplaintsByCommentedUserIdOrComplainedUserId($id);
-        $this->publications_model->deletePublicationCommentEmotionsByCommentedUserIdOrEmotionedUserId($id);
         $this->publications_model->deletePublicationComplaintsByPublishedUserIdOrComplainedUserId($id);
         $this->publications_model->deletePublicationEmotionsByPublishedUserIdOrEmotionedUserId($id);
         $this->publications_model->deletePublicationImageEmotionsByPublishedUserIdOrEmotionedUserId($id);
-        $this->publications_model->deletePublicationSharesByShareUserId($id);
+        $this->publications_model->deletePublicationSharesBySharedUserId($id);
+        $this->publications_model->deletePublicationShareEmotionsBySharedUserIdOrEmotionedUserId($id);
         $this->songs_model->deleteSongActionsByActionUserId($id);
-        $this->songs_model->deleteSongCommentComplaintsByCommentedUserIdOrComplainedUser($id);
-        $this->songs_model->deleteSongCommentEmotionsByCommentedUserIdOrEmotionedUserId($id);
         $this->songs_model->deleteSongCommentsByCommentedUserId($id);
         $this->songs_model->deleteSongComplaintsByComplainedUserId($id);
         $this->songs_model->deleteSongEmotionsByEmotionedUserId($id);
@@ -372,11 +383,10 @@ class Users extends CI_Controller {
         $this->users_model->deleteUserBlacklistByUserIdOrBlackUserId($id);
         $this->users_model->deleteUserComplaintsByUserIdOrComplainedUserId($id);
         $this->users_model->deleteUserImageActionsByUserIdOrActionUserId($id);
-        $this->users_model->deleteUserImageCommentEmotionsByCommentedUserIdOrEmotionedUserId($id);
         $this->users_model->deleteUserImageCommentsByUserIdOrCommentedUserId($id);
         $this->users_model->deleteUserImageEmotionsByUserIdOrEmotionedUserId($id);
         $this->users_model->deleteUserImagesByUserId($id);
-        $this->users_model->deleteUserInvitesByUserIdOrInvited($id);
+        $this->users_model->deleteUserInvitesByUserIdOrInvitedUserId($id);
         $this->users_model->deleteUserNotificationsByUserId($id);
         $this->users_model->deleteUserPageEmotionsByUserIdOrEmotionedUserId($id);
         $this->users_model->deleteUserById($id);
@@ -543,8 +553,6 @@ class Users extends CI_Controller {
         }
         $messages_json = json_encode($messages);
         echo $messages_json;
-
-
     }
     public function update_user_secret_questions_and_answers() {
         $id = $this->input->post('id');

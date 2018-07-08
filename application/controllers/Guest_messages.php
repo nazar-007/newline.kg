@@ -57,6 +57,7 @@ class Guest_messages extends CI_Controller {
     }
 
     public function update_guest_message() {
+        $id = $this->input->post('id');
         $message_text = $this->input->post('message_text');
 
         $data_guest_messages = array(

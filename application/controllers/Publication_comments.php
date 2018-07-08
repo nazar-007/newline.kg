@@ -27,38 +27,53 @@ class Publication_comments extends CI_Controller {
         $commented_user_id = $this->input->post('commented_user_id');
         $publication_id = $this->input->post('publication_id');
 
-        $data_publication_comments = array(
-            'comment_text' => $comment_text,
-            'comment_date' => $comment_date,
-            'comment_time' => $comment_time,
-            'published_user_id' => $published_user_id,
-            'commented_user_id' => $commented_user_id,
-            'publication_id' => $publication_id
-        );
-        $this->publications_model->insertPublicationComment($data_publication_comments);
-
-        if ($published_user_id != $commented_user_id) {
-            $notification_text = 'Пользователь Назар прокомментировал Вашу публикацию.';
-            $data_user_notifications = array(
-                'notification_type' => 'Коммент на Вашу публикацию',
-                'notification_text' => $notification_text,
-                'notification_date' => $comment_date,
-                'notification_time' => $comment_time,
-                'notification_viewed' => 'Не просмотрено',
-                'user_id' => $published_user_id
+        if ($comment_text != '') {
+            $data_publication_comments = array(
+                'comment_text' => $comment_text,
+                'comment_date' => $comment_date,
+                'comment_time' => $comment_time,
+                'published_user_id' => $published_user_id,
+                'commented_user_id' => $commented_user_id,
+                'publication_id' => $publication_id
             );
-            $this->users_model->insertUserNotification($data_user_notifications);
+            $this->publications_model->insertPublicationComment($data_publication_comments);
+
+            $insert_comment_id = $this->db->insert_id();
+
+            $total_comments = $this->publications_model->getTotalByPublicationIdAndPublicationTable($publication_id, 'publication_comments');
+            $user_email = $this->users_model->getEmailById($commented_user_id);
+            $user_name = $this->users_model->getNicknameAndSurnameById($commented_user_id);
+            $user_image = $this->users_model->getMainImageById($commented_user_id);
+
+            $insert_json = array(
+                'comment_id' => $insert_comment_id,
+                'comment_date' => $comment_date,
+                'comment_time' => $comment_time,
+                'comment_text' => $comment_text,
+                'total_comments' => $total_comments,
+                'user_email' => $user_email,
+                'user_name' => $user_name,
+                'user_image' => $user_image,
+                'publication_id' => $publication_id,
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        } else {
+            $insert_json = array(
+                'comment_text' => $comment_text,
+                'comment_error' => "Вы ввели пустой коммент!",
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
         }
+        echo json_encode($insert_json);
     }
 
     public function delete_publication_comment() {
         $id = $this->input->post('id');
+        $publication_id = $this->input->post('publication_id');
         $this->publications_model->deletePublicationCommentById($id);
-        $this->publications_model->deletePublicationCommentComplaintsByPublicationCommentId($id);
-        $this->publications_model->deletePublicationCommentEmotionsByPublicationCommentId($id);
+        $total_comments = $this->publications_model->getTotalByPublicationIdAndPublicationTable($publication_id, 'publication_comments');
         $delete_json = array(
-            'id' => $id,
-            'csrf_name' => $this->security->get_csrf_token_name (),
+            'total_comments' => $total_comments,
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($delete_json);

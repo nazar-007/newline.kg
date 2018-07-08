@@ -37,6 +37,21 @@ class Events extends CI_Controller {
         }
     }
 
+    public function One_event($id) {
+        $event_num_rows = $this->events_model->getEventNumRowsById($id);
+        if ($event_num_rows == 1) {
+            $data_events = array(
+                'one_event' => $this->events_model->getOneEventById($id),
+                'event_num_rows' => $event_num_rows
+            );
+        } else {
+            echo "Событие либо прошло и удалено, либо ещё не добавлено!";
+            $data_events = array(
+                'event_num_rows' => $event_num_rows
+            );
+        }
+        $this->load->view('one_event', $data_events);
+    }
 
     public function insert_event() {
         $event_name = $this->input->post('event_name');
@@ -108,12 +123,6 @@ class Events extends CI_Controller {
         $id = $this->input->post('id');
         $user_id = $this->input->post('user_id');
 
-        $event_comments = $this->events_model->getEventCommentsByEventId($id);
-        foreach ($event_comments as $event_comment) {
-            $event_comment_id = $event_comment->id;
-            $this->events_model->deleteEventCommentComplaintsByEventCommentId($event_comment_id);
-            $this->events_model->deleteEventCommentEmotionsByEventCommentId($event_comment_id);
-        }
         $this->events_model->deleteEventActionsByBookId($id);
         $this->events_model->deleteEventCommentsByBookId($id);
         $this->events_model->deleteEventComplaintsByBookId($id);

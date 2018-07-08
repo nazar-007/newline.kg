@@ -50,8 +50,6 @@ class Song_comments extends CI_Controller {
     public function delete_song_comment() {
         $id = $this->input->post('id');
         $this->songs_model->deleteSongCommentById($id);
-        $this->songs_model->deleteSongCommentComplaintsBySongCommentId($id);
-        $this->songs_model->deleteSongCommentEmotionsBySongCommentId($id);
         $delete_json = array(
             'id' => $id,
             'csrf_name' => $this->security->get_csrf_token_name (),

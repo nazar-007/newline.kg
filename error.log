@@ -64,3 +64,4 @@
 [Sat Jun 30 13:07:27.528569 2018] [php7:error] [pid 12143] [client 127.0.0.1:37030] PHP Fatal error:  Allowed memory size of 134217728 bytes exhausted (tried to allocate 32768 bytes) in /home/php/www/php/newline.kg/application/views/errors/html/error_php.php on line 1
 [Sat Jun 30 13:07:27.529085 2018] [php7:error] [pid 12143] [client 127.0.0.1:37030] PHP Fatal error:  Allowed memory size of 134217728 bytes exhausted (tried to allocate 69632 bytes) in Unknown on line 0
 [Sun Jul 01 01:50:45.174164 2018] [php7:error] [pid 1217] [client 127.0.0.1:39248] PHP Fatal error:  Cannot redeclare Publications_model::getPublicationImageFileById() in /home/php/www/php/newline.kg/application/models/Publications_model.php on line 150, referer: http://newline.kg/albums
+[Tue Jul 03 19:49:38.254000 2018] [authz_core:error] [pid 4331] [client 127.0.0.1:36788] AH01630: client denied by server configuration: /home/php/www/php/newline.kg/application/views/books.php

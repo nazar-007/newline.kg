@@ -37,6 +37,22 @@ class Books extends CI_Controller {
         }
     }
 
+    public function One_book($id) {
+        $book_num_rows = $this->books_model->getBookNumRowsById($id);
+        if ($book_num_rows == 1) {
+            $data_books = array(
+                'one_book' => $this->books_model->getOneBookById($id),
+                'book_num_rows' => $book_num_rows
+            );
+        } else {
+            echo "Книга удалена или ещё не добавлена!";
+            $data_books = array(
+                'book_num_rows' => $book_num_rows
+            );
+        }
+        $this->load->view('one_book', $data_books);
+    }
+
     public function insert_book() {
         $book_name = $this->input->post('book_name');
         $book_file = $this->input->post('book_file');
@@ -111,14 +127,10 @@ class Books extends CI_Controller {
         $id = $this->input->post('id');
         $user_id = $this->input->post('user_id');
         $book_file = $this->books_model->getBookFileById($id);
+        $book_image = $this->books_model->getBookImageById($id);
         unlink("./uploads/book_files/$book_file");
+        unlink("./uploads/images/book_images/$book_image");
 
-        $book_comments = $this->books_model->getBookCommentsByBookId($id);
-        foreach ($book_comments as $book_comment) {
-            $book_comment_id = $book_comment->id;
-            $this->books_model->deleteBookCommentComplaintsByBookCommentId($book_comment_id);
-            $this->books_model->deleteBookCommentEmotionsByBookCommentId($book_comment_id);
-        }
         $this->books_model->deleteBookActionsByBookId($id);
         $this->books_model->deleteBookCommentsByBookId($id);
         $this->books_model->deleteBookComplaintsByBookId($id);

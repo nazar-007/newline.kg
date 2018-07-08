@@ -50,8 +50,6 @@ class Book_comments extends CI_Controller {
     public function delete_book_comment() {
         $id = $this->input->post('id');
         $this->books_model->deleteBookCommentById($id);
-        $this->books_model->deleteBookCommentComplaintsByBookCommentId($id);
-        $this->books_model->deleteBookCommentEmotionsByBookCommentId($id);
         $delete_json = array(
             'id' => $id,
             'csrf_name' => $this->security->get_csrf_token_name (),

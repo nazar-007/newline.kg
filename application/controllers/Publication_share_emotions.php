@@ -22,18 +22,16 @@ class Publication_share_emotions extends CI_Controller {
     public function insert_publication_share_emotion() {
         $emotion_date = date('d.m.Y');
         $emotion_time = date('H:i:s');
-        $published_user_id = $this->input->post('published_user_id');
+        $share_user_id = $this->input->post('share_user_id');
         $emotioned_user_id = $this->input->post('emotioned_user_id');
-        $publication_id = $this->input->post('publication_id');
         $publication_share_id = $this->input->post('publication_share_id');
         $emotion_id = $this->input->post('emotion_id');
 
         $data_publication_share_emotions = array(
             'emotion_date' => $emotion_date,
             'emotion_time' => $emotion_time,
-            'published_user_id' => $published_user_id,
+            'share_user_id' => $share_user_id,
             'emotioned_user_id' => $emotioned_user_id,
-            'publication_id' => $publication_id,
             'publication_share_id' => $publication_share_id,
             'emotion_id' => $emotion_id
         );

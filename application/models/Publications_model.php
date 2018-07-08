@@ -2,7 +2,6 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Publications_model extends CI_Model {
-
     public function __construct() {
         parent::__construct();
         $this->load->database();
@@ -13,103 +12,184 @@ class Publications_model extends CI_Model {
         );
         $this->session->set_userdata($sessions);
     }
-    public function getPublicationsByFriendIds($friend_ids) {
-        foreach ($friend_ids as $key => $friend_id) {
-            if ($key == 0) {
-                $this->db->where('user_id', $friend_id);
-            } else {
-                $this->db->or_where('user_id', $friend_id);
-            }
-        }
+    public function getOnePublicationById($id) {
+        $this->db->select('publications.*, users.email, users.nickname, users.surname, users.main_image');
+        $this->db->from('publications');
+        $this->db->join('users', 'publications.published_user_id = users.id');
+        $this->db->where('publications.id', $id);
+        $query = $this->db->get();
+        return $query->result();
+    }
+    public function getPublicationsByPublishedUserId($published_user_id) {
+        $this->db->where('published_user_id', $published_user_id);
         $query = $this->db->get('publications');
         return $query->result();
     }
-
-    public function insertPublication($data) {
-        $this->db->insert('publications', $data);
+    public function getPublicationsByFriendIds($friend_ids, $offset) {
+        $this->db->select('publications.*, users.email, users.nickname, users.surname, users.main_image');
+        $this->db->from('publications');
+        $this->db->join('users', 'publications.published_user_id = users.id');
+        $this->db->order_by('publication_date DESC, publication_time DESC');
+        $limit = 2;
+        $this->db->limit($limit, $offset);
+        foreach ($friend_ids as $key => $friend_id) {
+            if ($key == 0) {
+                $this->db->where('publications.published_user_id', $friend_id);
+            } else {
+                $this->db->or_where('publications.published_user_id', $friend_id);
+            }
+        }
+        $query = $this->db->get();
+        return $query->result();
     }
-    public function deletePublicationById($id) {
-        $this->db->where('id', $id);
-        $this->db->delete('publications');
-    }
-    public function deleteAllPublicationsByUserId($user_id) {
-        $this->db->where('user_id', $user_id);
-        $this->db->delete('publications');
-    }
-    public function updatePublicationById($id, $data) {
-        $this->db->where('id', $id);
-        $this->db->update('publications', $data);
-    }
-
     public function getPublicationCommentsByPublicationId($publication_id) {
-        $this->db->where('publication_id', $publication_id);
-        $query = $this->db->get('publication_comments');
+        $this->db->select('publication_comments.*, users.email, users.nickname, users.surname, users.main_image');
+        $this->db->from('publication_comments');
+        $this->db->join('users', 'publication_comments.commented_user_id = users.id');
+        $this->db->order_by('comment_date DESC, comment_time DESC');
+        $this->db->where('publication_comments.publication_id', $publication_id);
+        $query = $this->db->get();
         return $query->result();
     }
-    public function insertPublicationComment($data) {
-        $this->db->insert('publication_comments', $data);
-    }
-    public function deletePublicationCommentById($id) {
-        $this->db->where('id', $id);
-        $this->db->delete('publication_comments');
-    }
-    public function deletePublicationCommentsByPublicationId($publication_id) {
-        $this->db->where('publication_id', $publication_id);
-        $this->db->delete('publication_comments');
-    }
-    public function updatePublicationCommentById($id, $data) {
-        $this->db->where('id', $id);
-        $this->db->update('publication_comments', $data);
-    }
-
-    public function getPublicationCommentComplaintsByAdminId($admin_id) {
-        $this->db->where('admin_id', $admin_id);
-        $query = $this->db->get('publication_comment_complaints');
-        return $query->result();
-    }
-    public function insertPublicationCommentComplaint($data) {
-        $this->db->insert('publication_comment_complaints', $data);
-    }
-    public function deletePublicationCommentComplaintById($id) {
-        $this->db->where('id', $id);
-        $this->db->delete('publication_comment_complaints');
-    }
-    public function deletePublicationCommentComplaintsByPublicationCommentId($publication_comment_id) {
-        $this->db->where('publication_comment_id', $publication_comment_id);
-        $this->db->delete('publication_comment_complaints');
-    }
-    public function deletePublicationCommentComplaintsByComplainedUserId($complained_user_id) {
-        $this->db->where('complaint_user_id', $complained_user_id);
-        $this->db->delete('publication_comment_complaints');
-    }
-    public function updatePublicationCommentComplaintById($id, $data) {
-        $this->db->where('id', $id);
-        $this->db->update('publication_comment_complaints', $data);
-    }
-
-    public function insertPublicationCommentEmotion($data) {
-        $this->db->insert('publication_comment_emotions', $data);
-    }
-    public function deletePublicationCommentEmotionById($id) {
-        $this->db->where('id', $id);
-        $this->db->delete('publication_comment_emotions');
-    }
-    public function deletePublicationCommentEmotionsByPublicationCommentId($publication_comment_id) {
-        $this->db->where('publication_comment_id', $publication_comment_id);
-        $this->db->delete('publication_comment_emotions');
-    }
-    public function updatePublicationCommentEmotionById($id, $data) {
-        $this->db->where('id', $id);
-        $this->db->update('publication_comment_emotions', $data);
-    }
-
     public function getPublicationComplaintsByAdminId($admin_id) {
         $this->db->where('admin_id', $admin_id);
         $query = $this->db->get('publication_complaints');
         return $query->result();
     }
+    public function getPublicationComplaintNumRowsByPublicationIdAndComplainedUserId($publication_id, $complained_user_id) {
+        $this->db->where('publication_id', $publication_id);
+        $this->db->where('complained_user_id', $complained_user_id);
+        $query = $this->db->get('publication_complaints');
+        return $query->num_rows();
+    }
+    public function getPublicationEmotionNumRowsByPublicationIdAndEmotionedUserId($publication_id, $emotioned_user_id) {
+        $this->db->where('publication_id', $publication_id);
+        $this->db->where('emotioned_user_id', $emotioned_user_id);
+        $query = $this->db->get('publication_emotions');
+        return $query->num_rows();
+    }
+    public function getPublicationEmotionsByPublicationId($publication_id) {
+        $this->db->select('publication_emotions.*, users.email, users.nickname, users.surname, users.main_image');
+        $this->db->from('publication_emotions');
+        $this->db->join('users', 'publication_emotions.emotioned_user_id = users.id');
+        $this->db->order_by('emotion_date DESC, emotion_time DESC');
+        $this->db->where('publication_emotions.publication_id', $publication_id);
+        $query = $this->db->get();
+        return $query->result();
+    }
+    public function getPublicationImagesByPublicationId($publication_id) {
+        $this->db->where('publication_id', $publication_id);
+        $query = $this->db->get('publication_images');
+        return $query->result();
+    }
+    public function getPublicationImageFileById($id) {
+        $this->db->select('id, publication_image_file');
+        $this->db->where('id', $id);
+        $query = $this->db->get('publication_images');
+        $publication_images = $query->result();
+        foreach ($publication_images as $publication_image) {
+            $publication_image_file = $publication_image->publication_image_file;
+        }
+        return $publication_image_file;
+    }
+    // НАДО ПРОВЕРИТЬ НА УДАЛЕНИИ ЮЗЕРА!!!
+//    public function getPublicationSharesByPublicationId($publication_id) {
+//        $this->db->where('publication_id', $publication_id);
+//        $query = $this->db->get('publication_shares');
+//        return $query->result();
+//    }
+    public function getPublicationShareNumRowsByPublicationIdAndSharedUserId($publication_id, $shared_user_id) {
+        $this->db->where('publication_id', $publication_id);
+        $this->db->where('shared_user_id', $shared_user_id);
+        $query = $this->db->get('publication_shares');
+        return $query->num_rows();
+    }
+    public function getPublicationSharesByPublicationId($publication_id) {
+        $this->db->select('publication_shares.*, users.email, users.nickname, users.surname, users.main_image');
+        $this->db->from('publication_shares');
+        $this->db->join('users', 'publication_shares.shared_user_id = users.id');
+        $this->db->order_by('share_date DESC, share_time DESC');
+        $this->db->where('publication_shares.publication_id', $publication_id);
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    public function getTotalByPublicationIdAndPublicationTable($publication_id, $publication_table) {
+        $this->db->select('COUNT(*) as total');
+        $this->db->group_by('publication_id');
+        $this->db->where('publication_id', $publication_id);
+        $query = $this->db->get($publication_table);
+        $publications = $query->result();
+        foreach ($publications as $publication) {
+            $total = $publication->total;
+            if (strlen($total) == 4) {
+                return substr($total, 0, 1) . "K";
+            } else if(strlen($total) == 5) {
+                return substr($total, 0, 2) . "K";
+            } else if(strlen($total == 6)) {
+                return substr($total, 0, 3) . "K";
+            } else if (strlen($total) == 7) {
+                return substr($total, 0, 1) . "M";
+            } else if(strlen($total) == 8) {
+                return substr($total, 0, 2) . "M";
+            } else if(strlen($total == 9)) {
+                return substr($total, 0, 3) . "M";
+            } else if (strlen($total) == 10) {
+                return substr($total, 0, 1) . "B";
+            } else if(strlen($total) == 11) {
+                return substr($total, 0, 2) . "B";
+            } else if(strlen($total) == 12) {
+                return substr($total, 0, 3) . "B";
+            } else {
+                return $total;
+            }
+        }
+    }
+
+    public function insertPublication($data) {
+        $this->db->insert('publications', $data);
+    }
+    public function insertPublicationComment($data) {
+        $this->db->insert('publication_comments', $data);
+    }
     public function insertPublicationComplaint($data) {
         $this->db->insert('publication_complaints', $data);
+    }
+    public function insertPublicationEmotion($data) {
+        $this->db->insert('publication_emotions', $data);
+    }
+    public function insertPublicationImage($data) {
+        $this->db->insert('publication_images', $data);
+    }
+    public function insertPublicationImageEmotion($data) {
+        $this->db->insert('publication_image_emotions', $data);
+    }
+    public function insertPublicationShare($data) {
+        $this->db->insert('publication_shares', $data);
+    }
+    public function insertPublicationShareEmotion($data) {
+        $this->db->insert('publication_share_emotions', $data);
+    }
+
+    public function deletePublicationById($id) {
+        $this->db->where('id', $id);
+        $this->db->delete('publications');
+    }
+    public function deletePublicationsByPublishedUserId($published_user_id) {
+        $this->db->where('published_user_id', $published_user_id);
+        $this->db->delete('publications');
+    }
+    public function deletePublicationCommentById($id) {
+        $this->db->where('id', $id);
+        $this->db->delete('publication_comments');
+    }
+    public function deletePublicationCommentsByCommentedUserId($commented_user_id) {
+        $this->db->where('commented_user_id', $commented_user_id);
+        $this->db->delete('publication_comments');
+    }
+    public function deletePublicationCommentsByPublicationId($publication_id) {
+        $this->db->where('publication_id', $publication_id);
+        $this->db->delete('publication_comments');
     }
     public function deletePublicationComplaintById($id) {
         $this->db->where('id', $id);
@@ -123,44 +203,19 @@ class Publications_model extends CI_Model {
         $this->db->where('complained_user_id', $complained_user_id);
         $this->db->delete('publication_complaints');
     }
-    public function updatePublicationComplaintById($id, $data) {
-        $this->db->where('id', $id);
-        $this->db->update('publication_complaints', $data);
-    }
-
-    public function insertPublicationEmotion($data) {
-        $this->db->insert('publication_emotions', $data);
-    }
-    public function deletePublicationEmotionById($id) {
-        $this->db->where('id', $id);
+    public function deletePublicationEmotionByPublicationIdAndEmotionedUserId($publication_id, $emotioned_user_id) {
+        $this->db->where('publication_id', $publication_id);
+        $this->db->where('emotioned_user_id', $emotioned_user_id);
         $this->db->delete('publication_emotions');
     }
     public function deletePublicationEmotionsByPublicationId($publication_id) {
         $this->db->where('publication_id', $publication_id);
         $this->db->delete('publication_emotions');
     }
-    public function updatePublicationEmotionById($id, $data) {
-        $this->db->where('id', $id);
-        $this->db->update('publication_emotions', $data);
-    }
-
-    public function getPublicationImagesByPublicationId($publication_id) {
-        $this->db->where('publication_id', $publication_id);
-        $query = $this->db->get('publication_images');
-        return $query->result();
-    }
-    public function getPublicationImageFileById($id) {
-        $this->db->select('id, publication_image_file');
-        $this->db->where('id', $id);
-        $query = $this->db->get('publication_images');
-        $publications = $query->result();
-        foreach ($publications as $publication) {
-            $publication_image_file = $publication->publication_image_file;
-        }
-        return $publication_image_file;
-    }
-    public function insertPublicationImage($data) {
-        $this->db->insert('publication_images', $data);
+    public function deletePublicationEmotionsByPublishedUserIdOrEmotionedUserId($user_id) {
+        $this->db->where('published_user_id', $user_id);
+        $this->db->or_where('emotioned_user_id', $user_id);
+        $this->db->delete('publication_emotions');
     }
     public function deletePublicationImageById($id) {
         $this->db->where('id', $id);
@@ -170,10 +225,6 @@ class Publications_model extends CI_Model {
         $this->db->where('publication_id', $publication_id);
         $this->db->delete('publication_images');
     }
-
-    public function insertPublicationImageEmotion($data) {
-        $this->db->insert('publication_image_emotions', $data);
-    }
     public function deletePublicationImageEmotionById($id) {
         $this->db->where('id', $id);
         $this->db->delete('publication_image_emotions');
@@ -182,29 +233,28 @@ class Publications_model extends CI_Model {
         $this->db->where('publication_image_id', $publication_image_id);
         $this->db->delete('publication_image_emotions');
     }
-    public function updatePublicationImageEmotionById($id, $data) {
-        $this->db->where('id', $id);
-        $this->db->update('publication_image_emotions', $data);
+    public function deletePublicationImageEmotionsByPublishedUserIdOrEmotionedUserId($user_id) {
+        $this->db->where('published_user_id', $user_id);
+        $this->db->or_where('emotioned_user_id', $user_id);
+        $this->db->delete('publication_image_emotions');
     }
-
-    public function getPublicationSharesByPublicationId($publication_id) {
+    public function deletePublicationShareByPublicationIdAndSharedUserId($publication_id, $shared_user_id) {
         $this->db->where('publication_id', $publication_id);
-        $query = $this->db->get('publication_shares');
-        return $query->result();
-    }
-    public function insertPublicationShare($data) {
-        $this->db->insert('publication_shares', $data);
-    }
-    public function deletePublicationShareById($id) {
-        $this->db->where('id', $id);
+        $this->db->where('shared_user_id', $shared_user_id);
         $this->db->delete('publication_shares');
     }
     public function deletePublicationSharesByPublicationId($publication_id) {
         $this->db->where('publication_id', $publication_id);
         $this->db->delete('publication_shares');
     }
-    public function insertPublicationShareEmotion($data) {
-        $this->db->insert('publication_share_emotions', $data);
+    public function deletePublicationSharesBySharedUserId($shared_user_id) {
+        $this->db->where('shared_user_id', $shared_user_id);
+        $this->db->delete('publication_shares');
+    }
+    public function deletePublicationShareEmotionsBySharedUserIdOrEmotionedUserId($user_id) {
+        $this->db->where('shared_user_id', $user_id);
+        $this->db->or_where('emotioned_user_id', $user_id);
+        $this->db->delete('publication_shares');
     }
     public function deletePublicationShareEmotionById($id) {
         $this->db->where('id', $id);
@@ -213,6 +263,27 @@ class Publications_model extends CI_Model {
     public function deletePublicationShareEmotionsByPublicationShareId($publication_share_id) {
         $this->db->where('publication_share_id', $publication_share_id);
         $this->db->delete('publication_share_emotions');
+    }
+
+    public function updatePublicationById($id, $data) {
+        $this->db->where('id', $id);
+        $this->db->update('publications', $data);
+    }
+    public function updatePublicationCommentById($id, $data) {
+        $this->db->where('id', $id);
+        $this->db->update('publication_comments', $data);
+    }
+    public function updatePublicationComplaintById($id, $data) {
+        $this->db->where('id', $id);
+        $this->db->update('publication_complaints', $data);
+    }
+    public function updatePublicationEmotionById($id, $data) {
+        $this->db->where('id', $id);
+        $this->db->update('publication_emotions', $data);
+    }
+    public function updatePublicationImageEmotionById($id, $data) {
+        $this->db->where('id', $id);
+        $this->db->update('publication_image_emotions', $data);
     }
     public function updatePublicationShareEmotionById($id, $data) {
         $this->db->where('id', $id);

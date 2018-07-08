@@ -54,7 +54,6 @@ class User_image_comments extends CI_Controller {
     public function delete_user_image_comment() {
         $id = $this->input->post('id');
         $this->users_model->deleteUserImageCommentById($id);
-        $this->users_model->deleteUserImageCommentEmotionsByUserImageCommentId($id);
         $delete_json = array(
             'id' => $id,
             'csrf_name' => $this->security->get_csrf_token_name (),

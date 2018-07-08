@@ -94,6 +94,7 @@ class User_images extends CI_Controller {
         }
         $this->users_model->deleteUserImageActionsByUserImageId($id);
         $this->users_model->deleteUserImageCommentsByUserImageId($id);
+        $this->users_model->deleteUserImageCommentEmotionsByUserImageId($id);
         $this->users_model->deleteUserImageEmotionsByUserImageId($id);
         $this->users_model->deleteUserImageById($id);
         $delete_json = array(

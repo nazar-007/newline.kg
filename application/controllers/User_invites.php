@@ -21,13 +21,13 @@ class User_invites extends CI_Controller {
         $invite_time = date('H:i:s');
 
         $user_id = $this->input->post('user_id');
-        $invited_id = $this->input->post('invited_id');
+        $invited_user_id = $this->input->post('invited_user_id');
 
         $data_user_invites = array(
             'invite_date' => $invite_date,
             'invite_time' => $invite_time,
             'user_id' => $user_id,
-            'invited_id' => $invited_id
+            'invited_user_id' => $invited_user_id
         );
         $this->users_model->insertUserInvite($data_user_invites);
     }
@@ -35,11 +35,11 @@ class User_invites extends CI_Controller {
     public function delete_user_invite_by_user_id() {
         $id = $this->input->post('id');
         $user_id = $this->input->post('user_id');
-        $invited_id = $this->input->post('invited_id');
+        $invited_user_id = $this->input->post('invited_user_id');
 
         $invite_date = date('d.m.Y');
         $invite_time = date("H:i:s");
-        $this->users_model->deleteUserInviteByUserIdAndInvitedId($user_id, $invited_id);
+        $this->users_model->deleteUserInviteByUserIdAndInvitedUserId($user_id, $invited_user_id);
 
         $notification_text = 'Пользователь Назар отказался принимать Вас в друзья.';
         $data_user_notifications = array(
@@ -60,12 +60,12 @@ class User_invites extends CI_Controller {
         echo json_encode($delete_json);
     }
 
-    public function delete_user_invite_by_invited_id() {
+    public function delete_user_invite_by_invited_user_id() {
         $user_id = $this->input->post('user_id');
-        $invited_id = $this->input->post('invited_id');
-        $this->users_model->deleteUserInviteByUserIdAndInvitedId($user_id, $invited_id);
+        $invited_user_id = $this->input->post('invited_user_id');
+        $this->users_model->deleteUserInviteByUserIdAndInvitedUserId($user_id, $invited_user_id);
         $delete_json = array(
-            'invited_id' => $invited_id,
+            'invited_user_id' => $invited_user_id,
             'csrf_name' => $this->security->get_csrf_token_name (),
             'csrf_hash' => $this->security->get_csrf_hash()
         );

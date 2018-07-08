@@ -36,6 +36,22 @@ class Songs extends CI_Controller {
         }
     }
 
+    public function One_song($id) {
+        $song_num_rows = $this->songs_model->getSongNumRowsById($id);
+        if ($song_num_rows == 1) {
+            $data_songs = array(
+                'one_song' => $this->songs_model->getOneSongById($id),
+                'song_num_rows' => $song_num_rows
+            );
+        } else {
+            echo "Песня удалена или ещё не добавлена!";
+            $data_songs = array(
+                'song_num_rows' => $song_num_rows
+            );
+        }
+        $this->load->view('one_song', $data_songs);
+    }
+
     public function insert_song() {
         $song_name = $this->input->post('song_name');
         $song_file = $this->input->post('song_file');
@@ -110,19 +126,15 @@ class Songs extends CI_Controller {
         $id = $this->input->post('id');
         $user_id = $this->input->post('user_id');
         $song_file = $this->songs_model->getSongkFileById($id);
+        $song_image = $this->songs_model->getSongImageById($id);
         unlink("./uploads/song_files/$song_file");
+        unlink("./uploads/images/song_images/$song_image");
 
-        $song_comments = $this->songs_model->getSongCommentsBySongId($id);
-        foreach ($song_comments as $song_comment) {
-            $song_comment_id = $song_comment->id;
-            $this->songs_model->deleteSongCommentComplaintsBySongCommentId($song_comment_id);
-            $this->songs_model->deleteSongCommentEmotionsBySongCommentId($song_comment_id);
-        }
-        $this->songs_model->deleteSongActionsByBookId($id);
-        $this->songs_model->deleteSongCommentsByBookId($id);
-        $this->songs_model->deleteSongComplaintsByBookId($id);
-        $this->songs_model->deleteSongEmotionsByBookId($id);
-        $this->songs_model->deleteSongFansByBookId($id);
+        $this->songs_model->deleteSongActionsBySongId($id);
+        $this->songs_model->deleteSongCommentsBySongId($id);
+        $this->songs_model->deleteSongComplaintsBySongId($id);
+        $this->songs_model->deleteSongEmotionsBySongId($id);
+        $this->songs_model->deleteSongFansBySongId($id);
         $this->songs_model->deleteSongById($id);
 
         $notification_date = date("d.m.Y");

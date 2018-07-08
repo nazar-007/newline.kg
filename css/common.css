@@ -1,0 +1,6 @@
+.up-arrow {
+    width: 64px;
+    position: fixed;
+    top: 45vh;
+    display: none;
+}

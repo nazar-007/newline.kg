@@ -50,8 +50,6 @@ class Event_comments extends CI_Controller {
     public function delete_event_comment() {
         $id = $this->input->post('id');
         $this->events_model->deleteEventCommentById($id);
-        $this->events_model->deleteEventCommentComplaintsByEventCommentId($id);
-        $this->events_model->deleteEventCommentEmotionsByEventCommentId($id);
         $delete_json = array(
             'id' => $id,
             'csrf_name' => $this->security->get_csrf_token_name (),

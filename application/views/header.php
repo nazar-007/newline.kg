@@ -1,13 +1,18 @@
-<nav class="navbar navbar-default">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">WebSiteName</a>
+<header>
+    <input type="hidden" class="csrf" name="csrf_test_name" value="<?php echo $csrf_hash?>">
+    <nav class="menu">
+        <div class="pos_logo small-hidden">
+            <a href="<?php echo base_url()?>publications">
+                <img class="logo" src="<?php echo base_url()?>uploads/icons/logo2.png" alt="newline.kg">
+            </a>
         </div>
-        <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#">Page 1</a></li>
-            <li><a href="#">Page 2</a></li>
-            <li><a href="#">Page 3</a></li>
-        </ul>
-    </div>
-</nav>
+        <div class="pos_search small-hidden">
+            <input type="search" name="search" class="form-control" size="50">
+        </div>
+        <div class="pos_avatar small-hidden">
+            <a href="<?php echo base_url()?>my_page">
+                <img class="avatar" src="<?php echo base_url()?>uploads/images/user_images/medal.png">
+            </a>
+        </div>
+    </nav>
+</header>

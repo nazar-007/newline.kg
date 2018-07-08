@@ -9,9 +9,9 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="shortcut icon" href="<?php echo base_url()?>uploads/images/design_images/default.jpg">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/index.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/media.css">
 </head>
 <body>
-
 <div class="container">
     <div class="col-md-6">
         <ul class="nav nav-tabs">
