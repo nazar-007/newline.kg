@@ -12,7 +12,6 @@ class Event_emotions extends CI_Controller {
         $category_ids = array();
         $data = array(
             'events' => $this->events_model->getEventsByCategoryIds($category_ids),
-            'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         $this->load->view('event_emotions', $data);
@@ -23,14 +22,12 @@ class Event_emotions extends CI_Controller {
         $emotion_time = date('H:i:s');
         $emotioned_user_id = $this->input->post('emotioned_user_id');
         $event_id = $this->input->post('event_id');
-        $emotion_id = $this->input->post('emotion_id');
 
         $data_event_emotions = array(
             'emotion_date' => $emotion_date,
             'emotion_time' => $emotion_time,
             'emotioned_user_id' => $emotioned_user_id,
-            'event_id' => $event_id,
-            'emotion_id' => $emotion_id
+            'event_id' => $event_id
         );
         $this->events_model->insertEventEmotion($data_event_emotions);
 
@@ -52,27 +49,8 @@ class Event_emotions extends CI_Controller {
         $this->events_model->deleteEventEmotionById($id);
         $delete_json = array(
             'id' => $id,
-            'csrf_name' => $this->security->get_csrf_token_name (),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($delete_json);
-    }
-
-    public function update_event_emotion() {
-        $id = $this->input->post('id');
-        $emotion_date = date('d.m.Y');
-        $emotion_time = date('H:i:s');
-        $emotioned_user_id = $this->input->post('emotioned_user_id');
-        $event_id = $this->input->post('event_id');
-        $emotion_id = $this->input->post('emotion_id');
-
-        $data_event_emotions = array(
-            'emotion_date' => $emotion_date,
-            'emotion_time' => $emotion_time,
-            'emotioned_user_id' => $emotioned_user_id,
-            'event_id' => $event_id,
-            'emotion_id' => $emotion_id
-        );
-        $this->events_model->updateEventEmotionById($id, $data_event_emotions);
     }
 }

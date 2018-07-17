@@ -12,7 +12,6 @@ class Event_fans extends CI_Controller {
         $event_id = 3;
         $data = array(
             'event_fans' => $this->events_model->getEventFansByEventId($event_id),
-            'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         $this->load->view('event_fans', $data);

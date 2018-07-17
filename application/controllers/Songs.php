@@ -6,6 +6,7 @@ class Songs extends CI_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->model('songs_model');
+        $this->load->model('users_model');
     }
 
     public function Index() {
@@ -13,7 +14,6 @@ class Songs extends CI_Controller {
         $data = array(
             'songs' => $this->songs_model->getSongsByCategoryIds($category_ids),
             'song_categories' => $this->songs_model->getSongCategories(),
-            'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         $this->load->view('songs', $data);
@@ -100,6 +100,8 @@ class Songs extends CI_Controller {
                 'notification_date' => $notification_date,
                 'notification_time' => $notification_time,
                 'notification_viewed' => 'Не просмотрено',
+                'link_id' => $insert_song_id,
+                'link_table' => 'songs',
                 'user_id' => $user_id
             );
             $this->users_model->insertUserNotification($data_user_notifications);
@@ -149,6 +151,8 @@ class Songs extends CI_Controller {
                 'notification_date' => $notification_date,
                 'notification_time' => $notification_time,
                 'notification_viewed' => 'Не просмотрено',
+                'link_id' => 0,
+                'link_table' => 0,
                 'user_id' => $user_id
             );
             $this->users_model->insertUserNotification($data_user_notifications);
@@ -169,7 +173,6 @@ class Songs extends CI_Controller {
 
         $delete_json = array(
             'id' => $id,
-            'csrf_name' => $this->security->get_csrf_token_name (),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($delete_json);
@@ -192,7 +195,5 @@ class Songs extends CI_Controller {
         );
 
         $this->songs_model->updateSongById($id, $data_songs);
-
     }
-
 }

@@ -12,7 +12,6 @@ class User_blacklist extends CI_Controller {
         $user_id = 1;
         $data = array (
             'user_blacklist' => $this->users_model->getUserBlacklistByUserId($user_id),
-            'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         $this->load->view('user_blacklist', $data);
@@ -40,7 +39,6 @@ class User_blacklist extends CI_Controller {
         $this->users_model->deleteUserBlacklistById($id);
         $delete_json = array(
             'id' => $id,
-            'csrf_name' => $this->security->get_csrf_token_name (),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($delete_json);

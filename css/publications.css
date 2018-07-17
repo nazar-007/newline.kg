@@ -11,11 +11,11 @@ hr{
     background-color: #0000FF;
 }
 body{
-    margin:0 auto;
-    padding:0 auto;
+    margin:0;
+    padding:0;
     background-color: snow;
     width:100%;
-    height: 2000px;
+    height: 100vh;
 }
 nav{
     width: 100%;
@@ -108,6 +108,11 @@ ul li{
     width: 100%;
     display: flex;
     flex-direction: column;
+}
+
+.one_publication {
+    margin-bottom: 30px;
+    background-color: linen;
 }
 .bout_user{
     position: relative;
@@ -237,124 +242,34 @@ ul li{
     margin-top: 5px;
     margin-bottom: 15px;
 }
-.post_images {
+.publication_images {
     width: 50%;
     margin: 0 auto;
 }
 
+.publication_image_emotion {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 50%;
+}
 
+.emotion_image {
+    margin-right: 7px;
+}
 
-
-
-
-
-
-
-
-.pos_books{
-    width: 60%;
-    height: auto;
-    margin: 0 auto;
+.action_avatar {
+    width: 100px;
+    border-radius: 50%;
     box-shadow: 0 0px 1px;
-    padding:10px;
-}
-.books{
-    margin: 0 auto;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-}
-.one_book{
-    width: 33%;
-    height: auto;
-    text-align: center;
-}
-.bout_book{
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-}
-.who_added{
-    font-size: 1.1em;
-}
-.book_name{
-    font-size: 1.4em;
-}
-.book_cover{
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-}
-.book_cover img{
-    margin: 0 auto;
-    width: 150px;
-}
-.book_emotion{
-    width: 75%;
-    height: 30px;
-    display: flex;
-    position: relative;
-    flex-direction: row;
-    margin: 0 auto;
-    z-index: 20;
-    margin-top: -33px;
-    background-color: lavender;
-    opacity: 0.85;
-    font-size: 1.2em;
-}
-.book_emotion img{
-    width: 30px;
-    height: 30px;
-    margin-right: 5px;
-}
-.pos_actions{
-    width: 20%;
-    height: 100%;
-    margin: 0 auto;
-    padding: 0;
-    display: flex;
-    border-top: 1px solid grey;
-    flex-direction: column;
-}
-.pos_genres{
-    margin: 0 auto;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-}
-.genres{
-
-}
-.last_notific{
-    display: flex;
-    margin: 0 auto;
-    flex-direction: column;
-    border: 1px solid grey;
-    margin-top: 20px;
-}
-.one_notific{
-    width: 100%;
-    display: flex;
-    margin: 0 auto;
-    flex-direction: row;
-    justify-content: center;
-}
-.notif_avatar{
-    width: 20%;
-}
-.notif_avatar img{
-    width: 30px;
-    height: 30px;
-    border-radius: 25px;
-}
-.whos_notif{
-    width: 80%;
 }
 
-@media screen and (max-width: 992px){
+.badge {
+    background-color: darkslategray;
+    cursor: pointer;
+}
+
+
+@media screen and (max-width: 1200px){
     .pos_publications {
         width: 100%;
     }
@@ -364,7 +279,7 @@ ul li{
 }
 
 @media screen and (max-width: 768px){
-    .user_avatar, .commented_avatar {
+    .user_avatar, .commented_avatar, .emotion_avatar, .share_avatar {
         display: none;
     }
 }

@@ -10,7 +10,6 @@ class User_invites extends CI_Controller {
 
     public function Index() {
         $data = array(
-            'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         $this->load->view('user_invite', $data);
@@ -54,7 +53,6 @@ class User_invites extends CI_Controller {
 
         $delete_json = array(
             'id' => $id,
-            'csrf_name' => $this->security->get_csrf_token_name (),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($delete_json);
@@ -66,7 +64,6 @@ class User_invites extends CI_Controller {
         $this->users_model->deleteUserInviteByUserIdAndInvitedUserId($user_id, $invited_user_id);
         $delete_json = array(
             'invited_user_id' => $invited_user_id,
-            'csrf_name' => $this->security->get_csrf_token_name (),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($delete_json);

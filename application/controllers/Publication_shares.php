@@ -10,16 +10,8 @@ class Publication_shares extends CI_Controller {
     }
 
     public function Index() {
-        $publication_id = 2;
-        $data = array(
-            'publication_shares' => $this->publications_model->getPublicationSharesByPublicationId($publication_id),
-            'csrf_name' => $this->security->get_csrf_token_name(),
-            'csrf_hash' => $this->security->get_csrf_hash()
-        );
-        $this->load->view('publication_shares', $data);
-    }
+        $this->load->view('session_user');
 
-    public function get_publication_shares() {
         $publication_id = $this->input->post('publication_id');
         $publication_shares = $this->publications_model->getPublicationSharesByPublicationId($publication_id);
         $html = '';
@@ -28,7 +20,7 @@ class Publication_shares extends CI_Controller {
             $html .= "<div class='col-xs-6 col-sm-4 col-lg-3 share_user'>
                         <a href='" . base_url() . "one_user/$publication_share->email'>
                             <div class='share_user_image'>
-                                <img src='" . base_url() . "uploads/images/user_images/$publication_share->main_image' class='emotion_avatar' style='width: 100px;'>
+                                <img src='" . base_url() . "uploads/images/user_images/$publication_share->main_image' class='action_avatar' style='width: 100px;'>
                             </div>
                             <div class='share_user_name'>
                                 $publication_share->nickname $publication_share->surname
@@ -37,14 +29,16 @@ class Publication_shares extends CI_Controller {
                     </div>";
         }
         $html .= "</div>";
-        $data = array(
-            'publication_shares' => $html,
+        $get_shares_json = array(
+            'one_publication_shares' => $html,
             'csrf_hash' => $this->security->get_csrf_hash()
         );
-        echo json_encode($data);
+        echo json_encode($get_shares_json);
     }
 
     public function insert_publication_share() {
+        $this->load->view('session_user');
+        $session_user_id = $_SESSION['user_id'];
         $share_date = date("d.m.Y");
         $share_time = date("H:i:s");
         $published_user_id = $this->input->post('published_user_id');
@@ -53,7 +47,7 @@ class Publication_shares extends CI_Controller {
 
         $share_num_rows = $this->publications_model->getPublicationShareNumRowsByPublicationIdAndSharedUserId($publication_id, $shared_user_id);
 
-        if ($share_num_rows == 0) {
+        if ($share_num_rows == 0 && $shared_user_id == $session_user_id) {
         $data_publication_shares = array(
             'share_date' => $share_date,
             'share_time' => $share_time,
@@ -72,6 +66,8 @@ class Publication_shares extends CI_Controller {
             'notification_date' => $share_date,
             'notification_time' => $share_time,
             'notification_viewed' => 'Не просмотрено',
+            'link_id' => $publication_id,
+            'link_table' => 'publications',
             'user_id' => $published_user_id
         );
         $this->users_model->insertUserNotification($data_user_notifications);
@@ -83,7 +79,7 @@ class Publication_shares extends CI_Controller {
         } else {
             $insert_json = array(
                 'share_num_rows' => $share_num_rows,
-                'share_error' => "Вы уже делились данной публикацией!",
+                'share_error' => "Вы уже делились данной публикацией или что-то пошло не так!",
                 'csrf_hash' => $this->security->get_csrf_hash()
             );
         }
@@ -91,10 +87,12 @@ class Publication_shares extends CI_Controller {
     }
 
     public function delete_publication_share() {
+        $this->load->view('session_user');
+        $session_user_id = $_SESSION['user_id'];
         $publication_id = $this->input->post('publication_id');
         $shared_user_id = $this->input->post('shared_user_id');
         $share_num_rows = $this->publications_model->getPublicationShareNumRowsByPublicationIdAndSharedUserId($publication_id, $shared_user_id);
-        if ($share_num_rows > 0) {
+        if ($share_num_rows > 0 && $shared_user_id == $session_user_id) {
             $this->publications_model->deletePublicationShareByPublicationIdAndSharedUserId($publication_id, $shared_user_id);
             $total_shares = $this->publications_model->getTotalByPublicationIdAndPublicationTable($publication_id, 'publication_shares');
             $delete_json = array(
@@ -105,7 +103,7 @@ class Publication_shares extends CI_Controller {
         } else {
             $delete_json = array(
                 'share_num_rows' => $share_num_rows,
-                'emotion_error' => "Вы ещё не репостили данную публикацию!",
+                'share_error' => "Вы ещё не репостили данную публикацию или что-то пошло не так!",
                 'csrf_hash' => $this->security->get_csrf_hash()
             );
         }

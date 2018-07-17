@@ -57,15 +57,3 @@
         display: none;
     }
 }
-
-@media screen and (max-width: 992px) {
-    .hedgehog {
-        display: none;
-    }
-}
-
-@media screen and (min-width: 992px) {
-    .hedgehog-header {
-        display: none;
-    }
-}

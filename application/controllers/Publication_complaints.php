@@ -13,13 +13,14 @@ class Publication_complaints extends CI_Controller {
         $admin_id = 2;
         $data = array(
             'publication_complaints' => $this->publications_model->getPublicationComplaintsByAdminId($admin_id),
-            'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         $this->load->view('publication_complaints', $data);
     }
 
     public function insert_publication_complaint() {
+        $this->load->view('session_user');
+        $session_user_id = $_SESSION['user_id'];
         $complaint_text = $this->input->post('complaint_text');
         $complaint_time_unix = time();
         $admin_id = $this->admins_model->getRandomAdminIdByAdminTable('publications');
@@ -28,7 +29,7 @@ class Publication_complaints extends CI_Controller {
         $complained_user_id = $this->input->post('complained_user_id');
 
         $complaint_num_rows = $this->publications_model->getPublicationComplaintNumRowsByPublicationIdAndComplainedUserId($publication_id, $complained_user_id);
-        if ($complaint_num_rows == 0 && $complaint_text != '') {
+        if ($complaint_num_rows == 0 && $complaint_text != '' && $complained_user_id == $session_user_id) {
             $data_publication_complaints = array(
                 'complaint_text' => $complaint_text,
                 'complaint_time_unix' => $complaint_time_unix,
@@ -47,7 +48,7 @@ class Publication_complaints extends CI_Controller {
         } else {
             $insert_json = array(
                 'complaint_num_rows' => $complaint_num_rows,
-                'complaint_error' => "Невозможно отправить жалобу. Вы уже жаловались на данную публикацию или текст жалобы пуст.",
+                'complaint_error' => "Невозможно отправить жалобу. Вы уже жаловались на данную публикацию, или текст жалобы пуст, или что-то пошло не так.",
                 'publication_id' => $publication_id,
                 'csrf_hash' => $this->security->get_csrf_hash()
             );
@@ -60,7 +61,6 @@ class Publication_complaints extends CI_Controller {
         $this->publications_model->deletePublicationComplaintById($id);
         $delete_json = array(
             'id' => $id,
-            'csrf_name' => $this->security->get_csrf_token_name (),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($delete_json);

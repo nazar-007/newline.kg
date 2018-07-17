@@ -54,6 +54,16 @@ class Events_model extends CI_Model {
         $query = $this->db->get('event_fans');
         return $query->result();
     }
+    public function getEventFansByFanUserId($fan_user_id) {
+        $this->db->select('event_fans.*, events.event_name, users.email, users.nickname, users.surname, users.main_image');
+        $this->db->from('event_fans');
+        $this->db->join('events', 'event_fans.event_id = events.id');
+        $this->db->join('users', 'event_fans.fan_user_id = users.id');
+        $this->db->order_by('fan_date DESC, fan_time DESC');
+        $this->db->where('event_fans.fan_user_id', $fan_user_id);
+        $query = $this->db->get();
+        return $query->result();
+    }
     public function getEventNumRowsById($id) {
         $this->db->select('id');
         $this->db->where('id', $id);

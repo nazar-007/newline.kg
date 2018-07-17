@@ -41,6 +41,18 @@ class Admins_model extends CI_Model {
         }
         return $admin_id;
     }
+    public function getRandomSuperAdminId() {
+        $this->db->select('id');
+        $this->db->where('admin_type', 'super_admin');
+        $this->db->order_by('rand()');
+        $this->db->limit(1);
+        $query = $this->db->get('admins');
+        $admins = $query->result();
+        foreach ($admins as $admin) {
+            $admin_id = $admin->id;
+        }
+        return $admin_id;
+    }
 
     public function insertAdmin($data) {
         $this->db->insert('admins', $data);

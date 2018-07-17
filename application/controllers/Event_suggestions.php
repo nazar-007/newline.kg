@@ -14,7 +14,6 @@ class Event_suggestions extends CI_Controller {
         $admin_id = 1;
         $data = array(
             'event_suggestions' => $this->events_model->getEventSuggestionsByAdminId($admin_id),
-            'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         $this->load->view('event_suggestions', $data);
@@ -63,7 +62,6 @@ class Event_suggestions extends CI_Controller {
         $this->users_model->insertUserNotification($data_user_notifications);
         $delete_json = array(
             'id' => $id,
-            'csrf_name' => $this->security->get_csrf_token_name (),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($delete_json);

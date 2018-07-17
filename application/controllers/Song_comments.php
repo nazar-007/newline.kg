@@ -12,7 +12,6 @@ class Song_comments extends CI_Controller {
         $song_id = $this->input->post('song_id');
         $data = array(
             'song_comments' => $this->songs_model->getSongCommentsBySongId($song_id),
-            'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         $this->load->view('song_comments', $data);
@@ -52,7 +51,6 @@ class Song_comments extends CI_Controller {
         $this->songs_model->deleteSongCommentById($id);
         $delete_json = array(
             'id' => $id,
-            'csrf_name' => $this->security->get_csrf_token_name (),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($delete_json);

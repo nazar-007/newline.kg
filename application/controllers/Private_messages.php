@@ -13,7 +13,6 @@ class Private_messages extends CI_Controller {
         $data = array(
             'books' => $this->books_model->getBooks($category_ids),
             'book_categories' => $this->books_model->getBookCategories(),
-            'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         $this->load->view('books', $data);

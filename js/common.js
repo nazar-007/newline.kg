@@ -28,28 +28,7 @@ $(document).ready(function () {
         }
     });
 
-    $("#viewPublicationComments").on('show.bs.modal', function () {
-        history.pushState(null, null, location.href);
-        window.onpopstate = function() {
-            $("#viewPublicationComments").modal('hide');
-        };
-    });
-    $("#viewPublicationEmotions").on('show.bs.modal', function () {
-        history.pushState(null, null, location.href);
-        window.onpopstate = function() {
-            $("#viewPublicationEmotions").modal('hide');
-        };
-    });
-    $("#viewPublicationShares").on('show.bs.modal', function () {
-        history.pushState(null, null, location.href);
-        window.onpopstate = function() {
-            $("#viewPublicationShares").modal('hide');
-        };
-    });
-    $("#insertPublicationComplaint").on('show.bs.modal', function () {
-        history.pushState(null, null, location.href);
-        window.onpopstate = function() {
-            $("#insertPublicationComplaint").modal('hide');
-        };
+    $('#showMobileCategories').click(function(){
+        $('#mobileCategories').slideToggle(500);
     });
 });

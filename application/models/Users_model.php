@@ -64,14 +64,36 @@ class Users_model extends CI_Model {
         return $family_position;
     }
     public function getFriendsByUserId($user_id) {
-        $this->db->where('user_id', $user_id);
-        $query = $this->db->get('friends');
+        $this->db->select('friends.*, users.nickname, users.surname, users.main_image');
+        $this->db->from('friends');
+        $this->db->join('users', 'friends.friend_id = users.id');
+        $this->db->where('friends.user_id', $user_id);
+        $query = $this->db->get();
         return $query->result();
     }
     public function getGuestsByUserId($user_id) {
+        $this->db->select('guests.*, users.email, users.nickname, users.surname, users.main_image');
+        $this->db->from('guests');
+        $this->db->join('users', 'guests.guest_id = users.id');
         $this->db->where('user_id', $user_id);
-        $query = $this->db->get('guests');
+        $query = $this->db->get();
         return $query->result();
+    }
+    public function getUsersByGuestId($guest_id) {
+        $this->db->select('guests.*, users.email, users.nickname, users.surname, users.main_image');
+        $this->db->from('guests');
+        $this->db->join('users', 'guests.user_id = users.id');
+        $this->db->order_by('guest_date DESC, guest_time DESC');
+        $this->db->where('guests.guest_id', $guest_id);
+        $query = $this->db->get();
+        return $query->result();
+    }
+    public function getGuestNumRowsByUserIdAndGuestId($user_id, $guest_id) {
+        $this->db->select('user_id, guest_id');
+        $this->db->where('user_id', $user_id);
+        $this->db->where('guest_id', $guest_id);
+        $query = $this->db->get('guests');
+        return $query->num_rows();
     }
     public function getHomeLandById($id) {
         $this->db->select('id, home_land');
@@ -159,6 +181,16 @@ class Users_model extends CI_Model {
         $query = $this->db->get('user_complaints');
         return $query->result();
     }
+    public function getUserIdByEmail($email) {
+        $this->db->select('id, email');
+        $this->db->where('email', $email);
+        $query = $this->db->get("users");
+        $users = $query->result();
+        foreach ($users as $user) {
+            $user_id = $user->id;
+        }
+        return $user_id;
+    }
     public function getUserIdByEmailAndPassword($email, $password) {
         $this->db->select('id, email, password');
         $this->db->where('email', $email);
@@ -217,6 +249,13 @@ class Users_model extends CI_Model {
         }
         return $user_image_file;
     }
+    public function getUserNotificationsByUserId($user_id) {
+        $this->db->where('user_id', $user_id);
+        $query = $this->db->get('user_notifications');
+        return $query->result();
+    }
+
+
 
     public function insertUser($data) {
         $this->db->insert('users', $data);
@@ -379,8 +418,9 @@ class Users_model extends CI_Model {
         $this->db->delete('user_page_emotions');
     }
 
-    public function updateGuestById($id, $data) {
-        $this->db->where('id', $id);
+    public function updateGuestByUserIdAndGuestId($user_id, $guest_id, $data) {
+        $this->db->where('user_id', $user_id);
+        $this->db->where('guest_id', $guest_id);
         $this->db->update('guests', $data);
     }
     public function updateRankById($id, $rating, $rank) {

@@ -12,7 +12,6 @@ class Event_actions extends CI_Controller {
         $friend_ids = array();
         $data = array(
             'event_notifications' => $this->events_model->getEventNotificationsByFriendIds($friend_ids),
-            'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         $this->load->view('event_notifications', $data);

@@ -11,7 +11,6 @@ class Admin_actions extends CI_Controller {
     public function Index() {
         $data = array(
             'admin_actions' => $this->admins_model->getAdminActions(),
-            'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         $this->load->view('admin_notifications', $data);

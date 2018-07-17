@@ -12,7 +12,6 @@ class User_images extends CI_Controller {
         $user_id = 1;
         $data = array(
             'albums' => $this->albums_model->getAlbums($user_id),
-            'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         $this->load->view('albums', $data);
@@ -99,7 +98,6 @@ class User_images extends CI_Controller {
         $this->users_model->deleteUserImageById($id);
         $delete_json = array(
             'id' => $id,
-            'csrf_name' => $this->security->get_csrf_token_name (),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($delete_json);

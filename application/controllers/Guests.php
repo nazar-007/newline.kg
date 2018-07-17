@@ -12,7 +12,7 @@ class Guests extends CI_Controller {
         $user_id = 1;
         $data = array(
             'guests' => $this->users_model->getGuestsByUserId($user_id),
-            'csrf_name' => $this->security->get_csrf_token_name(),
+            'users' => $this->users_model->getUsersByGuestId($user_id),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         $this->load->view('guests', $data);
@@ -42,7 +42,6 @@ class Guests extends CI_Controller {
         $this->users_model->deleteGuestById($id);
         $delete_json = array(
             'id' => $id,
-            'csrf_name' => $this->security->get_csrf_token_name (),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($delete_json);

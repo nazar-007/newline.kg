@@ -12,7 +12,6 @@ class Event_comments extends CI_Controller {
         $event_id = $this->input->post('event_id');
         $data = array(
             'event_comments' => $this->events_model->getEventCommentsByEventId($event_id),
-            'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         $this->load->view('event_comments', $data);
@@ -52,7 +51,6 @@ class Event_comments extends CI_Controller {
         $this->events_model->deleteEventCommentById($id);
         $delete_json = array(
             'id' => $id,
-            'csrf_name' => $this->security->get_csrf_token_name (),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($delete_json);

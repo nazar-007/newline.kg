@@ -10,14 +10,62 @@ class Events extends CI_Controller {
     }
 
     public function Index() {
+        $this->load->view('session_user');
+        $session_user_id = $_SESSION['user_id'];
         $category_ids = array();
-        $data = array(
-            'events' => $this->events_model->getEventsByCategoryIds($category_ids),
-            'event_categories' => $this->events_model->getEventCategories(),
-            'csrf_name' => $this->security->get_csrf_token_name(),
-            'csrf_hash' => $this->security->get_csrf_hash()
-        );
-        $this->load->view('events', $data);
+        if (isset($_POST['offset'])) {
+            $offset = $this->input->post('offset');
+        } else {
+            $offset = 0;
+        }
+        $events = $this->events_model->getEventsByCategoryIds($category_ids, $offset);
+        $html = '';
+//        foreach ($events as $event) {
+//            $book_id = $book->id;
+//            $book_name = $book->book_name;
+//            $total_book_emotions = $this->books_model->getTotalByBookIdAndBookTable($book_id, 'book_emotions');
+//            $total_book_fans = $this->books_model->getTotalByBookIdAndBookTable($book_id, 'book_fans');
+//            $html .= "<div class='col-xs-6 col-sm-6 col-md-4 col-lg-4 one_book'>
+//                    <a href='" . base_url() . "one_book/$book_id'>
+//                        <div class='book_cover'>
+//                            <img class='book_image' src='" . base_url() . "uploads/images/book_images/$book->book_image'>
+//                        </div>
+//                        <div class='book_name'>$book_name</div>
+//                    </a>
+//                    <div class='actions'>
+//                        <span class='emotions_field'>
+//                            <img onclick='putEmotionOrFan()' src='" . base_url() . "uploads/icons/emotioned.png'>
+//                            <span class='badge' onclick='getBookEmotions(this)' data-book_id='$book->id' data-toggle='modal' data-target='#getBookEmotions'>$total_book_emotions</span>
+//                        </span>
+//                        <span class='fans_field'>
+//                            <img onclick='putEmotionOrFan()' src='" . base_url() . "uploads/icons/fan.png'>
+//                            <span class='badge' onclick='getBookFans(this)' data-book_id='$book->id' data-toggle='modal' data-target='#getBookFans'>$total_book_fans</span>
+//                        </span>
+//                    </div>
+//                </div>";
+//        }
+
+        if (isset($_POST['offset'])) {
+            $data = array(
+                'events' => $html,
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+            echo json_encode($data);
+        } else {
+            $friend_ids = array();
+            $friends = $this->users_model->getFriendsByUserId($session_user_id);
+            foreach ($friends as $friend) {
+                $friend_ids[] = $friend->friend_id;
+            }
+            $data = array(
+                'events' => $html,
+                'event_actions' => $this->events_model->getEventActionsByFriendIds($friend_ids),
+                'event_categories' => $this->events_model->getEventCategories(),
+                'my_fan_events' => $this->events_model->getEventFansByFanUserId($session_user_id),
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+            $this->load->view('events', $data);
+        }
     }
 
     public function choose_event_categories() {
@@ -97,6 +145,8 @@ class Events extends CI_Controller {
                 'notification_date' => $notification_date,
                 'notification_time' => $notification_time,
                 'notification_viewed' => 'Не просмотрено',
+                'link_id' => $insert_event_id,
+                'link_table' => 'events',
                 'user_id' => $user_id
             );
             $this->users_model->insertUserNotification($data_user_notifications);

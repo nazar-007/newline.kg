@@ -9,11 +9,13 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="shortcut icon" href="<?php echo base_url()?>uploads/images/design_images/default.jpg">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/index.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/animate.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/media.css">
 </head>
 <body>
 <div class="container">
-    <div class="col-md-6">
+    <div class="col-md-12 col-lg-6">
+        <img class="img-thumbnail newline-huge huge-hidden" src="<?php echo base_url()?>uploads/icons/newline.png">
         <ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#authorization">Вход</a></li>
             <li><a data-toggle="tab" href="#registration">Регистрация</a></li>
@@ -21,8 +23,8 @@
         <div class="tab-content">
 
             <div id="authorization" class="tab-pane fade in active">
-                <form method="post" action="/users/authorization">
-                    <input class="csrf" type="hidden" name="<?php echo $csrf_name?>" value="<?php echo $csrf_hash?>">
+                <form method="post" action="<?php echo base_url()?>users/authorization">
+                    <input class="csrf" type="hidden" name="csrf_test_name" value="<?php echo $csrf_hash?>">
                     <div class="form-group">
                         <label>Email:</label>
                         <input type="text" class="form-control" placeholder="Введите email" name="email">
@@ -37,7 +39,7 @@
 
             <div id="registration" class="tab-pane fade">
                 <form action="javascript:void(0)" onsubmit="registrationUser(this)" enctype="multipart/form-data">
-                    <input class="csrf" type="hidden" name="<?php echo $csrf_name?>" value="<?php echo $csrf_hash?>">
+                    <input class="csrf" type="hidden" name="csrf_test_name" value="<?php echo $csrf_hash?>">
                     <div class="form-group">
                         <label for="email">Ваш email:</label>
                         <input type="text" class="form-control common_input" id="email" placeholder="Введите email" name="email">
@@ -156,12 +158,12 @@
                         <div class="form-group">
                             <label for="school_1">Ваша школа:</label>
                             <input type="text" class="form-control common_input" id="school_1" placeholder="Введите название школы" name="education_schools[]">
-                            <img id="school_image" onclick="addNewSchool(event)" class="plus" src="<?php echo base_url()?>uploads/images/design_images/thumb/default.jpg">
+                            <img id="school_image" onclick="addNewSchool(event)" class="plus" src="<?php echo base_url()?>uploads/icons/plus.png">
                         </div>
                         <div class="form-group">
                             <label for="university_1">Ваш университет:</label>
                             <input type="text" class="form-control common_input" id="university_1" placeholder="Введите название университета" name="education_universities[]">
-                            <img id="university_image" onclick="addNewUniversity(event)" class="plus" src="<?php echo base_url()?>uploads/images/design_images/thumb/default.jpg">
+                            <img id="university_image" onclick="addNewUniversity(event)" class="plus" src="<?php echo base_url()?>uploads/icons/plus.png">
                         </div>
                         <div class="form-group">
                             <label>Ваше семейное положение:</label><br>
@@ -182,11 +184,139 @@
             </div>
         </div>
     </div>
-    <div class="col-md-6 hedgehog">
-        <img class="img-thumbnail" src="<?php echo base_url()?>uploads/images/design_images/hedgehog.png">
+    <div class="col-lg-6 hedgehog small-hidden middle-hidden big-hidden">
+        <img class="hedgehog-logo" src="<?php echo base_url()?>uploads/icons/logo.png"><br>
+        <img class="newline-logo" src="<?php echo base_url()?>uploads/icons/newline.png"><br>
     </div>
 </div>
 
-<script src="/js/index.js"></script>
+<script>
+
+    var school = 1;
+    function addNewSchool(e) {
+        school = school + 1;
+        var i = parseInt(school);
+        $(e.target).before("<div class='form-group'>" +
+            "<label for='school_" + i + "'>Ваша школа №" + i + ": <img onclick='removeInput(this.parentElement.parentElement)' class='cross' src='/uploads/images/design_images/default.jpg'></label>" +
+            "<input type='text' class='form-control common_input' id='school_" + i + "' placeholder='Введите название школы' name='education_schools[]'>" +
+            "</div>");
+        if (i >= 3) {
+            $("#school_image").remove();
+        }
+    }
+
+    var university = 1;
+    function addNewUniversity(e) {
+        university = university + 1;
+        var i = parseInt(university);
+        $(e.target).before("<div class='form-group'>" +
+            "<label for='university_" + i + "'>Ваш университет №" + i + ": <img onclick='removeInput(this.parentElement.parentElement)' class='cross' src='/uploads/images/design_images/default.jpg'></label>" +
+            "<input type='text' class='form-control common_input' id='university_" + i + "' placeholder='Введите название университета' name='education_universities[]'>" +
+            "</div>");
+        if (i >= 3) {
+            $("#university_image").remove();
+        }
+    }
+
+    function removeInput(context) {
+        $(context).remove();
+    }
+
+    function registrationUser (context) {
+        var form = $(context)[0];
+        var all_inputs = new FormData(form);
+        $.ajax({
+            method: "POST",
+            url: "<?php echo base_url()?>" + "users/insert_user",
+            data: all_inputs,
+            dataType: "JSON",
+            contentType: false,
+            processData: false
+        }).done(function (messages) {
+            $(".csrf").val(messages.csrf_hash);
+            if (messages.email_num_rows === 1) {
+                $("#email_error").html(messages.email_exist);
+            } else if (messages.email_empty) {
+                $("#email_error").html(messages.email_empty)
+            } else if (messages.email_less) {
+                $("#email_error").html(messages.email_less)
+            } else {
+                $("#email_error").html('');
+            }
+
+            if (messages.password_mismatch) {
+                $("#password_error").html(messages.password_mismatch)
+            } else if (messages.password_empty) {
+                $("#password_error").html(messages.password_empty)
+            } else if (messages.password_less) {
+                $("#password_error").html(messages.password_less)
+            } else {
+                $("#password_error").html('');
+            }
+
+            if (messages.nickname_empty) {
+                $("#nickname_error").html(messages.nickname_empty)
+            } else if (messages.nickname_less) {
+                $("#nickname_error").html(messages.nickname_less)
+            } else {
+                $("#nickname_error").html('');
+            }
+
+            if (messages.surname_empty) {
+                $("#surname_error").html(messages.surname_empty)
+            } else if (messages.surname_less) {
+                $("#surname_error").html(messages.surname_less)
+            } else {
+                $("#surname_error").html('');
+            }
+
+
+            if (messages.birth_date_empty) {
+                $("#birth_date_error").html(messages.birth_date_empty);
+            } else if (messages.birth_date_incorrect) {
+                $("#birth_date_error").html(messages.birth_date_incorrect);
+            } else {
+                $("#birth_date_error").html('');
+            }
+
+            if (messages.gender_empty) {
+                $("#gender_error").html(messages.gender_empty)
+            } else {
+                $("#gender_error").html('');
+            }
+
+            if (messages.secret_question_1_empty) {
+                $("#secret_question_1_error").html(messages.secret_question_1_empty)
+            } else {
+                $("#secret_question_1_error").html('');
+            }
+
+            if (messages.secret_answer_1_empty) {
+                $("#secret_answer_1_error").html(messages.secret_answer_1_empty)
+            } else {
+                $("#secret_answer_1_error").html('');
+            }
+
+            if (messages.secret_question_2_empty) {
+                $("#secret_question_2_error").html(messages.secret_question_2_empty)
+            } else {
+                $("#secret_question_2_error").html('');
+            }
+
+            if (messages.secret_answer_2_empty) {
+                $("#secret_answer_2_error").html(messages.secret_answer_2_empty)
+            } else {
+                $("#secret_answer_2_error").html('');
+            }
+
+            if (messages.success_registration) {
+                window.location.href = "<?php echo base_url()?>publications";
+            }
+        });
+    }
+    window.onload = function () {
+        document.getElementsByClassName('newline-logo')[0].classList.add('menu-animated');
+    };
+</script>
 </body>
 </html>

@@ -9,6 +9,11 @@ class Books_model extends CI_Model {
     }
 
     public function getBookActionsByFriendIds($friend_ids) {
+        $this->db->select('book_actions.*, users.nickname, books.book_name, books.book_image');
+        $this->db->from('book_actions');
+        $this->db->join('books', 'book_actions.book_id = books.id');
+        $this->db->join('users', 'book_actions.action_user_id = users.id');
+        $this->db->order_by('book_actions.book_time_unix DESC');
         foreach ($friend_ids as $key => $friend_id) {
             if ($key == 0) {
                 $this->db->where('action_user_id', $friend_id);
@@ -16,15 +21,17 @@ class Books_model extends CI_Model {
                 $this->db->or_where('action_user_id', $friend_id);
             }
         }
-        $query = $this->db->get('book_actions');
+        $query = $this->db->get();
         return $query->result();
     }
-    public function getBooksByCategoryIds($category_ids) {
+    public function getBooksByCategoryIds($category_ids, $offset) {
+        $limit = 12;
+        $this->db->limit($limit, $offset);
         foreach ($category_ids as $key => $category_id) {
             if ($key == 0) {
-                $this->db->where('category_id', $category_id);
+                $this->db->where('books.category_id', $category_id);
             } else {
-                $this->db->or_where('category_id', $category_id);
+                $this->db->or_where('books.category_id', $category_id);
             }
         }
         $query = $this->db->get('books');
@@ -44,9 +51,19 @@ class Books_model extends CI_Model {
         $query = $this->db->get('book_categories');
         return $query->result();
     }
-    public function getBookCommentsByBookId($book_id) {
-        $this->db->where('book_id', $book_id);
+    public function getBookCommentNumRowsByIdAndCommentedUserId($id, $commented_user_id) {
+        $this->db->where('id', $id);
+        $this->db->where('commented_user_id', $commented_user_id);
         $query = $this->db->get('book_comments');
+        return $query->num_rows();
+    }
+    public function getBookCommentsByBookId($book_id) {
+        $this->db->select('book_comments.*, users.email, users.nickname, users.surname, users.main_image');
+        $this->db->from('book_comments');
+        $this->db->join('users', 'book_comments.commented_user_id = users.id');
+        $this->db->order_by('comment_date DESC, comment_time DESC');
+        $this->db->where('book_comments.book_id', $book_id);
+        $query = $this->db->get();
         return $query->result();
     }
     public function getBookCommentsByCommentedUserId($commented_user_id) {
@@ -59,9 +76,51 @@ class Books_model extends CI_Model {
         $query = $this->db->get('book_complaints');
         return $query->result();
     }
-    public function getBookFansByBookId($book_id) {
+    public function getBookComplaintNumRowsByBookIdAndComplainedUserId($book_id, $complained_user_id) {
         $this->db->where('book_id', $book_id);
+        $this->db->where('complained_user_id', $complained_user_id);
+        $query = $this->db->get('book_complaints');
+        return $query->num_rows();
+    }
+    public function getBookEmotionNumRowsByBookIdAndEmotionedUserId($book_id, $emotioned_user_id) {
+        $this->db->where('book_id', $book_id);
+        $this->db->where('emotioned_user_id', $emotioned_user_id);
+        $query = $this->db->get('book_emotions');
+        return $query->num_rows();
+    }
+    public function getBookFanNumRowsByBookIdAndFanUserId($book_id, $fan_user_id) {
+        $this->db->where('book_id', $book_id);
+        $this->db->where('fan_user_id', $fan_user_id);
         $query = $this->db->get('book_fans');
+        return $query->num_rows();
+    }
+
+    public function getBookEmotionsByBookId($book_id) {
+        $this->db->select('book_emotions.*, users.email, users.nickname, users.surname, users.main_image');
+        $this->db->from('book_emotions');
+        $this->db->join('users', 'book_emotions.emotioned_user_id = users.id');
+        $this->db->order_by('emotion_date DESC, emotion_time DESC');
+        $this->db->where('book_emotions.book_id', $book_id);
+        $query = $this->db->get();
+        return $query->result();
+    }
+    public function getBookFansByBookId($book_id) {
+        $this->db->select('book_fans.*, users.email, users.nickname, users.surname, users.main_image');
+        $this->db->from('book_fans');
+        $this->db->join('users', 'book_fans.fan_user_id = users.id');
+        $this->db->order_by('fan_date DESC, fan_time DESC');
+        $this->db->where('book_fans.book_id', $book_id);
+        $query = $this->db->get();
+        return $query->result();
+    }
+    public function getBookFansByFanUserId($fan_user_id) {
+        $this->db->select('book_fans.*, books.book_name, books.book_image, users.email, users.nickname, users.surname, users.main_image');
+        $this->db->from('book_fans');
+        $this->db->join('books', 'book_fans.book_id = books.id');
+        $this->db->join('users', 'book_fans.fan_user_id = users.id');
+        $this->db->order_by('fan_date DESC, fan_time DESC');
+        $this->db->where('book_fans.fan_user_id', $fan_user_id);
+        $query = $this->db->get();
         return $query->result();
     }
     public function getBookImageById($id) {
@@ -81,8 +140,11 @@ class Books_model extends CI_Model {
         return $query->num_rows();
     }
     public function getOneBookById($id) {
-        $this->db->where('id', $id);
-        $query = $this->db->get('books');
+        $this->db->select('books.*, book_categories.category_name');
+        $this->db->from('books');
+        $this->db->join('book_categories', 'books.category_id = book_categories.id');
+        $this->db->where('books.id', $id);
+        $query = $this->db->get();
         return $query->result();
     }
     public function getBookSuggestionsByAdminId($admin_id) {
@@ -100,6 +162,16 @@ class Books_model extends CI_Model {
         }
         return $book_suggestion_file;
     }
+    public function getBookNameById($id) {
+        $this->db->select('id, book_name');
+        $this->db->where('id', $id);
+        $query = $this->db->get('books');
+        $books = $query->result();
+        foreach ($books as $book) {
+            $book_name = $book->book_name;
+        }
+        return $book_name;
+    }
     public function getBookSuggestionImageById($id) {
         $this->db->select('id, suggestion_image');
         $this->db->where('id', $id);
@@ -115,6 +187,38 @@ class Books_model extends CI_Model {
         $this->db->where('suggested_user_id', $suggested_user_id);
         $query = $this->db->get('book_suggestions');
         return $query->result();
+    }
+
+    public function getTotalByBookIdAndBookTable($book_id, $book_table) {
+        $this->db->select('COUNT(*) as total');
+        $this->db->group_by('book_id');
+        $this->db->where('book_id', $book_id);
+        $query = $this->db->get($book_table);
+        $books = $query->result();
+        foreach ($books as $book) {
+            $total = $book->total;
+            if (strlen($total) == 4) {
+                return substr($total, 0, 1) . "K";
+            } else if(strlen($total) == 5) {
+                return substr($total, 0, 2) . "K";
+            } else if(strlen($total == 6)) {
+                return substr($total, 0, 3) . "K";
+            } else if (strlen($total) == 7) {
+                return substr($total, 0, 1) . "M";
+            } else if(strlen($total) == 8) {
+                return substr($total, 0, 2) . "M";
+            } else if(strlen($total == 9)) {
+                return substr($total, 0, 3) . "M";
+            } else if (strlen($total) == 10) {
+                return substr($total, 0, 1) . "B";
+            } else if(strlen($total) == 11) {
+                return substr($total, 0, 2) . "B";
+            } else if(strlen($total) == 12) {
+                return substr($total, 0, 3) . "B";
+            } else {
+                return $total;
+            }
+        }
     }
 
     public function insertBook($data) {
@@ -186,8 +290,9 @@ class Books_model extends CI_Model {
         $this->db->where('complained_user_id', $complained_user_id);
         $this->db->delete('book_complaints');
     }
-    public function deleteBookEmotionById($id) {
-        $this->db->where('id', $id);
+    public function deleteBookEmotionByBookIdAndEmotionedUserId($book_id, $emotioned_user_id) {
+        $this->db->where('book_id', $book_id);
+        $this->db->where('emotioned_user_id', $emotioned_user_id);
         $this->db->delete('book_emotions');
     }
     public function deleteBookEmotionsByBookId($book_id) {
@@ -198,8 +303,9 @@ class Books_model extends CI_Model {
         $this->db->where('emotioned_user_id', $emotioned_user_id);
         $this->db->delete('book_emotions');
     }
-    public function deleteBookFanById($id) {
-        $this->db->where('id', $id);
+    public function deleteBookFanByBookIdAndFanUserId($book_id, $fan_user_id) {
+        $this->db->where('book_id', $book_id);
+        $this->db->where('fan_user_id', $fan_user_id);
         $this->db->delete('book_fans');
     }
     public function deleteBookFansByBookId($book_id) {

@@ -9,13 +9,40 @@ class Stake_categories extends CI_Controller {
     }
 
     public function Index() {
+        $choose_category_ids = $this->input->post('category_ids');
         $category_ids = array();
-        $data = array(
-            'stakes' => $this->stakes_model->getStakesByCategoryIds($category_ids),
-            'csrf_name' => $this->security->get_csrf_token_name(),
+        if (isset($choose_category_ids)) {
+            $category_ids = $choose_category_ids;
+        }
+        $stakes = $this->stakes_model->getStakesByCategoryIds($category_ids);
+        $html = '';
+        if (count($category_ids) == 0) {
+            $html .= "<h3 class='centered'>Все награды</h3>";
+        } else {
+            $html .= "<h3 class='centered'>Результаты по выбранным категориям</h3>";
+        }
+        foreach ($stakes as $stake) {
+            $html .= "<div class='col-xs-6 col-sm-4 col-lg-3 one_stake'>
+                        <span onclick='insertStakeFanPress(this)' data-toggle='modal' data-target='#insertStakeFan' data-id='$stake->id' data-stake_name='$stake->stake_name'>
+                            <div class='stake_image'>
+                                <img src='" . base_url() . "uploads/images/stake_images/$stake->stake_file'>
+                            </div>
+                            <div class='stake_name'>
+                                $stake->stake_name
+                            </div>";
+            if ($stake->stake_price != 0) {
+                $html .= "<div class='badge stake_price'>$stake->stake_price сом</div>";
+            } else {
+                $html .= "<div class='badge stake_price' style='background-color: orange'>Бесплатно!</div>";
+            }
+            $html .= "</span>
+            </div>";
+        }
+        $get_json = array(
+            'stakes_by_categories' => $html,
             'csrf_hash' => $this->security->get_csrf_hash()
         );
-        $this->load->view('stakes', $data);
+        echo json_encode($get_json, JSON_UNESCAPED_UNICODE);
     }
 
     public function choose_stake_categories() {
@@ -49,7 +76,6 @@ class Stake_categories extends CI_Controller {
         $this->stakes_model->deleteStakeCategoryById($id);
         $delete_json = array(
             'id' => $id,
-            'csrf_name' => $this->security->get_csrf_token_name (),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($delete_json);

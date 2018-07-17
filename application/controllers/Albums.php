@@ -13,7 +13,6 @@ class Albums extends CI_Controller {
         $user_id = 1;
         $data = array(
             'albums' => $this->albums_model->getAlbumsByUserId($user_id),
-            'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         $this->load->view('albums', $data);
@@ -48,7 +47,6 @@ class Albums extends CI_Controller {
             $this->albums_model->deleteAlbumById($id);
             $delete_json = array(
                 'id' => $id,
-                'csrf_name' => $this->security->get_csrf_token_name(),
                 'csrf_hash' => $this->security->get_csrf_hash()
             );
             echo json_encode($delete_json);

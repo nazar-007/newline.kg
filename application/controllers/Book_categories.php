@@ -9,13 +9,42 @@ class Book_categories extends CI_Controller {
     }
 
     public function Index() {
+        $choose_category_ids = $this->input->post('category_ids');
         $category_ids = array();
+        if (isset($choose_category_ids)) {
+            $category_ids = $choose_category_ids;
+        }
+        $books = $this->books_model->getBooksByCategoryIds($category_ids, 0);
+        $html = '';
+        foreach ($books as $book) {
+            $book_id = $book->id;
+            $book_name = $book->book_name;
+            $total_book_emotions = $this->books_model->getTotalByBookIdAndBookTable($book_id, 'book_emotions');
+            $total_book_fans = $this->books_model->getTotalByBookIdAndBookTable($book_id, 'book_fans');
+            $html .= "<div class='col-xs-6 col-sm-6 col-md-4 col-lg-4 one_book'>
+                    <a href='" . base_url() . "one_book/$book_id'>
+                        <div class='book_cover'>
+                            <img class='book_image' src='" . base_url() . "uploads/images/book_images/$book->book_image'>             
+                        </div>
+                        <div class='book_name'>$book_name</div>
+                    </a>
+                    <div class='actions'>
+                        <span class='emotions_field'>
+                            <img onclick='putEmotionOrFan()' src='" . base_url() . "uploads/icons/emotioned.png'>
+                            <span class='badge' onclick='getBookEmotions(this)' data-book_id='$book->id' data-toggle='modal' data-target='#getBookEmotions'>$total_book_emotions</span>
+                        </span>
+                        <span class='fans_field'>
+                            <img onclick='putEmotionOrFan()' src='" . base_url() . "uploads/icons/fan.png'>
+                            <span class='badge' onclick='getBookFans(this)' data-book_id='$book->id' data-toggle='modal' data-target='#getBookFans'>$total_book_fans</span>
+                        </span>
+                    </div>
+                </div>";
+        }
         $data = array(
-            'book_categories' => $this->books_model->getBooksByCategoryIds($category_ids),
-            'csrf_name' => $this->security->get_csrf_token_name(),
+            'books_by_categories' => $html,
             'csrf_hash' => $this->security->get_csrf_hash()
         );
-        $this->load->view('book_categories', $data);
+        echo json_encode($data);
     }
 
     public function insert_book_category() {
@@ -32,7 +61,6 @@ class Book_categories extends CI_Controller {
         $this->books_model->deleteBookCategoryById($id);
         $delete_json = array(
             'id' => $id,
-            'csrf_name' => $this->security->get_csrf_token_name (),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($delete_json);

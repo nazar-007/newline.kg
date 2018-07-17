@@ -14,7 +14,6 @@ class Song_suggestions extends CI_Controller {
         $admin_id = 1;
         $data = array(
             'song_suggestions' => $this->songs_model->getSongSuggestionsByAdminId($admin_id),
-            'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         $this->load->view('song_suggestions', $data);
@@ -67,12 +66,13 @@ class Song_suggestions extends CI_Controller {
             'notification_date' => date('d.m.Y'),
             'notification_time' => date('d.m.Y'),
             'notification_viewed' => 'Не просмотрено',
+            'link_id' => 0,
+            'link_table' => 0,
             'user_id' => $user_id
         );
         $this->users_model->insertUserNotification($data_user_notifications);
         $delete_json = array(
             'id' => $id,
-            'csrf_name' => $this->security->get_csrf_token_name (),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($delete_json);

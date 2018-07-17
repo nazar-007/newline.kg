@@ -12,11 +12,8 @@ class User_image_actions extends CI_Controller {
         $friend_ids = array();
         $data = array(
             'user_image_actions' => $this->publications_model->getUserImageActionsByFriendIds($friend_ids),
-            'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         $this->load->view('user_image_actions', $data);
     }
-
-
 }

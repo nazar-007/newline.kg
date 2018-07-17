@@ -9,7 +9,6 @@ class Admins extends CI_Controller {
     }
     public function Index() {
         $data = array(
-            'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         $this->load->view('admins', $data);

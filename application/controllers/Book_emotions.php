@@ -6,73 +6,102 @@ class Book_emotions extends CI_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->model('books_model');
+        $this->load->model('users_model');
     }
 
     public function Index() {
-        $category_ids = array();
-        $data = array(
-            'books' => $this->books_model->getBooksByCategoryIds($category_ids),
-            'csrf_name' => $this->security->get_csrf_token_name(),
+        $this->load->view('session_user');
+        $book_id = $this->input->post('book_id');
+        $book_emotions = $this->books_model->getBookEmotionsByBookId($book_id);
+        $html = '';
+        $html .= "<div class='row'>";
+        foreach ($book_emotions as $book_emotion) {
+            $html .= "<div class='col-xs-6 col-sm-4 col-lg-3 emotion_user'>
+                        <a href='" . base_url() . "one_user/$book_emotion->email'>
+                            <div class='emotion_user_image'>
+                                <img src='" . base_url() . "uploads/images/user_images/$book_emotion->main_image' class='action_avatar'>
+                            </div>
+                            <div class='emotion_user_name'>
+                                $book_emotion->nickname $book_emotion->surname
+                            </div>
+                        </a>
+                    </div>";
+        }
+        $html .= "</div>";
+        $get_emotions_json = array(
+            'one_book_emotions' => $html,
             'csrf_hash' => $this->security->get_csrf_hash()
         );
-        $this->load->view('book_emotions', $data);
+        echo json_encode($get_emotions_json);
     }
 
     public function insert_book_emotion() {
+        $this->load->view('session_user');
+        $session_user_id = $_SESSION['user_id'];
         $emotion_date = date('d.m.Y');
         $emotion_time = date('H:i:s');
         $emotioned_user_id = $this->input->post('emotioned_user_id');
         $book_id = $this->input->post('book_id');
-        $emotion_id = $this->input->post('emotion_id');
+        $emotion_num_rows = $this->books_model->getBookEmotionNumRowsByBookIdAndEmotionedUserId($book_id, $emotioned_user_id);
 
-        $data_book_emotions = array(
-            'emotion_date' => $emotion_date,
-            'emotion_time' => $emotion_time,
-            'emotioned_user_id' => $emotioned_user_id,
-            'book_id' => $book_id,
-            'emotion_id' => $emotion_id
-        );
-        $this->books_model->insertBookEmotion($data_book_emotions);
+        if ($emotion_num_rows == 0 && $emotioned_user_id == $session_user_id) {
+            $data_book_emotions = array(
+                'emotion_date' => $emotion_date,
+                'emotion_time' => $emotion_time,
+                'emotioned_user_id' => $emotioned_user_id,
+                'book_id' => $book_id
+            );
+            $this->books_model->insertBookEmotion($data_book_emotions);
 
-        // НАДО ДОДЕЛАТЬ ЭКШН
+            $user_name = $this->users_model->getNicknameAndSurnameById($emotioned_user_id);
+            $book_name = $this->books_model->getBookNameById($book_id);
 
-        $book_action = 'Пользователь Назар поставил эмоцию на книгу "Убить пересмешника".';
+            $data_book_actions = array(
+                'book_action' => "$user_name поставил(-а) эмоцию на книгу '$book_name'",
+                'book_time_unix' => time(),
+                'action_user_id' => $emotioned_user_id,
+                'book_id' => $book_id
+            );
+            $this->books_model->insertBookAction($data_book_actions);
 
-        $data_book_actions = array(
-            'book_action' => $book_action,
-            'book_time_unix' => time(),
-            'action_user_id' => $emotioned_user_id,
-            'book_id' => $book_id
-        );
-        $this->books_model->insertBookAction($data_book_actions);
+            $total_emotions = $this->books_model->getTotalByBookIdAndBookTable($book_id, 'book_emotions');
+            $insert_json = array(
+                'emotion_num_rows' => $emotion_num_rows,
+                'total_emotions' => $total_emotions,
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        } else {
+            $insert_json = array(
+                'emotion_num_rows' => $emotion_num_rows,
+                'emotion_error' => "Вы уже ставили эмоцию на данную книгу или что-то пошло не так!",
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        }
+        echo json_encode($insert_json);
     }
 
     public function delete_book_emotion() {
-        $id = $this->input->post('id');
-        $this->books_model->deleteBookEmotionById($id);
-        $delete_json = array(
-            'id' => $id,
-            'csrf_name' => $this->security->get_csrf_token_name (),
-            'csrf_hash' => $this->security->get_csrf_hash()
-        );
-        echo json_encode($delete_json);
-    }
-
-    public function update_book_emotion() {
-        $id = $this->input->post('id');
-        $emotion_date = date('d.m.Y');
-        $emotion_time = date('H:i:s');
-        $emotioned_user_id = $this->input->post('emotioned_user_id');
+        $this->load->view('session_user');
+        $session_user_id = $_SESSION['user_id'];
         $book_id = $this->input->post('book_id');
-        $emotion_id = $this->input->post('emotion_id');
+        $emotioned_user_id = $this->input->post('emotioned_user_id');
+        $emotion_num_rows = $this->books_model->getBookEmotionNumRowsByBookIdAndEmotionedUserId($book_id, $emotioned_user_id);
 
-        $data_book_emotions = array(
-            'emotion_date' => $emotion_date,
-            'emotion_time' => $emotion_time,
-            'emotioned_user_id' => $emotioned_user_id,
-            'book_id' => $book_id,
-            'emotion_id' => $emotion_id
-        );
-        $this->books_model->updateBookEmotionById($id, $data_book_emotions);
+        if ($emotion_num_rows > 0 && $emotioned_user_id == $session_user_id) {
+            $this->books_model->deleteBookEmotionByBookIdAndEmotionedUserId($book_id, $emotioned_user_id);
+            $total_emotions = $this->books_model->getTotalByBookIdAndBookTable($book_id, 'book_emotions');
+            $delete_json = array(
+                'emotion_num_rows' => $emotion_num_rows,
+                'total_emotions' => $total_emotions,
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        } else {
+            $delete_json = array(
+                'emotion_num_rows' => $emotion_num_rows,
+                'emotion_error' => "Вы ещё не ставили эмоцию на данную книгу или что-то пошло не так",
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        }
+        echo json_encode($delete_json);
     }
 }

@@ -13,7 +13,6 @@ class Event_complaints extends CI_Controller {
         $admin_id = 2;
         $data = array(
             'event_complaints' => $this->events_model->getEventComplaintsByAdminId($admin_id),
-            'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         $this->load->view('event_complaints', $data);
@@ -53,7 +52,6 @@ class Event_complaints extends CI_Controller {
         $this->events_model->deleteEventComplaintsByComplainedUserId($complained_user_id);
         $delete_json = array(
             'complained_user_id' => $complained_user_id,
-            'csrf_name' => $this->security->get_csrf_token_name (),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($delete_json);

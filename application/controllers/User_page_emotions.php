@@ -10,7 +10,6 @@ class User_page_emotions extends CI_Controller {
 
     public function Index() {
         $data = array(
-            'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         $this->load->view('user_page_emotions', $data);
@@ -21,14 +20,12 @@ class User_page_emotions extends CI_Controller {
         $emotion_time = date('H:i:s');
         $user_id = $this->input->post('user_id');
         $emotioned_user_id = $this->input->post('emotioned_user_id');
-        $emotion_id = $this->input->post('emotion_id');
 
         $data_user_page_emotions = array(
             'emotion_date' => $emotion_date,
             'emotion_time' => $emotion_time,
             'user_id' => $user_id,
-            'emotioned_user_id' => $emotioned_user_id,
-            'emotion_id' => $emotion_id
+            'emotioned_user_id' => $emotioned_user_id
         );
         $this->users_model->insertUserPageEmotion($data_user_page_emotions);
 
@@ -40,6 +37,8 @@ class User_page_emotions extends CI_Controller {
             'notification_date' => $emotion_date,
             'notification_time' => $emotion_time,
             'notification_viewed' => 'Не просмотрено',
+            'link_id' => 0,
+            'link_table' => 'users',
             'user_id' => $user_id
         );
         $this->users_model->insertUserNotification($data_user_notifications);
@@ -54,23 +53,5 @@ class User_page_emotions extends CI_Controller {
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($delete_json);
-    }
-
-    public function update_user_page_emotion() {
-        $id = $this->input->post('id');
-        $emotion_date = date('d.m.Y');
-        $emotion_time = date('H:i:s');
-        $user_id = $this->input->post('user_id');
-        $emotioned_user_id = $this->input->post('emotioned_user_id');
-        $emotion_id = $this->input->post('emotion_id');
-
-        $data_user_page_emotions = array(
-            'emotion_date' => $emotion_date,
-            'emotion_time' => $emotion_time,
-            'user_id' => $user_id,
-            'emotioned_user_id' => $emotioned_user_id,
-            'emotion_id' => $emotion_id
-        );
-        $this->users_model->updateUserPageEmotionById($id, $data_user_page_emotions);
     }
 }

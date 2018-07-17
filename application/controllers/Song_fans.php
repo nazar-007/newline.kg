@@ -12,7 +12,6 @@ class Song_fans extends CI_Controller {
         $song_id = 3;
         $data = array(
             'song_fans' => $this->songs_model->getSongFansBySongId($song_id),
-            'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         $this->load->view('song_fans', $data);
@@ -53,7 +52,6 @@ class Song_fans extends CI_Controller {
         $this->songs_model->deleteSongFanById($id);
         $delete_json = array(
             'id' => $id,
-            'csrf_name' => $this->security->get_csrf_token_name (),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($delete_json);

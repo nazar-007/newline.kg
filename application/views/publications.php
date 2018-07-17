@@ -17,77 +17,8 @@
 <?php $this->load->view("header");?>
 <div class="container">
     <div class="stuff row">
-        <div class="pos_catalog small-hidden col-xs-3">
-            <ul class="catalog">
-                <li>
-                    <a href="<?php echo base_url()?>my_page">
-                        <img src="<?php echo base_url()?>uploads/icons/internet.png">
-                        Моя страница
-                    </a>
-                </li>
-                <li>
-                    <a href="<?php echo base_url()?>friends">
-                        <img src="<?php echo base_url()?>uploads/icons/notebook.png">
-                        Друзья
-                    </a>
-                </li>
-                <li>
-                    <a href="<?php echo base_url()?>guests">
-                        <img src="<?php echo base_url()?>uploads/icons/notebook.png">
-                        Гости
-                    </a>
-                </li>
-                <li>
-                    <a href="<?php echo base_url()?>books">
-                        <img src="<?php echo base_url()?>uploads/icons/books.png">
-                        Книги
-                    </a>
-                </li>
-                <li>
-                    <a href="<?php echo base_url()?>events">
-                        <img src="<?php echo base_url()?>uploads/icons/calendar.png">
-                        События
-                    </a>
-                </li>
-                <li>
-                    <a href="<?php echo base_url()?>songs">
-                        <img src="<?php echo base_url()?>uploads/icons/quaver.png">
-                        Песни
-                    </a>
-                </li>
-                <li>
-                    <a href="<?php echo base_url()?>albums">
-                        <img src="<?php echo base_url()?>uploads/icons/pictures.png">
-                        Альбомы
-                    </a>
-                </li>
-                <li>
-                    <a href="<?php echo base_url()?>folders">
-                        <img src="<?php echo base_url()?>uploads/icons/folder.png">
-                        Папки
-                    </a>
-                </li>
-                <li>
-                    <a href="<?php echo base_url()?>gifts">
-                        <img src="<?php echo base_url()?>uploads/icons/rewards.png">
-                        Подарки
-                    </a>
-                </li>
-                <li>
-                    <a href="<?php echo base_url()?>stakes">
-                        <img src="<?php echo base_url()?>uploads/icons/medal.png">
-                        Награды
-                    </a>
-                </li>
-                <li>
-                    <a href="<?php echo base_url()?>users/logout">
-                        Выйти
-                    </a>
-                </li>
-                <li>
-                    <img src="/uploads/icons/up-arrow.png" class="up-arrow scrollup">
-                </li>
-            </ul>
+        <div class="pos_catalog small-hidden col-xs-3 col-sm-3">
+            <?php $this->load->view('sidebar'); ?>
         </div>
         <div class="pos_publications col-xs-6 col-sm-9">
             <div id="all_publications">
@@ -96,7 +27,7 @@
             ?>
             </div>
         </div>
-        <div class="pos_recommendations small-hidden middle-hidden col-xs-3">
+        <div class="pos_recommendations small-hidden middle-hidden big-hidden col-xs-3">
             <div class="rec_post">
                 <div class="one_rec_post">
                     <a class="bout_post">
@@ -113,15 +44,16 @@
         </div>
     </div>
 </div>
+<?php $this->load->view("footer");?>
 
-<div class="modal fade" id="viewOnePublication" role="dialog">
+<div class="modal fade" id="getPublicationComments" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Просмотр публикации</h4>
+                <h4 class="modal-title">Комментарии к публикации</h4>
             </div>
-            <div id="one_publication" class="modal-body">
+            <div id="one_publication_comments" class="modal-body">
 
             </div>
             <div class="modal-footer">
@@ -131,12 +63,12 @@
     </div>
 </div>
 
-<div class="modal fade" id="viewPublicationEmotions" role="dialog">
+<div class="modal fade" id="getPublicationEmotions" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Люди, поставившие эмоции</h4>
+                <h4 class="modal-title">Люди, поставившие эмоции на публикацию</h4>
             </div>
             <div id="one_publication_emotions" class="modal-body">
 
@@ -148,7 +80,24 @@
     </div>
 </div>
 
-<div class="modal fade" id="viewPublicationShares" role="dialog">
+<div class="modal fade" id="getPublicationImageEmotions" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Люди, поставившие эмоцию на фотку публикации</h4>
+            </div>
+            <div id="one_publication_image_emotions" class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="getPublicationShares" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -195,36 +144,39 @@
     </div>
 </div>
 
-<?php $this->load->view('footer');?>
-
 <script type="text/javascript" src="<?php base_url()?>js/common.js"></script>
 <script>
+    window.onblur = function () {console.log('неактивен')};
+    window.onfocus = function () {console.log('снова активен')};
+
+
     var offset = 0;
-    $(document).scroll(function(){
+    $(document).scroll(function() {
         if($(document).scrollTop() >= $(document).height() - $(window).height()) {
             offset = offset + 2;
             $.ajax({
                 method: "POST",
-                url: "<?php echo base_url()?>publications/loadmore_publications",
+                url: "<?php echo base_url()?>publications/index",
                 data: {offset: offset, csrf_test_name: $(".csrf").val()},
                 dataType: "JSON"
             }).done(function (message) {
                 $('.csrf').val(message.csrf_hash);
-                $("#all_publications").append(message.loadmore);
+                $("#all_publications").append(message.publications);
             })
         }
     });
 
-    function getOnePublication(context) {
+    function getPublicationComments(context) {
         var publication_id = context.parentElement.getAttribute('data-publication_id');
+        var published_user_id = context.parentElement.getAttribute('data-published_user_id');
         $.ajax({
             method: "POST",
-            url: "<?php echo base_url()?>publications/get_one_publication",
-            data: {id: publication_id, csrf_test_name: $(".csrf").val()},
+            url: "<?php echo base_url()?>publication_comments/index",
+            data: {publication_id: publication_id, published_user_id: published_user_id, csrf_test_name: $(".csrf").val()},
             dataType: "JSON"
         }).done(function (message) {
             $(".csrf").val(message.csrf_hash);
-            $("#one_publication").html(message.one_publication);
+            $("#one_publication_comments").html(message.one_publication_comments);
         })
     }
 
@@ -232,12 +184,25 @@
         var publication_id = context.parentElement.getAttribute('data-publication_id');
         $.ajax({
             method: "POST",
-            url: "<?php echo base_url()?>publication_emotions/get_publication_emotions",
+            url: "<?php echo base_url()?>publication_emotions/index",
             data: {publication_id: publication_id, csrf_test_name: $(".csrf").val()},
             dataType: "JSON"
         }).done(function (message) {
             $(".csrf").val(message.csrf_hash);
-            $("#one_publication_emotions").html(message.publication_emotions);
+            $("#one_publication_emotions").html(message.one_publication_emotions);
+        })
+    }
+
+    function getPublicationImageEmotions(context) {
+        var publication_image_id = context.parentElement.getAttribute('data-publication_image_id');
+        $.ajax({
+            method: "POST",
+            url: "<?php echo base_url()?>publication_image_emotions/index",
+            data: {publication_image_id: publication_image_id, csrf_test_name: $(".csrf").val()},
+            dataType: "JSON"
+        }).done(function (message) {
+            $(".csrf").val(message.csrf_hash);
+            $("#one_publication_image_emotions").html(message.one_publication_image_emotions);
         })
     }
 
@@ -245,12 +210,12 @@
         var publication_id = context.parentElement.getAttribute('data-publication_id');
         $.ajax({
             method: "POST",
-            url: "<?php echo base_url()?>publication_shares/get_publication_shares",
+            url: "<?php echo base_url()?>publication_shares/index",
             data: {publication_id: publication_id, csrf_test_name: $(".csrf").val()},
             dataType: "JSON"
         }).done(function (message) {
             $(".csrf").val(message.csrf_hash);
-            $("#one_publication_shares").html(message.publication_shares);
+            $("#one_publication_shares").html(message.one_publication_shares);
         })
     }
 
@@ -278,7 +243,8 @@
                     "</div>" +
                     "<div class='comment_text'>" + message.comment_text + "</div> " +
                     "</div>");
-                $(".comments_field_" + message.publication_id).html("<img src='<?php echo base_url()?>uploads/icons/comment.png'>" + message.total_comments);
+                $(".comments_field_" + message.publication_id).html("<span onclick='getPublicationComments(this)' data-toggle='modal' data-target='#getPublicationComments'>" +
+                    "<img src='<?php echo base_url()?>uploads/icons/comment.png'><span class='badge'>" + message.total_comments + "</span></span>");
             } else {
                 alert(message.comment_error);
             }
@@ -295,8 +261,13 @@
             dataType: "JSON"
         }).done(function (message) {
             $(".csrf").val(message.csrf_hash);
-            $('.one_comment_' + publication_comment_id).remove();
-            $(".comments_field_" + publication_id).html("<img src='<?php echo base_url()?>uploads/icons/comment.png'>" + message.total_comments);
+            if (message.comment_error) {
+                alert(message.comment_error);
+            } else {
+                $('.one_comment_' + publication_comment_id).remove();
+                $(".comments_field_" + publication_id).html("<span onclick='getPublicationComments(this)' data-toggle='modal' data-target='#getPublicationComments'>" +
+                    "<img src='<?php echo base_url()?>uploads/icons/comment.png'><span class='badge'>" + message.total_comments + "</span></span>");
+            }
         })
     }
 
@@ -347,7 +318,7 @@
             $(".csrf").val(message.csrf_hash);
             if (message.emotion_num_rows == 0) {
                 $(".emotions_field_" + publication_id).html("<img onclick='deletePublicationEmotion(this)'" +
-                    " src='<?php echo base_url()?>uploads/icons/emotioned.png'><span onclick='getPublicationEmotions(this)' data-toggle='modal' data-target='#viewPublicationEmotions'>" + message.total_emotions + "</span>");
+                    " src='<?php echo base_url()?>uploads/icons/emotioned.png'><span class='badge' onclick='getPublicationEmotions(this)' data-toggle='modal' data-target='#getPublicationEmotions'>" + message.total_emotions + "</span>");
             } else {
                 alert(message.emotion_error);
             }
@@ -369,7 +340,49 @@
                         " src='<?php echo base_url()?>uploads/icons/unemotioned.png'>");
                 } else {
                     $(".emotions_field_" + publication_id).html("<img onclick='insertPublicationEmotion(this)'" +
-                        " src='<?php echo base_url()?>uploads/icons/unemotioned.png'><span onclick='getPublicationEmotions(this)' data-toggle='modal' data-target='#viewPublicationEmotions'>" + message.total_emotions + "</span>");
+                        " src='<?php echo base_url()?>uploads/icons/unemotioned.png'><span class='badge' onclick='getPublicationEmotions(this)' data-toggle='modal' data-target='#getPublicationEmotions'>" + message.total_emotions + "</span>");
+                }
+            } else {
+                alert(message.emotion_error);
+            }
+        })
+    }
+
+    function insertPublicationImageEmotion(context) {
+        var emotioned_user_id = context.parentElement.getAttribute('data-emotioned_user_id');
+        var publication_image_id = context.parentElement.getAttribute('data-publication_image_id');
+        $.ajax({
+            method: "POST",
+            url: "<?php echo base_url()?>publication_image_emotions/insert_publication_image_emotion",
+            data: {emotioned_user_id: emotioned_user_id, publication_image_id: publication_image_id, csrf_test_name: $(".csrf").val()},
+            dataType: "JSON"
+        }).done(function (message) {
+            $(".csrf").val(message.csrf_hash);
+            if (message.image_emotion_num_rows == 0) {
+                $(".image_emotions_field_" + publication_image_id).html("<img class='emotion_image' onclick='deletePublicationImageEmotion(this)'" +
+                    " src='<?php echo base_url()?>uploads/icons/emotioned.png'><span class='badge' onclick='getPublicationImageEmotions(this)' data-toggle='modal' data-target='#getPublicationImageEmotions'>" + message.total_emotions + "</span>");
+            } else {
+                alert(message.emotion_error);
+            }
+        })
+    }
+    function deletePublicationImageEmotion(context) {
+        var emotioned_user_id = context.parentElement.getAttribute('data-emotioned_user_id');
+        var publication_image_id = context.parentElement.getAttribute('data-publication_image_id');
+        $.ajax({
+            method: "POST",
+            url: "<?php echo base_url()?>publication_image_emotions/delete_publication_image_emotion",
+            data: {emotioned_user_id: emotioned_user_id, publication_image_id: publication_image_id, csrf_test_name: $(".csrf").val()},
+            dataType: "JSON"
+        }).done(function (message) {
+            $(".csrf").val(message.csrf_hash);
+            if (message.image_emotion_num_rows > 0) {
+                if (message.total_emotions == null) {
+                    $(".image_emotions_field_" + publication_image_id).html("<img class='emotion_image' onclick='insertPublicationImageEmotion(this)'" +
+                        " src='<?php echo base_url()?>uploads/icons/unemotioned.png'>");
+                } else {
+                    $(".image_emotions_field_" + publication_image_id).html("<img class='emotion_image' onclick='insertPublicationImageEmotion(this)'" +
+                        " src='<?php echo base_url()?>uploads/icons/unemotioned.png'><span class='badge' onclick='getPublicationImageEmotions(this)' data-toggle='modal' data-target='#getPublicationImageEmotions'>" + message.total_emotions + "</span>");
                 }
             } else {
                 alert(message.emotion_error);
@@ -390,7 +403,7 @@
             $(".csrf").val(message.csrf_hash);
             if (message.share_num_rows == 0) {
                 $(".shares_field_" + publication_id).html("<img onclick='deletePublicationShare(this)'" +
-                    " src='<?php echo base_url()?>uploads/icons/shared.png'><span onclick='getPublicationShares(this)' data-toggle='modal' data-target='#viewPublicationShares'>" + message.total_shares + "</span>");
+                    " src='<?php echo base_url()?>uploads/icons/shared.png'><span class='badge' onclick='getPublicationShares(this)' data-toggle='modal' data-target='#getPublicationShares'>" + message.total_shares + "</span>");
             } else {
                 alert(message.share_error);
             }
@@ -412,13 +425,44 @@
                         " src='<?php echo base_url()?>uploads/icons/unshared.png'>");
                 } else {
                     $(".shares_field_" + publication_id).html("<img onclick='insertPublicationShare(this)'" +
-                        " src='<?php echo base_url()?>uploads/icons/unshared.png'><span onclick='getPublicationShares(this)' data-toggle='modal' data-target='#viewPublicationShares'>" + message.total_shares + "</span>");
+                        " src='<?php echo base_url()?>uploads/icons/unshared.png'><span class='badge' onclick='getPublicationShares(this)' data-toggle='modal' data-target='#getPublicationShares'>" + message.total_shares + "</span>");
                 }
             } else {
                 alert(message.share_error);
             }
         })
     }
+
+    $("#getPublicationComments").on('show.bs.modal', function () {
+        history.pushState(null, null, location.href);
+        window.onpopstate = function() {
+            $("#getPublicationComments").modal('hide');
+        };
+    });
+    $("#getPublicationEmotions").on('show.bs.modal', function () {
+        history.pushState(null, null, location.href);
+        window.onpopstate = function() {
+            $("#getPublicationEmotions").modal('hide');
+        };
+    });
+    $("#getPublicationImageEmotions").on('show.bs.modal', function () {
+        history.pushState(null, null, location.href);
+        window.onpopstate = function() {
+            $("#getPublicationImageEmotions").modal('hide');
+        };
+    });
+    $("#getPublicationShares").on('show.bs.modal', function () {
+        history.pushState(null, null, location.href);
+        window.onpopstate = function() {
+            $("#getPublicationShares").modal('hide');
+        };
+    });
+    $("#insertPublicationComplaint").on('show.bs.modal', function () {
+        history.pushState(null, null, location.href);
+        window.onpopstate = function() {
+            $("#insertPublicationComplaint").modal('hide');
+        };
+    });
 
 </script>
 </body>

@@ -6,6 +6,12 @@ class Stakes_model extends CI_Model {
         parent::__construct();
         $this->load->database();
         $this->load->helper('url');
+        $this->load->library('session');
+        $sessions = array(
+            'user_id' => $this->session->userdata('user_id'),
+            'user_email' => $this->session->userdata('user_email')
+        );
+        $this->session->set_userdata($sessions);
     }
 
     public function getStakesByCategoryIds($category_ids) {
@@ -27,6 +33,32 @@ class Stakes_model extends CI_Model {
         $this->db->where('stake_id', $stake_id);
         $query = $this->db->get('stake_fans');
         return $query->result();
+    }
+    public function getStakePriceById($id) {
+        $this->db->where('id', $id);
+        $query = $this->db->get('stakes');
+        $stakes = $query->result();
+        foreach ($stakes as $stake) {
+            $stake_price = $stake->stake_price;
+        }
+        return $stake_price;
+    }
+    public function getStakeFansByFanUserId($fan_user_id) {
+        $this->db->select('stake_fans.*, stakes.stake_name, stakes.stake_file');
+        $this->db->from('stake_fans');
+        $this->db->join('stakes', 'stake_fans.stake_id = stakes.id');
+        $this->db->order_by('stake_fans.stake_date DESC, stake_fans.stake_time DESC');
+//        $this->db->join('users', 'stake_fans.fan_user_id = users.id');
+        $this->db->where('stake_fans.fan_user_id', $fan_user_id);
+        $query = $this->db->get();
+        return $query->result();
+    }
+    public function getStakeFanNumRowsByIdAndFanUserId($id, $fan_user_id) {
+        $this->db->select('id, fan_user_id');
+        $this->db->where('id', $id);
+        $this->db->where('fan_user_id', $fan_user_id);
+        $query = $this->db->get('stake_fans');
+        return $query->num_rows();
     }
 
     public function insertStake($data) {

@@ -12,7 +12,6 @@ class Book_actions extends CI_Controller {
         $friend_ids = array();
         $data = array(
             'book_actions' => $this->books_model->getBookActionsByFriendIds($friend_ids),
-            'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         $this->load->view('book_actions', $data);

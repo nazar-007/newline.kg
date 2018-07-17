@@ -11,7 +11,6 @@ class Guest_messages extends CI_Controller {
         $user_id = 1;
         $data = array(
             'guest_messages' => $this->messages_model->getGuests($user_id),
-            'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         $this->load->view('guest_messages', $data);
@@ -39,7 +38,6 @@ class Guest_messages extends CI_Controller {
         $this->messages_model->deleteGuestMessage($id);
         $delete_json = array(
             'id' => $id,
-            'csrf_name' => $this->security->get_csrf_token_name (),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($delete_json);
@@ -50,7 +48,6 @@ class Guest_messages extends CI_Controller {
         $this->messages_model->deleteAllGuestMessagesByUserId($user_id);
         $delete_json = array(
             'user_id' => $user_id,
-            'csrf_name' => $this->security->get_csrf_token_name (),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($delete_json);

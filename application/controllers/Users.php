@@ -25,7 +25,6 @@ class Users extends CI_Controller {
         }
         $data = array(
             'countries' => $this->countries_model->getCountries(),
-            'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         $this->load->view('index', $data);
@@ -38,26 +37,56 @@ class Users extends CI_Controller {
         if($num_rows > 0) {
             $_SESSION['user_id'] = $user_id;
             $_SESSION['user_email'] = $email;
-            redirect('/publications');
+            redirect(base_url() . "publications");
         } else {
-            redirect('/');
+            redirect(base_url());
         }
     }
 
     public function One_user($email) {
         $user_num_rows = $this->users_model->getUserNumRowsByEmail($email);
-        if ($user_num_rows == 1) {
+        if ($user_num_rows == 1 && $email == $_SESSION['user_email']) {
+            redirect(base_url() . "my_page");
+        } else if ($user_num_rows == 1) {
+            $guest_date = date('d.m.Y');
+            $guest_time = date('H:i:s');
+            $guest_time_unix = time();
+            $user_id = $this->users_model->getUserIdByEmail($email);
+            $guest_id = $_SESSION['user_id'];
+            $guest_num_rows = $this->users_model->getGuestNumRowsByUserIdAndGuestId($user_id, $guest_id);
+
+            if ($guest_num_rows == 0) {
+                $data_guests = array(
+                    'guest_date' => $guest_date,
+                    'guest_time' => $guest_time,
+                    'guest_time_unix' => $guest_time_unix,
+                    'user_viewed' => 0,
+                    'user_id' => $user_id,
+                    'guest_id' => $guest_id
+                );
+                $this->users_model->insertGuest($data_guests);
+            } else {
+                $data_guests = array(
+                    'guest_date' => $guest_date,
+                    'guest_time' => $guest_time,
+                    'guest_time_unix' => $guest_time_unix,
+                    'user_viewed' => 0
+                );
+                $this->users_model->updateGuestByUserIdAndGuestId($user_id, $guest_id, $data_guests);
+            }
             $data_users = array(
                 'one_user' => $this->users_model->getOneUserByEmail($email),
-                'user_num_rows' => $user_num_rows
+                'user_num_rows' => $user_num_rows,
+                'user_id' => $this->users_model->getUserIdByEmail($email)
             );
+            $this->load->view('one_user', $data_users);
         } else {
             echo "Страница удалена или ещё не создана!";
             $data_users = array(
                 'user_num_rows' => $user_num_rows
             );
+            $this->load->view('one_user', $data_users);
         }
-        $this->load->view('one_user', $data_users);
     }
 
     public function Logout() {
@@ -67,14 +96,14 @@ class Users extends CI_Controller {
     }
 
     public function Online() {
-        $id = $this->input->post('id');
-        $data = array(
-            'last_visit' => 'Онлайн'
-        );
+//        $id = $this->input->post('id');
+//        $data = array(
+//            'last_visit' => 'Онлайн'
+//        );
         $json = array(
             'csrf_hash' => $this->security->get_csrf_hash()
         );
-        $this->users_model->updateUserById($id, $data);
+//        $this->users_model->updateUserById($id, $data);
         echo json_encode($json);
     }
 
@@ -393,7 +422,6 @@ class Users extends CI_Controller {
 
         $delete_json = array(
             'id' => $id,
-            'csrf_name' => $this->security->get_csrf_token_name (),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($delete_json);

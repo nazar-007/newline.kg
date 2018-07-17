@@ -10,10 +10,11 @@ class Stakes extends CI_Controller {
 
     public function Index() {
         $category_ids = array();
+        $user_id = $_SESSION['user_id'];
         $data = array(
             'stakes' => $this->stakes_model->getStakesByCategoryIds($category_ids),
+            'my_stakes' => $this->stakes_model->getStakeFansByFanUserId($user_id),
             'stake_categories' => $this->stakes_model->getStakeCategories(),
-            'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         $this->load->view('stakes', $data);
@@ -54,7 +55,6 @@ class Stakes extends CI_Controller {
         $this->stakes_model->deleteStakeById($id);
         $delete_json = array(
             'id' => $id,
-            'csrf_name' => $this->security->get_csrf_token_name (),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($delete_json);

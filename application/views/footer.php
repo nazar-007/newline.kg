@@ -1,13 +1,9 @@
-<div class="container">
-    <div class="jumbotron">
-        <h1>Bootstrap Tutorial</h1>
-        <p>Bootstrap is the most popular HTML, CSS, and JS framework for developing responsive, mobile-first projects on the web.</p>
-    </div>
-    <p>This is some text.</p>
-    <p>This is another text.</p>
-</div>
-
+<footer>
+    <p>This is footer.</p>
+</footer>
 <script>
+
+
     function onLine() {
         $.ajax({
             method: "POST",
@@ -18,7 +14,7 @@
             $('.csrf').val(message.csrf_hash);
         })
     }
-    window.onload = onLine;
+//    window.onload = onLine;
 
     function lastVisit() {
         $.ajax({
@@ -30,5 +26,5 @@
             $('.csrf').val(message.csrf_hash);
         })
     }
-    window.onunload = lastVisit;
+//    window.onunload = lastVisit;
 </script>

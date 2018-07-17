@@ -13,7 +13,6 @@ class Publication_share_emotions extends CI_Controller {
         $friend_ids = array();
         $data = array(
             'publications' => $this->publications_model->getPublicationsByFriendIds($friend_ids),
-            'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         $this->load->view('publications', $data);
@@ -25,7 +24,6 @@ class Publication_share_emotions extends CI_Controller {
         $share_user_id = $this->input->post('share_user_id');
         $emotioned_user_id = $this->input->post('emotioned_user_id');
         $publication_share_id = $this->input->post('publication_share_id');
-        $emotion_id = $this->input->post('emotion_id');
 
         $data_publication_share_emotions = array(
             'emotion_date' => $emotion_date,
@@ -33,21 +31,8 @@ class Publication_share_emotions extends CI_Controller {
             'share_user_id' => $share_user_id,
             'emotioned_user_id' => $emotioned_user_id,
             'publication_share_id' => $publication_share_id,
-            'emotion_id' => $emotion_id
         );
         $this->publications_model->insertPublicationShareEmotion($data_publication_share_emotions);
-
-        $notification_text = 'Пользователь Назар оставил эмоцию на публикацию, которой Вы поделились.';
-
-        $data_user_notifications = array(
-            'notification_type' => 'Эмоция на публикацию, которой поделились',
-            'notification_text' => $notification_text,
-            'notification_date' => $emotion_date,
-            'notification_time' => $emotion_time,
-            'notification_viewed' => 'Не просмотрено',
-            'user_id' => $published_user_id
-        );
-        $this->users_model->insertUserNotification($data_user_notifications);
     }
 
     public function delete_publication_share_emotion() {
@@ -55,7 +40,6 @@ class Publication_share_emotions extends CI_Controller {
         $this->publications_model->deletePublicationShareEmotionById($id);
         $delete_json = array(
             'id' => $id,
-            'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($delete_json);

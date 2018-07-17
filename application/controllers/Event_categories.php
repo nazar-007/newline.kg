@@ -12,7 +12,6 @@ class Event_categories extends CI_Controller {
         $category_ids = array();
         $data = array(
             'events' => $this->events_model->getEventsByCategoryIds($category_ids),
-            'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         $this->load->view('events', $data);
@@ -32,7 +31,6 @@ class Event_categories extends CI_Controller {
         $this->events_model->deleteEventCategoryById($id);
         $delete_json = array(
             'id' => $id,
-            'csrf_name' => $this->security->get_csrf_token_name (),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($delete_json);

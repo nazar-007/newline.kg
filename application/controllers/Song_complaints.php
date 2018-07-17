@@ -13,7 +13,6 @@ class Song_complaints extends CI_Controller {
         $admin_id = 2;
         $data = array(
             'song_complaints' => $this->songs_model->getSongComplaintsByAdminId($admin_id),
-            'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         $this->load->view('song_complaints', $data);
@@ -42,7 +41,6 @@ class Song_complaints extends CI_Controller {
         $this->songs_model->deleteSongComplaintById($id);
         $delete_json = array(
             'id' => $id,
-            'csrf_name' => $this->security->get_csrf_token_name (),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($delete_json);
@@ -53,7 +51,6 @@ class Song_complaints extends CI_Controller {
         $this->songs_model->deleteSongComplaintsByComplainedUserId($complained_user_id);
         $delete_json = array(
             'complained_user_id' => $complained_user_id,
-            'csrf_name' => $this->security->get_csrf_token_name (),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($delete_json);

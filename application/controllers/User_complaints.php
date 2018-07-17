@@ -13,7 +13,6 @@ class User_complaints extends CI_Controller {
         $admin_id = 2;
         $data = array(
             'user_complaints' => $this->users_model->getUserComplaintsByAdminId($admin_id),
-            'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         $this->load->view('publication_complaints', $data);
@@ -42,7 +41,6 @@ class User_complaints extends CI_Controller {
         $this->users_model->deleteUserComplaintById($id);
         $delete_json = array(
             'id' => $id,
-            'csrf_name' => $this->security->get_csrf_token_name (),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($delete_json);

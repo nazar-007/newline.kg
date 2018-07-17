@@ -12,7 +12,6 @@ class Friends extends CI_Controller {
         $user_id = 5;
         $data = array(
             'friends' => $this->users_model->getFriendsByUserId($user_id),
-            'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         $this->load->view('friends', $data);

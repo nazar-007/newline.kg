@@ -8,7 +8,8 @@ class Publications_model extends CI_Model {
         $this->load->helper('url');
         $this->load->library('session');
         $sessions = array(
-            'user_id' => $this->session->userdata('user_id')
+            'user_id' => $this->session->userdata('user_id'),
+            'user_email' => $this->session->userdata('user_email')
         );
         $this->session->set_userdata($sessions);
     }
@@ -51,6 +52,13 @@ class Publications_model extends CI_Model {
         $query = $this->db->get();
         return $query->result();
     }
+    public function getPublicationCommentNumRowsByIdAndCommentedUserId($id, $commented_user_id) {
+        $this->db->select('id, commented_user_id');
+        $this->db->where('id', $id);
+        $this->db->where('commented_user_id', $commented_user_id);
+        $query = $this->db->get('publication_comments');
+        return $query->num_rows();
+    }
     public function getPublicationComplaintsByAdminId($admin_id) {
         $this->db->where('admin_id', $admin_id);
         $query = $this->db->get('publication_complaints');
@@ -82,6 +90,15 @@ class Publications_model extends CI_Model {
         $query = $this->db->get('publication_images');
         return $query->result();
     }
+    public function getPublicationImageEmotionsByPublicationImageId($publication_image_id) {
+        $this->db->select('publication_image_emotions.*, users.email, users.nickname, users.surname, users.main_image');
+        $this->db->from('publication_image_emotions');
+        $this->db->join('users', 'publication_image_emotions.emotioned_user_id = users.id');
+        $this->db->order_by('publication_image_emotions.emotion_date DESC, publication_image_emotions.emotion_time DESC');
+        $this->db->where('publication_image_emotions.publication_image_id', $publication_image_id);
+        $query = $this->db->get();
+        return $query->result();
+    }
     public function getPublicationImageFileById($id) {
         $this->db->select('id, publication_image_file');
         $this->db->where('id', $id);
@@ -91,6 +108,12 @@ class Publications_model extends CI_Model {
             $publication_image_file = $publication_image->publication_image_file;
         }
         return $publication_image_file;
+    }
+    public function getPublicationImageEmotionNumRowsByPublicationImageIdAndEmotionedUserId($publication_image_id, $emotioned_user_id) {
+        $this->db->where('publication_image_id', $publication_image_id);
+        $this->db->where('emotioned_user_id', $emotioned_user_id);
+        $query = $this->db->get('publication_image_emotions');
+        return $query->num_rows();
     }
     // НАДО ПРОВЕРИТЬ НА УДАЛЕНИИ ЮЗЕРА!!!
 //    public function getPublicationSharesByPublicationId($publication_id) {
@@ -113,7 +136,6 @@ class Publications_model extends CI_Model {
         $query = $this->db->get();
         return $query->result();
     }
-
     public function getTotalByPublicationIdAndPublicationTable($publication_id, $publication_table) {
         $this->db->select('COUNT(*) as total');
         $this->db->group_by('publication_id');
@@ -122,6 +144,37 @@ class Publications_model extends CI_Model {
         $publications = $query->result();
         foreach ($publications as $publication) {
             $total = $publication->total;
+            if (strlen($total) == 4) {
+                return substr($total, 0, 1) . "K";
+            } else if(strlen($total) == 5) {
+                return substr($total, 0, 2) . "K";
+            } else if(strlen($total == 6)) {
+                return substr($total, 0, 3) . "K";
+            } else if (strlen($total) == 7) {
+                return substr($total, 0, 1) . "M";
+            } else if(strlen($total) == 8) {
+                return substr($total, 0, 2) . "M";
+            } else if(strlen($total == 9)) {
+                return substr($total, 0, 3) . "M";
+            } else if (strlen($total) == 10) {
+                return substr($total, 0, 1) . "B";
+            } else if(strlen($total) == 11) {
+                return substr($total, 0, 2) . "B";
+            } else if(strlen($total) == 12) {
+                return substr($total, 0, 3) . "B";
+            } else {
+                return $total;
+            }
+        }
+    }
+    public function getTotalByPublicationImageIdAndPublicationImageTable($publication_image_id, $publication_image_table) {
+        $this->db->select('COUNT(*) as total');
+        $this->db->group_by('publication_image_id');
+        $this->db->where('publication_image_id', $publication_image_id);
+        $query = $this->db->get($publication_image_table);
+        $publication_images = $query->result();
+        foreach ($publication_images as $publication_image) {
+            $total = $publication_image->total;
             if (strlen($total) == 4) {
                 return substr($total, 0, 1) . "K";
             } else if(strlen($total) == 5) {
@@ -225,8 +278,9 @@ class Publications_model extends CI_Model {
         $this->db->where('publication_id', $publication_id);
         $this->db->delete('publication_images');
     }
-    public function deletePublicationImageEmotionById($id) {
-        $this->db->where('id', $id);
+    public function deletePublicationImageEmotionByPublicationImageIdAndEmotionedUserId($publication_image_id, $emotioned_user_id) {
+        $this->db->where('emotioned_user_id', $emotioned_user_id);
+        $this->db->where('publication_image_id', $publication_image_id);
         $this->db->delete('publication_image_emotions');
     }
     public function deletePublicationImageEmotionsByPublicationImageId($publication_image_id) {
