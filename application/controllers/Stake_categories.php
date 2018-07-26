@@ -21,8 +21,11 @@ class Stake_categories extends CI_Controller {
         } else {
             $html .= "<h3 class='centered'>Результаты по выбранным категориям</h3>";
         }
-        foreach ($stakes as $stake) {
-            $html .= "<div class='col-xs-6 col-sm-4 col-lg-3 one_stake'>
+        if (count($stakes) == 0) {
+            $html .= "<h3 class='centered'>Ничего не найдено.</h3>";
+        } else {
+            foreach ($stakes as $stake) {
+                $html .= "<div class='col-xs-6 col-sm-4 col-lg-3 one_stake'>
                         <span onclick='insertStakeFanPress(this)' data-toggle='modal' data-target='#insertStakeFan' data-id='$stake->id' data-stake_name='$stake->stake_name'>
                             <div class='stake_image'>
                                 <img src='" . base_url() . "uploads/images/stake_images/$stake->stake_file'>
@@ -30,13 +33,14 @@ class Stake_categories extends CI_Controller {
                             <div class='stake_name'>
                                 $stake->stake_name
                             </div>";
-            if ($stake->stake_price != 0) {
-                $html .= "<div class='badge stake_price'>$stake->stake_price сом</div>";
-            } else {
-                $html .= "<div class='badge stake_price' style='background-color: orange'>Бесплатно!</div>";
-            }
-            $html .= "</span>
+                if ($stake->stake_price != 0) {
+                    $html .= "<div class='badge stake_price'>$stake->stake_price сом</div>";
+                } else {
+                    $html .= "<div class='badge stake_price' style='background-color: orange'>Бесплатно!</div>";
+                }
+                $html .= "</span>
             </div>";
+            }
         }
         $get_json = array(
             'stakes_by_categories' => $html,

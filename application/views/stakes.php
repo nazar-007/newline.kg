@@ -7,10 +7,11 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link rel="shortcut icon" href="<?php echo base_url()?>uploads/images/design_images/default.jpg">
+    <link rel="shortcut icon" href="<?php echo base_url()?>uploads/icons/logo.png">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/gift_stakes.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/media.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/common.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/animate.css">
 </head>
 <body>
 
@@ -22,9 +23,17 @@
         </div>
         <div class="pos_stakes">
             <div class="row">
-                <div class='col-xs-12 col-sm-3 col-md-3 col-lg-3 my_stakes' data-toggle='modal' data-target='#getMyStakes'>
-                    <div class="link_my_stakes">Мои награды</div><br>
-                    <img class='small-hidden stake_image_big' src='<?php echo base_url()?>uploads/icons/big_stake.png'>
+                <div class='col-xs-12 col-sm-3 col-md-3 col-lg-3'>
+                    <div class="link_my_stakes" data-toggle='modal' data-target='#getMyStakes'>Мои награды</div>
+                    <img class='small-hidden stake_image_big' src='<?php echo base_url()?>uploads/icons/big_stake.png' data-toggle='modal' data-target='#getMyStakes'>
+                    <div class="centered">
+                        <div class="currency_btn link_my_stakes" data-toggle="modal" data-target="#insertCurrency">
+                            <div class="currency small-hidden">
+                                На Вашем счету <?php echo $currency?> сомов.
+                            </div>
+                            <span>Пополнить счёт</span>
+                        </div>
+                    </div>
                 </div>
                 <div class='col-xs-12 col-sm-9 col-md-9 col-lg-9'>
                     <div class="stake_categories small-hidden">
@@ -140,11 +149,65 @@
     </div>
 </div>
 
+<div class="modal fade" id="insertCurrency" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Пополнение счёта</h4>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="javascript:void(0)" onsubmit="insertCurrency(this)">
+                    <input type="hidden" class="csrf" name="csrf_test_name" value="<?php echo $csrf_hash?>">
+                    <label>Выберите сумму</label>
+                    <select required class="btn btn-warning form-control" name="currency">
+                        <option selected value="">Выберите сумму</option>
+                        <script>
+                            var money = [1,5,10,20,50,100];
+                            for (var i = 0; i < money.length; i++) {
+                                document.write("<option value='" + money[i] + "'>" + money[i] + " сом</option>");
+                            }
+                        </script>
+                    </select>
+
+                    <button type="submit" class="btn btn-success center-block">Пополнить</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?php $this->load->view("footer");?>
 
 
 <script type="text/javascript" src="<?php base_url()?>js/common.js"></script>
 <script>
+
+    function insertCurrency(context) {
+        var form = $(context)[0];
+        var all_inputs = new FormData(form);
+        $.ajax({
+            method: "POST",
+            url: "<?php echo base_url()?>" + "users/insert_currency",
+            data: all_inputs,
+            dataType: "JSON",
+            contentType: false,
+            processData: false
+        }).done(function (message) {
+            $(".csrf").val(message.csrf_hash);
+            if (message.currency_error) {
+                alert(message.currency_error);
+            }
+            if (message.currency_success) {
+                $('.currency').html("На Вашем счету " + message.currency + " сомов.");
+                $("#insertCurrency").trigger('click');
+                alert(message.currency_success);
+            }
+        })
+    }
 
     function returnCross(context) {
         var id = context.getAttribute('data-id');
@@ -168,8 +231,7 @@
             if (message.stake_fan_error) {
                 alert(message.stake_fan_error);
             } else {
-                $('.one_my_stake_' + id).remove();
-                alert(message.stake_fan_success);
+                $('.one_my_stake_' + id).fadeOut(500);
             }
         })
     }
@@ -214,6 +276,7 @@
                 alert(message.stake_fan_error);
             }
             if (message.stake_fan_success) {
+                $('.currency').html("На Вашем счету " + message.currency + " сомов.");
                 $("#insertStakeFan").trigger('click');
                 alert(message.stake_fan_success);
             }
@@ -224,6 +287,13 @@
         history.pushState(null, null, location.href);
         window.onpopstate = function() {
             $("#insertStakeFan").modal('hide');
+        };
+    });
+
+    $("#insertCurrency").on('show.bs.modal', function () {
+        history.pushState(null, null, location.href);
+        window.onpopstate = function() {
+            $("#insertCurrency").modal('hide');
         };
     });
 

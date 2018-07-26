@@ -15,8 +15,11 @@ class Book_emotions extends CI_Controller {
         $book_emotions = $this->books_model->getBookEmotionsByBookId($book_id);
         $html = '';
         $html .= "<div class='row'>";
-        foreach ($book_emotions as $book_emotion) {
-            $html .= "<div class='col-xs-6 col-sm-4 col-lg-3 emotion_user'>
+        if (count($book_emotions) == 0 ) {
+            $html .= "<h3 class='centered'>Пока никто не ставил эмоцию.</h3>";
+        } else {
+            foreach ($book_emotions as $book_emotion) {
+                $html .= "<div class='col-xs-6 col-sm-4 col-lg-3 emotion_user'>
                         <a href='" . base_url() . "one_user/$book_emotion->email'>
                             <div class='emotion_user_image'>
                                 <img src='" . base_url() . "uploads/images/user_images/$book_emotion->main_image' class='action_avatar'>
@@ -26,6 +29,7 @@ class Book_emotions extends CI_Controller {
                             </div>
                         </a>
                     </div>";
+            }
         }
         $html .= "</div>";
         $get_emotions_json = array(

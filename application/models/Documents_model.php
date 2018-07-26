@@ -6,6 +6,12 @@ class Documents_model extends CI_Model {
         parent::__construct();
         $this->load->database();
         $this->load->helper('url');
+        $this->load->library('session');
+        $sessions = array(
+            'user_id' => $this->session->userdata('user_id'),
+            'user_email' => $this->session->userdata('user_email'),
+        );
+        $this->session->set_userdata($sessions);
     }
 
     public function getDocumentsByFolderId($folder_id) {

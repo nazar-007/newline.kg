@@ -1,0 +1,104 @@
+.link-friend {
+    font-size: 1.2em;
+}
+.friend-row {
+    margin: 0;
+    padding: 0;
+    background-color: tan;
+    margin-bottom: 50px;
+}
+.friend-column {
+    height: 50px;
+    padding-top: 10px;
+    padding-left: 30px;
+    cursor: pointer;
+}
+.active-column {
+    background-color: steelblue;
+}
+.img-thumbnail {
+    padding: 0;
+    background-color: transparent;
+    border: none;
+    border-radius: 50%;
+    max-width: 60%;
+}
+.common-material {
+    width: 24px;
+}
+.common-mark {
+    margin: 10px 0;
+}
+.dropdown-menu>li>span {
+    display: block;
+    padding: 3px 20px;
+    clear: both;
+    font-weight: 400;
+    line-height: 1.42857143;
+    color: #333;
+    white-space: nowrap;
+}
+.dropdown-menu>li {
+    margin-bottom: 25px;
+}
+.dropdown-menu {
+    background-color: powderblue;
+}
+.possible_friends {
+    border: 1px solid dimgray;
+    margin: 0;
+    padding:0;
+    margin-bottom: 20px;
+}
+.pos_friends{
+    width: 80%;
+    height: auto;
+    margin: 0 auto;
+    box-shadow: 0 0px 1px;
+    padding:10px;
+}
+#all_friends {
+    padding: 0;
+    margin: 0;
+}
+.friend_name {
+    font-size: 1em;
+}
+.one-friend {
+    margin: 0;
+    padding:0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid skyblue;
+}
+@media screen and (max-width: 1200px){
+    .pos_friends {
+        width: 100%;
+    }
+}
+@media screen and (max-width: 992px){
+    .dropdown-menu-right {
+        right: 28%;
+    }
+}
+@media screen and (min-width: 993px) and (max-width: 1200px){
+    .dropdown-menu-right {
+        right: 34%;
+    }
+}
+
+@media screen and (min-width: 1201px){
+    .dropdown-menu-right {
+        right: 36%;
+    }
+}
+@media screen and (max-width: 768px){
+    .user_avatar, .commented_avatar, .emotion_avatar, .share_avatar {
+        display: none;
+    }
+}
+@media screen and (min-width: 768px){
+    .suggest_btn, .my_fan_books {
+        margin-top: 20px;
+    }
+
+}

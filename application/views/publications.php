@@ -7,10 +7,11 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link rel="shortcut icon" href="<?php echo base_url()?>uploads/images/design_images/default.jpg">
+    <link rel="shortcut icon" href="<?php echo base_url()?>uploads/icons/logo.png">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/publications.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/media.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/common.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/animate.css">
 </head>
 <body>
 
@@ -20,26 +21,11 @@
         <div class="pos_catalog small-hidden col-xs-3 col-sm-3">
             <?php $this->load->view('sidebar'); ?>
         </div>
-        <div class="pos_publications col-xs-6 col-sm-9">
+        <div class="pos_publications col-xs-9 col-sm-9">
             <div id="all_publications">
             <?php
                 echo $publications;
             ?>
-            </div>
-        </div>
-        <div class="pos_recommendations small-hidden middle-hidden big-hidden col-xs-3">
-            <div class="rec_post">
-                <div class="one_rec_post">
-                    <a class="bout_post">
-                        Smc,l ld,lc;osmdic mmmskd kmsdmksdmckmdciv...
-                        <img src="<?php echo base_url()?>uploads/icons/davcode.jpg">
-                    </a>
-                    <hr>
-                </div>
-                <a class="bout_post2">
-                    Smc,l ld,lc;osmdic mmmskd kmsdmksdmckmdciv...
-                    <img src="<?php echo base_url()?>uploads/icons/davcode.jpg">
-                </a>
             </div>
         </div>
     </div>
@@ -126,7 +112,7 @@
                     <div class="form-group">
                         <input type="hidden" class="csrf" name="csrf_test_name" value="<?php echo $csrf_hash?>">
                         <label for="complaint_text">Текст жалобы:</label>
-                        <input type="text" id="complaint_text" name="complaint_text">
+                        <textarea id="complaint_text" class="form-control" name="complaint_text"></textarea>
                         <input class="published_user_id" type="hidden" name="published_user_id">
                         <input class="publication_id" type="hidden" name="publication_id">
                         <input class="complained_user_id" type="hidden" name="complained_user_id">
@@ -146,8 +132,26 @@
 
 <script type="text/javascript" src="<?php base_url()?>js/common.js"></script>
 <script>
-    window.onblur = function () {console.log('неактивен')};
-    window.onfocus = function () {console.log('снова активен')};
+//    window.onfocus = function () {
+//        $.ajax({
+//            method: "POST",
+//            url: "<?php //echo base_url()?>//users/online",
+//            data: {id:<?php //echo $_SESSION['user_id']?>//, csrf_test_name: $(".csrf").val()},
+//            dataType: "JSON"
+//        }).done(function(message) {
+//            $('.csrf').val(message.csrf_hash);
+//        })
+//    };
+//    window.onblur = function () {
+//        $.ajax({
+//            method: "POST",
+//            url: "<?php //echo base_url()?>//users/last_visit",
+//            data: {id:<?php //echo $_SESSION['user_id']?>//, csrf_test_name: $(".csrf").val()},
+//            dataType: "JSON"
+//        }).done(function(message) {
+//            $('.csrf').val(message.csrf_hash);
+//        })
+//    };
 
 
     var offset = 0;
@@ -165,7 +169,6 @@
             })
         }
     });
-
     function getPublicationComments(context) {
         var publication_id = context.parentElement.getAttribute('data-publication_id');
         var published_user_id = context.parentElement.getAttribute('data-published_user_id');
@@ -179,7 +182,6 @@
             $("#one_publication_comments").html(message.one_publication_comments);
         })
     }
-
     function getPublicationEmotions(context) {
         var publication_id = context.parentElement.getAttribute('data-publication_id');
         $.ajax({
@@ -192,7 +194,6 @@
             $("#one_publication_emotions").html(message.one_publication_emotions);
         })
     }
-
     function getPublicationImageEmotions(context) {
         var publication_image_id = context.parentElement.getAttribute('data-publication_image_id');
         $.ajax({
@@ -205,7 +206,6 @@
             $("#one_publication_image_emotions").html(message.one_publication_image_emotions);
         })
     }
-
     function getPublicationShares(context) {
         var publication_id = context.parentElement.getAttribute('data-publication_id');
         $.ajax({
@@ -218,7 +218,6 @@
             $("#one_publication_shares").html(message.one_publication_shares);
         })
     }
-
     function insertPublicationComment(context) {
         var form = $(context)[0];
         var all_inputs = new FormData(form);
@@ -250,7 +249,6 @@
             }
         })
     }
-
     function deletePublicationComment(context) {
         var publication_comment_id = context.getAttribute('data-publication_comment_id');
         var publication_id = context.getAttribute('data-publication_id');
@@ -264,13 +262,12 @@
             if (message.comment_error) {
                 alert(message.comment_error);
             } else {
-                $('.one_comment_' + publication_comment_id).remove();
+                $('.one_comment_' + publication_comment_id).fadeOut(500);
                 $(".comments_field_" + publication_id).html("<span onclick='getPublicationComments(this)' data-toggle='modal' data-target='#getPublicationComments'>" +
                     "<img src='<?php echo base_url()?>uploads/icons/comment.png'><span class='badge'>" + message.total_comments + "</span></span>");
             }
         })
     }
-
     function insertPublicationComplaintPress(context) {
         var published_user_id = context.parentElement.getAttribute('data-published_user_id');
         var publication_id = context.parentElement.getAttribute('data-publication_id');
@@ -293,18 +290,16 @@
         }).done(function (message) {
             $(".csrf").val(message.csrf_hash);
             $("#complaint_text").val('');
-            if (message.complaint_num_rows == 0) {
+            if (message.complaint_num_rows == 0 && message.complaint_text != '') {
                 $("#insertPublicationComplaint").trigger('click');
                 alert(message.complaint_success);
                 $(".complaints_field_" + message.publication_id).html("");
             } else {
                 $("#insertPublicationComplaint").trigger('click');
                 alert(message.complaint_error);
-                $(".complaints_field_" + message.publication_id).html("");
             }
         })
     }
-
     function insertPublicationEmotion(context) {
         var published_user_id = context.parentElement.getAttribute('data-published_user_id');
         var emotioned_user_id = context.parentElement.getAttribute('data-emotioned_user_id');
@@ -347,7 +342,6 @@
             }
         })
     }
-
     function insertPublicationImageEmotion(context) {
         var emotioned_user_id = context.parentElement.getAttribute('data-emotioned_user_id');
         var publication_image_id = context.parentElement.getAttribute('data-publication_image_id');
@@ -389,7 +383,6 @@
             }
         })
     }
-
     function insertPublicationShare(context) {
         var published_user_id = context.parentElement.getAttribute('data-published_user_id');
         var shared_user_id = context.parentElement.getAttribute('data-shared_user_id');

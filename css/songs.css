@@ -1,0 +1,185 @@
+audio:hover, audio:focus, audio:active {
+    -webkit-box-shadow: 15px 15px 20px rgba(0,0, 0, 0.4);
+    -moz-box-shadow: 15px 15px 20px rgba(0,0, 0, 0.4);
+    box-shadow: 15px 15px 20px rgba(0,0, 0, 0.4);
+    -webkit-transform: scale(1.05);
+    -moz-transform: scale(1.05);
+    transform: scale(1.05);
+}
+.one-song {
+    height: 140px;
+}
+.song-name {
+    height: 50px;
+    font-size: 1.2em;
+    margin-top: 5px;
+}
+pre {
+    border: none;
+    background-color: transparent;
+}
+.emotion_user, .share_user {
+    height: 150px;
+    cursor: pointer;
+}
+.emotion_avatar, .share_avatar {
+    width: 100px;
+    border-radius: 50%;
+    box-shadow: 0 0px 1px;
+}
+.one_comment {
+    border: 1px solid red;
+    margin: 20px 0;
+}
+.comment-input {
+    margin: 20px 0;
+}
+.comment-date-time {
+    position: absolute;
+    right: 30px;
+}
+.commented_avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 25px;
+    box-shadow: 0 0px 1px;
+}
+.commented_user {
+    margin: 20px 0 0 0;
+}
+.comment_text {
+    border: 2px solid skyblue;
+    margin-top: 20px;
+    margin-right: 0;
+    margin-left: 20px;
+}
+.right {
+    cursor: pointer;
+}
+.pos_recommendations {
+    width: 20%;
+    height: 100%;
+    padding: 0;
+    box-shadow: 1px 2px 1px 1px;
+    display: flex;
+}
+.pos_songs{
+    width: 60%;
+    height: auto;
+    margin: 0 auto;
+    box-shadow: 0 0px 1px;
+    padding:10px;
+}
+.pos_one_song {
+    width: 80%;
+    height: auto;
+    margin: 0 auto;
+    padding:10px;
+}
+.one_song_actions {
+    margin: 1% 0;
+    margin-bottom: 3%;
+}
+.one_song_actions img {
+    margin-left: 1%;
+    margin-right: 1%;
+}
+.one_song {
+    height: 300px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+.song_name{
+    height: 50px;
+    font-size: 1em;
+}
+.song_th {
+    font-size: 1.2em;
+}
+.song_td {
+    font-size: 1.2em;
+    margin-left: 1%;
+}
+.song_file {
+    width: 100%;
+    height: 50vh;
+}
+.one-player {
+    width: 100%;
+}
+.emotion_user, .fan_user {
+    height: 150px;
+    cursor: pointer;
+}
+.badge {
+    background-color: darkslategray;
+    cursor: pointer;
+}
+.action_avatar {
+    width: 100px;
+    border-radius: 50%;
+    box-shadow: 0 0px 1px;
+}
+.song_image_big {
+    margin-left: 10%;
+    cursor: pointer;
+    margin-top: 20px;
+}
+.all_categories {
+    margin-top: 20px;
+}
+.link_my_fan_songs, .song_categories {
+    font-size: 1.2em;
+    text-align: center;
+    color: blue;
+    cursor: pointer;
+    margin: 10px;
+}
+.search_by_name_input {
+    background-color: lightgray;
+}
+.navigation {
+    background-color: powderblue;
+}
+.my_fan_songs{
+    cursor: pointer;
+}
+.absolute_song {
+    position: absolute;
+    right: 0;
+}
+.song_actions {
+    width: 100%;
+    height: 400px;
+    overflow: auto;
+}
+.action-image {
+    width: 32px;
+}
+.action-info {
+    width: 100%;
+}
+.action-text {
+    line-height: 2;
+}
+.player {
+    width: 90%;
+}
+@media screen and (max-width: 1200px){
+    .pos_one_song {
+        width: 100%;
+    }
+    .pos_songs {
+        width: 100%;
+    }
+}
+@media screen and (max-width: 768px){
+    .user_avatar, .commented_avatar, .emotion_avatar, .share_avatar {
+        display: none;
+    }
+}
+@media screen and (min-width: 768px){
+    .suggest_btn, .my_fan_songs {
+        margin-top: 20px;
+    }
+}

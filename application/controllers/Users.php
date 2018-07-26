@@ -76,6 +76,8 @@ class Users extends CI_Controller {
             }
             $data_users = array(
                 'one_user' => $this->users_model->getOneUserByEmail($email),
+                'common_books' => $this->books_model->getCommonBooksByTwoUsers($guest_id, $user_id),
+                'total_common_books' => $this->books_model->getTotalCommonBooksByTwoUsers($guest_id, $user_id),
                 'user_num_rows' => $user_num_rows,
                 'user_id' => $this->users_model->getUserIdByEmail($email)
             );
@@ -95,15 +97,159 @@ class Users extends CI_Controller {
         redirect('/');
     }
 
+    public function Header() {
+        $email = $_SESSION['user_email'];
+        $users = $this->users_model->getOneUserByEmail($email);
+        $data = array(
+            'users' => $users
+        );
+        $this->load->view('header', $data);
+    }
+
+    public function search_users() {
+        $this->load->view('session_user');
+        $search = $this->input->get('search');
+        $session_user_id = $_SESSION['user_id'];
+        $html = '';
+        if ($search != '') {
+            $users = $this->users_model->searchUsers($search);
+            if (count($users) == 0) {
+                $html .= "<h3 class='centered'>По Вашему запросу $search никто не найден.</h3>";
+            } else {
+                $html .= "<h3 class='centered'>Результаты по поиску $search</h3>";
+                foreach ($users as $user) {
+                    $id = $user->id;
+                    $email = $user->email;
+                    $nickname = $user->nickname;
+                    $surname = $user->surname;
+                    $main_image = $user->main_image;
+                    $last_visit = $user->last_visit;
+                    $total_common_friends = $this->users_model->getTotalCommonFriendsByTwoUsers($session_user_id, $id);
+                    $total_common_books = $this->books_model->getTotalCommonBooksByTwoUsers($session_user_id, $id);
+                    $total_common_events = $this->events_model->getTotalCommonEventsByTwoUsers($session_user_id, $id);
+                    $total_common_songs = $this->songs_model->getTotalCommonSongsByTwoUsers($session_user_id, $id);
+
+                    $user_num_rows = $this->users_model->getFriendNumRowsByUserIdAndFriendId($id, $session_user_id);
+                    $friend_num_rows = $this->users_model->getFriendNumRowsByUserIdAndFriendId($session_user_id, $id);
+
+                    $html .= "<div class='row one-friend'>
+                        <div class='col-xs-12'>
+                            <div class='col-xs-8 col-sm-8 col-md-8 col-lg-8 about-user'>
+                               <div class='centered'>
+                                <a class='link-friend' href='" . base_url() . "one_user/$email'>
+                                $nickname $surname";
+                    if ($last_visit == "Online") {
+                        $html .= "<img src='" . base_url() . "uploads/icons/lamp.png'>";
+                    }
+                    $html .= "</a>
+                       </div>";
+                    if($id != $session_user_id) {
+                        $html .= "<div class='dropdown common-mark centered'>
+                        <button class='btn btn-default dropdown-toggle' type='button' data-toggle='dropdown'>Общее между вами
+                            <span class='caret'></span></button>
+                        <ul class='dropdown-menu dropdown-menu-right' data-user_id='$session_user_id' data-search_user_id='$id'>";
+                        if ($total_common_friends == 0 && $total_common_books == 0 && $total_common_events == 0 && $total_common_songs == 0) {
+                            $html .= "<li>
+                                    <span>Нет ничего общего</span>
+                                </li>";
+                        } else {
+                            if ($total_common_friends > 0) {
+                                $html .= "<li>
+                                    <span>
+                                      <span onclick='getCommonFriends(this)' data-toggle='modal' data-target='#getCommonFriends' class='right view-common'>общих друзей: $total_common_friends</span>
+                                    </span>
+                                </li>";
+                            }
+                            if ($total_common_books > 0) {
+                                $html .= "<li>
+                                    <span>
+                                          <span onclick='getCommonBooks(this)' data-toggle='modal' data-target='#getCommonBooks' class='right view-common'>общих книг: $total_common_books</span>
+                                    </span>
+                                </li>";
+                            }
+                            if ($total_common_events > 0) {
+                                $html .= "<li>
+                                    <span>
+                                      <span onclick='getCommonEvents(this)' data-toggle='modal' data-target='#getCommonEvents' class='right view-common'>общих событий: $total_common_events</span>
+                                    </span>
+                                </li>";
+                            }
+                            if ($total_common_songs > 0) {
+                                $html .= "<li>
+                                    <span>
+                                      <span onclick='getCommonSongs(this)' data-toggle='modal' data-target='#getCommonSongs' class='right view-common'>общих песен: $total_common_songs</span>
+                                    </span>
+                                </li>";
+                            }
+                        }
+                        $html .= "</ul>
+                            </div>";
+                    }
+                    if($id == $session_user_id) {
+                        $html .= "<div class='centered'>
+                            Это Вы <img src='" . base_url() . "uploads/icons/checked.png'>
+                       </div>";
+                    } else if ($user_num_rows == 1 && $friend_num_rows == 1) {
+                        $html .= "<div class='centered'>
+                            Вы - друзья <img src='" . base_url() . "uploads/icons/checked.png'>
+                       </div>";
+                    }
+                        $html .= "</div>
+                        <div class='col-xs-4 col-sm-4 col-md-4 col-lg-4'>
+                            <img class='img-thumbnail' src='" . base_url() . "uploads/images/user_images/$main_image'>
+                        </div></div>
+                   </div>";
+                }
+            }
+            $data = array(
+                'search' => $html,
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        } else {
+            $data = array(
+                'search' => '<h4 class="centered red">Вы ввели пустой поиск. Так нельзя.</h4>',
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        }
+        $this->load->view('search_users', $data);
+    }
+
+    public function insert_currency() {
+        $id = $_SESSION['user_id'];
+        $currency = $this->input->post('currency');
+
+        if ($currency != '') {
+            $currency_before = $this->users_model->getCurrencyById($id);
+
+            $data_users = array(
+                'currency' => $currency_before + $currency
+            );
+            $this->users_model->updateUserById($id, $data_users);
+            $currency_after = $this->users_model->getCurrencyById($id);
+
+            $insert_json = array(
+                'currency' => $currency_after,
+                'csrf_hash' => $this->security->get_csrf_hash(),
+                'currency_success' => "Ваш счёт успешно пополнен на $currency сомов. Теперь у Вас на счету $currency_after сомов."
+            );
+        } else {
+            $insert_json = array(
+                'csrf_hash' => $this->security->get_csrf_hash(),
+                'currency_error' => "Не удалось пополнить счёт."
+            );
+        }
+        echo json_encode($insert_json);
+    }
+
     public function Online() {
-//        $id = $this->input->post('id');
-//        $data = array(
-//            'last_visit' => 'Онлайн'
-//        );
+        $id = $this->input->post('id');
+        $data = array(
+            'last_visit' => 'Онлайн'
+        );
         $json = array(
             'csrf_hash' => $this->security->get_csrf_hash()
         );
-//        $this->users_model->updateUserById($id, $data);
+        $this->users_model->updateUserById($id, $data);
         echo json_encode($json);
     }
 
@@ -117,6 +263,38 @@ class Users extends CI_Controller {
         );
         $this->users_model->updateUserById($id, $data);
         echo json_encode($json);
+    }
+
+    public function search_gift_users() {
+        $search_by_name = $this->input->post('search_by_name');
+        $user_id = $_SESSION['user_id'];
+        $html = '';
+        if (iconv_strlen($search_by_name) > 0) {
+            $html .= "<h3 class='centered'>Результаты по запросу $search_by_name</h3>";
+            $users = $this->users_model->searchUsers($search_by_name);
+            if (count($users) == 0) {
+                $html .= "<div class='red centered'>По Вашему запросу $search_by_name ничего не найдено! :(</div>";
+            }
+        } else {
+            $users = $this->users_model->getFriendsByUserId($user_id);
+        }
+
+        foreach ($users as $user) {
+            $html.= "<div onclick='chooseUserId(this)' data-user_id='$user->id' class='col-xs-6 col-sm-4 col-lg-3 friend_$user->id friend centered'>
+                <div class='friend_user_image'>
+                    <img src='uploads/images/user_images/$user->main_image' class='friend_avatar'>
+                </div>
+                <div class='friend_name'>
+                    $user->nickname $user->surname
+                </div>
+            </div>";
+        }
+
+        $data = array(
+            'csrf_hash'=> $this->security->get_csrf_hash(),
+            'search_gift_users' => $html
+        );
+        echo json_encode($data);
     }
 
     public function insert_user() {
@@ -140,7 +318,7 @@ class Users extends CI_Controller {
         $schools = $this->input->post('education_schools');
         $universities = $this->input->post('education_universities');
         $family_position = $this->input->post('family_position');
-        $num_rows = $this->users_model->getNumRowsByEmail($email);
+        $num_rows = $this->users_model->getUserNumRowsByEmail($email);
 
         $messages = array(
             'csrf_hash' => $this->security->get_csrf_hash()
@@ -285,20 +463,18 @@ class Users extends CI_Controller {
                 'education_schools' => $education_schools,
                 'education_universities' => $education_universities,
                 'family_position' => $family_position,
-                'last_visit' => 'На линии',
-                'currency' => 0,
-                'rating' => 0,
+                'last_visit' => 'Online',
+                'currency' => 100,
+                'rating' => 100,
                 'rank' => "Новичок",
                 'sign_date' => $date_mk,
-                'sign_time' => $time_mk,
-                'my_account_access' => "Открыто",
-                'my_page_access' => "Открыто"
+                'sign_time' => $time_mk
             );
             $this->users_model->insertUser($data_users);
             $insert_user_id = $this->db->insert_id();
 
             $data_user_albums = array(
-                'album_name' => "User Album",
+                'album_name' => "My Album",
                 'user_id' => $insert_user_id
             );
             $this->albums_model->insertAlbum($data_user_albums);
@@ -310,7 +486,7 @@ class Users extends CI_Controller {
             $this->albums_model->insertAlbum($data_publication_albums);
 
             $data_folders = array(
-                'folder_name' => "User Folder",
+                'folder_name' => "My Folder",
                 'user_id' => $insert_user_id
             );
             $this->folders_model->insertFolder($data_folders);
@@ -331,15 +507,11 @@ class Users extends CI_Controller {
             $book_suggestion_image = $book_suggestion->suggestion_image;
             unlink("./uploads/book_files/$book_suggestion_file");
             unlink("./uploads/images/book_images/$book_suggestion_image");
-            unlink("./uploads/images/book_images/thumb/$book_suggestion_image");
         }
         $song_suggestions = $this->songs_model->getSongSuggestionsBySuggestedUserId($id);
         foreach ($song_suggestions as $song_suggestion) {
             $song_suggestion_file = $song_suggestion->suggestion_file;
-            $song_suggestion_image = $song_suggestion->suggestion_image;
             unlink("./uploads/song_files/$song_suggestion_file");
-            unlink("./uploads/images/song_images/$song_suggestion_image");
-            unlink("./uploads/images/song_images/thumb/$song_suggestion_image");
         }
         $publications = $this->publications_model->getPublicationsByPublishedUserId($id);
         foreach ($publications as $publication) {
@@ -370,8 +542,6 @@ class Users extends CI_Controller {
             unlink("./uploads/images/user_images/$user_image_file");
             unlink("./uploads/images/user_images/thumb/$user_image_file");
             $this->users_model->deleteUserImageActionsByUserImageId($user_image_id);
-            $this->users_model->deleteUserImageCommentsByUserImageId($user_image_id);
-            $this->users_model->deleteUserImageCommentEmotionsByUserImageId($user_image_id);
             $this->users_model->deleteUserImageEmotionsByUserImageId($user_image_id);
         }
         $this->albums_model->deleteAlbumsByUserId($id);
@@ -412,7 +582,6 @@ class Users extends CI_Controller {
         $this->users_model->deleteUserBlacklistByUserIdOrBlackUserId($id);
         $this->users_model->deleteUserComplaintsByUserIdOrComplainedUserId($id);
         $this->users_model->deleteUserImageActionsByUserIdOrActionUserId($id);
-        $this->users_model->deleteUserImageCommentsByUserIdOrCommentedUserId($id);
         $this->users_model->deleteUserImageEmotionsByUserIdOrEmotionedUserId($id);
         $this->users_model->deleteUserImagesByUserId($id);
         $this->users_model->deleteUserInvitesByUserIdOrInvitedUserId($id);
@@ -425,6 +594,18 @@ class Users extends CI_Controller {
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($delete_json);
+    }
+
+    public function update() {
+        $this->load->view('session_user');
+        $id = $_SESSION['user_id'];
+        $users = $this->users_model->getOneUserById($id);
+        $data = array(
+            'users' => $users,
+            'countries' => $this->countries_model->getCountries(),
+            'csrf_hash' => $this->security->get_csrf_hash()
+        );
+        $this->load->view('update', $data);
     }
 
     public function update_user() {
@@ -443,21 +624,21 @@ class Users extends CI_Controller {
         $family_position = $this->input->post('family_position');
         $num_rows = $this->users_model->getNumRowsByEmail($email);
 
-        $current_home_land = $this->users_model->getHomeLandById($id);
-        $current_family_position = $this->users_model->getFamilyPositionById($id);
-        $current_education_schools = $this->users_model->getEducationSchoolsById($id);
-        $current_education_universities = $this->users_model->getEducationUniversitiesById($id);
+        $db_home_land = $this->users_model->getHomeLandById($id);
+        $db_birth_date = $this->users_model->getBirthDateById($id);
+        $db_birth_year = $this->users_model->getBirthYearById($id);
+        $db_education_schools = $this->users_model->getEducationSchoolsById($id);
+        $db_education_universities = $this->users_model->getEducationUniversitiesById($id);
+        $db_family_position = $this->users_model->getFamilyPositionById($id);
 
         $messages = array(
             'csrf_hash' => $this->security->get_csrf_hash()
         );
 
         if ($num_rows > 0 || strlen($email) < 5 || empty($email) || empty($nickname) || strlen($nickname) < 2 || empty($surname)
-            || strlen($surname) < 2 || empty($day) || empty($month) || empty($birth_year)
-            || $birth_date == '30 февраля' || $birth_date == '31 февраля' || $birth_date == '31 апреля'
-            || $birth_date == '31 июня' || $birth_date == '31 сентября' || $birth_date == '31 ноября'
-            || ($birth_date == '29 февраля' && $birth_year % 4 != 0)) {
-
+            || strlen($surname) < 2 || ($birth_date == '30 февраля' && $birth_year != '') || ($birth_date == '31 февраля' && $birth_year != '') || ($birth_date == '31 апреля' && $birth_year != '')
+            || ($birth_date == '31 июня' && $birth_year != '') || ($birth_date == '31 сентября' && $birth_year != '') || ($birth_date == '31 ноября' && $birth_year != '')
+            || ($birth_date == '29 февраля' && $birth_year % 4 != 0) || $birth_year == '') {
 
             if ($num_rows > 0) {
                 $messages['email_num_rows'] = $num_rows;
@@ -481,11 +662,10 @@ class Users extends CI_Controller {
             if (strlen($surname) < 2) {
                 $messages['surname_less'] = 'Фамилия слишком короткая, введите не менее 2 символов!';
             }
-            if ($day == '' || $month == '' || $birth_year == '') {
-                $messages['birth_date_empty'] = 'Введите корректную дату рождения!';
-            }
-            if ($birth_date == '30 февраля' || $birth_date == '31 февраля' || $birth_date == '31 апреля' || $birth_date == '31 июня' || $birth_date == '31 сентября' || $birth_date == '31 ноября' || ($birth_date == '29 февраля' && $birth_year % 4 != 0)) {
-                $messages['birth_date_incorrect'] = 'Введенные данные не совпадают с реальностью! Введите корректную дату!';
+            if (($birth_date == '30 февраля' && $birth_year != '') || ($birth_date == '31 февраля' && $birth_year != '') || ($birth_date == '31 апреля' && $birth_year != '')
+                || ($birth_date == '31 июня' && $birth_year != '') || ($birth_date == '31 сентября' && $birth_year != '') || ($birth_date == '31 ноября' && $birth_year != '')
+                || ($birth_date == '29 февраля' && $birth_year % 4 != 0) || ($birth_date && $birth_year == '')) {
+                    $messages['birth_date_incorrect'] = 'Введенные данные не совпадают с реальностью! Введите корректную дату!';
             }
             if (empty($gender)) {
                 $messages['gender_empty'] = 'Пол не указан, введите свой пол!';
@@ -504,7 +684,7 @@ class Users extends CI_Controller {
                     }
                 }
             } else {
-                $education_schools = "Не указано";
+                $education_schools = $db_education_schools;
             }
             if (count($universities) > 0) {
                 $education_universities = '';
@@ -519,13 +699,15 @@ class Users extends CI_Controller {
                     }
                 }
             } else {
-                $education_universities = "Не указано";
+                $education_universities = $db_education_universities;
             }
 
-            $home_land = $home_land == '' ? $current_home_land : $home_land;
-            $family_position = $family_position == '' ? $current_family_position : $family_position;
-            $education_schools = $education_schools == '' ? $current_education_schools : $education_schools;
-            $education_universities = $education_universities == '' ? $current_education_universities : $education_universities;
+            $birth_date = $birth_date == ' ' ? $db_birth_date : $birth_date;
+            $birth_year = $birth_year == '' ? $db_birth_year : $birth_year;
+            $home_land = $home_land == '' ? $db_home_land : $home_land;
+            $family_position = $family_position == '' ? $db_family_position : $family_position;
+            $education_schools = $education_schools == '' ? $db_education_schools : $education_schools;
+            $education_universities = $education_universities == '' ? $db_education_universities : $education_universities;
 
             $data_users = array(
                 'email' => $email,
@@ -538,15 +720,17 @@ class Users extends CI_Controller {
                 'education_schools' => $education_schools,
                 'education_universities' => $education_universities,
                 'family_position' => $family_position,
-                'my_page_access' => "Открыто"
             );
             $this->users_model->updateUserById($id, $data_users);
+            $_SESSION['user_email'] = $email;
+            $messages['success_update'] = 'Ваши данные успешно обновлены!';
         }
         $messages_json = json_encode($messages);
         echo $messages_json;
     }
-    public function update_user_password() {
+    public function update_password() {
         $id = $this->input->post('id');
+        $session_user_id = $_SESSION['user_id'];
         $db_password = $this->users_model->getPasswordById($id);
         $current_password = md5($_POST['current_password']);
         $new_password = $this->input->post('new_password');
@@ -556,65 +740,75 @@ class Users extends CI_Controller {
             'csrf_hash' => $this->security->get_csrf_hash()
         );
 
-        if ($db_password != $current_password || $new_password != $check_new_password || empty($new_password)
-            || strlen($new_password) < 6) {
-
-            if ($db_password != $current_password) {
-                $messages['password_current_incorrect'] = 'Текущий пароль неверный!';
-            }
-
-            if ($new_password != $check_new_password) {
-                $messages['password_new_mismatch'] = 'Новые пароли не совпадают!';
-            }
-            if (empty($new_password)) {
-                $messages['password_new_empty'] = 'Новый пароль пуст!';
-            }
-            if (strlen($new_password) < 6) {
-                $messages['password_new_less'] = 'Новый пароль слишком короткий, введите не менее 6 символов!';
-            }
+        if ($id != $session_user_id) {
+            $messages['user_error'] = "Не удалось изменить пароль, так как это не Ваш идентификтор";
         } else {
-            $data_users = array(
-                'password' => md5($new_password),
-            );
-            $this->users_model->updateUserById($id, $data_users);
-            $messages['success_new_password'] = "Пароль успешно изменён!";
+            if ($db_password != $current_password || $new_password != $check_new_password || empty($new_password)
+                || strlen($new_password) < 6
+            ) {
+
+                if ($db_password != $current_password) {
+                    $messages['password_current_incorrect'] = 'Текущий пароль неверный!';
+                }
+
+                if ($new_password != $check_new_password) {
+                    $messages['password_new_mismatch'] = 'Новые пароли не совпадают!';
+                }
+                if (empty($new_password)) {
+                    $messages['password_new_empty'] = 'Новый пароль пуст!';
+                }
+                if (strlen($new_password) < 6) {
+                    $messages['password_new_less'] = 'Новый пароль слишком короткий, введите не менее 6 символов!';
+                }
+            } else {
+                $data_users = array(
+                    'password' => md5($new_password),
+                );
+                $this->users_model->updateUserById($id, $data_users);
+                $messages['success_new_password'] = "Пароль успешно изменён!";
+            }
         }
         $messages_json = json_encode($messages);
         echo $messages_json;
     }
-    public function update_user_secret_questions_and_answers() {
+    public function update_secret_questions_and_secret_answers() {
         $id = $this->input->post('id');
-        $new_secret_question_1 = $this->input->post('new_secret_question_1');
-        $new_secret_answer_1 = $this->input->post('new_secret_answer_1');
-        $new_secret_question_2 = $this->input->post('new_secret_question_2');
-        $new_secret_answer_2 = $this->input->post('new_secret_answer_2');
+        $session_user_id = $_SESSION['user_id'];
+        $secret_question_1 = $this->input->post('secret_question_1');
+        $secret_answer_1 = $this->input->post('secret_answer_1');
+        $secret_question_2 = $this->input->post('secret_question_2');
+        $secret_answer_2 = $this->input->post('secret_answer_2');
 
         $messages = array(
             'csrf_hash' => $this->security->get_csrf_hash()
         );
 
-        if (empty($new_secret_question_1) || empty($new_secret_answer_1) || empty($new_secret_question_2) || empty($new_secret_answer_2)) {
-            if (empty($new_secret_question_1)) {
-                $messages['secret_question_1_new_empty'] = 'Новый секретный вопрос 1 не выбран, выберите из списка!';
-            }
-            if (empty($new_secret_answer_1)) {
-                $messages['secret_answer_1_new_empty'] = 'Ответ на новый 1 секретный вопрос пуст, введите свой ответ!';
-            }
-            if (empty($new_secret_question_2)) {
-                $messages['secret_question_2_new_empty'] = 'Новый секретный вопрос 2 не выбран, выберите из списка!';
-            }
-            if (empty($new_secret_answer_2)) {
-                $messages['secret_answer_2_new_empty'] = 'Ответ на новый 2 секретный вопрос пуст, введите свой ответ!';
-            }
+        if ($id != $session_user_id) {
+            $messages['user_error'] = 'Не удалось поменять секретные вопросы, так как это не Ваш идентификатор';
         } else {
-            $data_users = array(
-                'secret_question_1' => $new_secret_question_1,
-                'secret_answer_1' => $new_secret_answer_1,
-                'secret_question_2' => $new_secret_question_2,
-                'secret_answer_2' => $new_secret_answer_2,
-            );
-            $this->users_model->updateUserById($id, $data_users);
-            $messages['success_secret_questions_and_answers'] = "Секретные вопросы и ответы изменены!";
+            if (empty($secret_question_1) || empty($secret_answer_1) || empty($secret_question_2) || empty($secret_answer_2)) {
+                if (empty($secret_question_1)) {
+                    $messages['secret_question_1_empty'] = 'Новый секретный вопрос 1 не выбран, выберите из списка!';
+                }
+                if (empty($secret_answer_1)) {
+                    $messages['secret_answer_1_empty'] = 'Ответ на новый 1 секретный вопрос пуст, введите свой ответ!';
+                }
+                if (empty($secret_question_2)) {
+                    $messages['secret_question_2_empty'] = 'Новый секретный вопрос 2 не выбран, выберите из списка!';
+                }
+                if (empty($secret_answer_2)) {
+                    $messages['secret_answer_2_empty'] = 'Ответ на новый 2 секретный вопрос пуст, введите свой ответ!';
+                }
+            } else {
+                $data_users = array(
+                    'secret_question_1' => $secret_question_1,
+                    'secret_answer_1' => $secret_answer_1,
+                    'secret_question_2' => $secret_question_2,
+                    'secret_answer_2' => $secret_answer_2,
+                );
+                $this->users_model->updateUserById($id, $data_users);
+                $messages['success_secret'] = "Секретные вопросы и ответы успешно изменены!";
+            }
         }
         $messages_json = json_encode($messages);
         echo $messages_json;

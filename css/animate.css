@@ -1,23 +1,15 @@
 @charset "UTF-8";
 
+.logo-animated {
+  animation: 2s rotateInDownLeft;
+}
+
+.admins-animated {
+  animation: 3s fadeInUp;
+}
+
 .menu-animated {
-  animation: 2s fadeInDown;
-}
-
-.food-img-animated {
-  animation: 1s flip;
-}
-
-.discount-img-animated {
-  animation: 1.5s bounceIn;
-}
-
-.search-animated {
-  animation: 1.5s fadeInRightBig;
-}
-
-.panel-animated {
-  animation: 1.5s bounceInLeft;
+  animation: 0.4s fadeInDown;
 }
 
 .left-animated {

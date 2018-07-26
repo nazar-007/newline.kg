@@ -6,16 +6,33 @@ class Admins_model extends CI_Model {
         parent::__construct();
         $this->load->database();
         $this->load->helper('url');
+        $this->load->library('session');
+        $sessions = array(
+            'admin_id' => $this->session->userdata('admin_id'),
+            'admin_email' => $this->session->userdata('admin_email'),
+            'admin_table' => $this->session->userdata('admin_table')
+        );
+        $this->session->set_userdata($sessions);
+    }
+
+    public function getAdminTableByAdminEmail($admin_email) {
+        $this->db->where('admin_email', $admin_email);
+        $query = $this->db->get("admins");
+        $admins = $query->result();
+        foreach ($admins as $admin) {
+            $admin_table = $admin->admin_table;
+        }
+        return $admin_table;
     }
 
     public function getAdminActions() {
         $query = $this->db->get('admin_actions');
         return $query->result();
     }
-    public function getAdminIdByEmailAndPassword($email, $password) {
-        $this->db->select('id, email, password');
-        $this->db->where('email', $email);
-        $this->db->where('password', $password);
+    public function getAdminIdByAdminEmailAndAdminPassword($admin_email, $admin_password) {
+        $this->db->select('id, admin_email, admin_password');
+        $this->db->where('admin_email', $admin_email);
+        $this->db->where('admin_password', $admin_password);
         $query = $this->db->get("admins");
         $admins = $query->result();
         foreach ($admins as $admin) {
@@ -23,9 +40,10 @@ class Admins_model extends CI_Model {
         }
         return $admin_id;
     }
-    public function getNumRowsByEmail($email) {
-        $this->db->select('email');
-        $this->db->where('email', $email);
+    public function getNumRowsByAdminEmailAndAdminPassword($admin_email, $admin_password) {
+        $this->db->select('id, admin_email, admin_password');
+        $this->db->where('admin_email', $admin_email);
+        $this->db->where('admin_password', $admin_password);
         $query = $this->db->get('admins');
         return $query->num_rows();
     }

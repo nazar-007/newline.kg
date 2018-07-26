@@ -10,7 +10,6 @@
 .huge{
     display: none;
 }
-
 @media screen and (max-width: 768px) {
     .small-visible {
         display: block
@@ -36,7 +35,6 @@
         width: 24.99999%;
     }
 }
-
 @media screen and (max-width: 768px) {
     .small-hidden {
         display: none

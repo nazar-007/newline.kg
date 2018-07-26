@@ -38,6 +38,7 @@ class Book_complaints extends CI_Controller {
             );
             $this->books_model->insertBookComplaint($data_book_complaints);
             $insert_json = array(
+                'complaint_text' => $complaint_text,
                 'complaint_num_rows' => $complaint_num_rows,
                 'complaint_success' => "Ваша жалоба отправлена и будет рассмотрена при первой же возможности!",
                 'book_id' => $book_id,
@@ -45,6 +46,7 @@ class Book_complaints extends CI_Controller {
             );
         } else {
             $insert_json = array(
+                'complaint_text' => $complaint_text,
                 'complaint_num_rows' => $complaint_num_rows,
                 'complaint_error' => "Невозможно отправить жалобу. Вы уже жаловались на данную книгу, или текст жалобы пуст, или что-то пошло не так.",
                 'book_id' => $book_id,

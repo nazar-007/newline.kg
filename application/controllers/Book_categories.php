@@ -16,6 +16,11 @@ class Book_categories extends CI_Controller {
         }
         $books = $this->books_model->getBooksByCategoryIds($category_ids, 0);
         $html = '';
+        if (count($category_ids) == 0) {
+            $html .= "<h3 class='centered'>Все книги</h3>";
+        } else {
+            $html .= "<h3 class='centered'>Результаты по выбранным категориям</h3>";
+        }
         foreach ($books as $book) {
             $book_id = $book->id;
             $book_name = $book->book_name;

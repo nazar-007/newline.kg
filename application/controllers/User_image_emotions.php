@@ -9,10 +9,33 @@ class User_image_emotions extends CI_Controller {
     }
 
     public function Index() {
-        $data = array(
+        $this->load->view('session_user');
+        $user_image_id = $this->input->post('user_image_id');
+        $user_image_emotions = $this->songs_model->getUserImageEmotionsByUserImageId($user_image_id);
+        $html = '';
+        $html .= "<div class='row'>";
+        if (count($user_image_emotions) == 0 ) {
+            $html .= "<h3 class='centered'>Пока никто не ставил эмоцию.</h3>";
+        } else {
+            foreach ($user_image_emotions as $user_image_emotion) {
+                $html .= "<div class='col-xs-6 col-sm-4 col-lg-3 emotion_user'>
+                        <a href='" . base_url() . "one_user/$user_image_emotion->email'>
+                            <div class='emotion_user_image'>
+                                <img src='" . base_url() . "uploads/images/user_images/$user_image_emotion->main_image' class='action_avatar'>
+                            </div>
+                            <div class='emotion_user_name'>
+                                $user_image_emotion->nickname $user_image_emotion->surname
+                            </div>
+                        </a>
+                    </div>";
+            }
+        }
+        $html .= "</div>";
+        $get_emotions_json = array(
+            'one_image_emotions' => $html,
             'csrf_hash' => $this->security->get_csrf_hash()
         );
-        $this->load->view('user_image_emotions', $data);
+        echo json_encode($get_emotions_json);
     }
 
 

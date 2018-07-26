@@ -7,10 +7,11 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link rel="shortcut icon" href="<?php echo base_url()?>uploads/images/design_images/default.jpg">
+    <link rel="shortcut icon" href="<?php echo base_url()?>uploads/icons/logo.png">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/documents.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/media.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/common.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/animate.css">
 </head>
 <body>
 

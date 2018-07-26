@@ -9,19 +9,6 @@ class Gift_sent extends CI_Controller {
         $this->load->model('users_model');
     }
 
-    public function Index() {
-//        $category_ids = array();
-//        $user_id = $_SESSION['user_id'];
-//        $data_gift_sent = array(
-//            'gifts' => $this->gifts_model->getGiftsByCategoryIds($category_ids),
-//            'my_gifts' => $this->gifts_model->getGiftSentByUserId($user_id),
-//            'friends' => $this->users_model->getFriendsByUserId($user_id),
-//            'gift_categories' => $this->gifts_model->getGiftCategories(),
-//            'csrf_hash' => $this->security->get_csrf_hash()
-//        );
-//        $this->load->view('gift_sent', $data_gift_sent);
-    }
-
     public function insert_gift_sent() {
         $this->load->view('session_user');
         $sent_date = date('d.m.Y');
@@ -42,6 +29,11 @@ class Gift_sent extends CI_Controller {
             $insert_json = array(
                 'csrf_hash' => $this->security->get_csrf_hash(),
                 'gift_sent_error' => 'У Вас на счету ' . $user_currency . ' сомов, а подарок стоит ' . $gift_price . ', поэтому Вы не сможете отправить подарок.'
+            );
+        } else if ($sent_user_id == $user_id) {
+            $insert_json = array(
+                'csrf_hash' => $this->security->get_csrf_hash(),
+                'gift_sent_error' => 'Вы не можете отправить подарок самому себе.'
             );
         } else {
             $data_gift_sent = array(
@@ -68,6 +60,8 @@ class Gift_sent extends CI_Controller {
                 'notification_date' => $sent_date,
                 'notification_time' => $sent_time,
                 'notification_viewed' => 'Не просмотрено',
+                'link_id' => 0,
+                'link_table' => 'gifts',
                 'user_id' => $user_id
             );
             $this->users_model->insertUserNotification($data_user_notifications);
@@ -76,6 +70,7 @@ class Gift_sent extends CI_Controller {
 
             $insert_json = array(
                 'csrf_hash' => $this->security->get_csrf_hash(),
+                'currency' => $after_user_currency,
                 'gift_sent_success' => 'Подарок успешно отправлен пользователю ' . $user_name . '. На Вашем счету осталось ' . $after_user_currency . " сомов."
             );
         }

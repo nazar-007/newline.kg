@@ -1,0 +1,44 @@
+.pos_albums, .pos_images {
+    width: 80%;
+    height: auto;
+    margin: 0 auto;
+    box-shadow: 0 0px 1px;
+    padding:10px;
+}
+.carousel-height {
+    height: 200px;
+}
+.album, .image {
+    background-color: lightsteelblue;
+    padding: 2%;
+    margin: 0 1%;
+}
+.album:hover, .image:hover {
+    transition: 1s ease;
+    opacity: 0.7;
+}
+.album_name, .image_name {
+    font-size: 1.5em;
+}
+.image_date {
+    color: navy;
+    font-size: 1.2em;
+}
+.right {
+    float: right;
+}
+.red {
+    color: red;
+}
+.image_form {
+    margin: 5% 5%;
+    border: 5px solid midnightblue;
+}
+@media screen and (max-width: 1200px){
+    .pos_albums {
+        width: 100%;
+    }
+    .pos_images {
+        width: 100%;
+    }
+}

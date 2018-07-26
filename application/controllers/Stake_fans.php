@@ -49,6 +49,7 @@ class Stake_fans extends CI_Controller {
 
             $insert_json = array(
                 'csrf_hash' => $this->security->get_csrf_hash(),
+                'currency' => $after_user_currency,
                 'stake_fan_success' => 'Вы успешно заказали награду. На Вашем счету осталось ' . $after_user_currency . " сомов."
             );
         }

@@ -7,10 +7,11 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link rel="shortcut icon" href="<?php echo base_url()?>uploads/images/design_images/default.jpg">
+    <link rel="shortcut icon" href="<?php echo base_url()?>uploads/icons/logo.png">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/books.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/media.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/common.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/animate.css">
 </head>
 <body>
 
@@ -21,10 +22,25 @@
             <?php $this->load->view('sidebar'); ?>
         </div>
         <div class="pos_one_book">
+            <div class="navigation">
+                <?php
+                $prev = $current_id - 1;
+                $next = $current_id + 1;
+
+                if ($current_id > 1) {
+                    echo "<a href='" . base_url() . "one_book/$prev'>Предыдущая книга</a>";
+                }
+                echo "<a class='right' href='" . base_url() . "one_book/$next'>Следующая книга</a>";
+
+                ?>
+            </div>
             <?php
             if ($book_num_rows != 1) {
                 die('Книга удалена или ещё не добавлена!');
             }
+
+
+
             $session_user_id = $_SESSION['user_id'];
             foreach ($one_book as $info_book) {
                 $book_id = $info_book->id;
@@ -32,15 +48,15 @@
                 echo "<h3 class='centered'>$info_book->book_name</h3>
                     <div class='row'>
                         <div class='col-xs-12 col-sm-9 col-md-9 col-lg-9'>
-                            <div class='book_tr'>
+                            <div>
                                 <strong class='book_th'>Автор: </strong>
                                 <span class='book_td'>$info_book->book_author</span>
                             </div>
-                            <div class='book_tr'>
+                            <div>
                                 <strong class='book_th'>Описание: </strong>
                                 <span class='book_td'>$info_book->book_description</span>
                             </div>
-                            <div class='book_tr'>
+                            <div>
                                 <strong class='book_th'>Категория: </strong>
                                 <span class='book_td'>$info_book->category_name</span>
                             </div>
@@ -86,7 +102,9 @@
                             }
                             echo "</span>
                             </div>
-                            <iframe class='book_file' src='" . base_url() . "uploads/book_files/$book_file'></iframe>";
+                            <div class='book-iframe'>
+                                <iframe width='560' height='315' src='" . base_url() . "uploads/book_files/$book_file' frameborder='0'></iframe>
+                            </div>";
             }
             ?>
         </div>
@@ -158,7 +176,7 @@
                     <div class="form-group">
                         <input type="hidden" class="csrf" name="csrf_test_name" value="<?php echo $csrf_hash?>">
                         <label for="complaint_text">Текст жалобы:</label>
-                        <input type="text" id="complaint_text" name="complaint_text">
+                        <textarea id="complaint_text" class="form-control" name="complaint_text"></textarea>
                         <input class="book_id" type="hidden" name="book_id">
                         <input class="complained_user_id" type="hidden" name="complained_user_id">
                         <span id="complaint_error"></span>
@@ -248,7 +266,6 @@
             }
         })
     }
-
     function deleteBookComment(context) {
         var book_comment_id = context.getAttribute('data-book_comment_id');
         var book_id = context.getAttribute('data-book_id');
@@ -262,13 +279,12 @@
             if (message.comment_error) {
                 alert(message.comment_error);
             } else {
-                $('.one_comment_' + book_comment_id).remove();
-                $(".comments_field_" + book_id).html("<span onclick='getPublicationComments(this)' data-toggle='modal' data-target='#getPublicationComments'>" +
+                $('.one_comment_' + book_comment_id).fadeOut(500);
+                $(".comments_field_" + book_id).html("<span onclick='getBookComments(this)' data-toggle='modal' data-target='#getBookComments'>" +
                     "<img src='<?php echo base_url()?>uploads/icons/comment.png'><span class='badge'>" + message.total_comments + "</span></span>");
             }
         })
     }
-
     function insertBookComplaintPress(context) {
         var book_id = context.parentElement.getAttribute('data-book_id');
         var complained_user_id = context.parentElement.getAttribute('data-complained_user_id');
@@ -289,18 +305,16 @@
         }).done(function (message) {
             $(".csrf").val(message.csrf_hash);
             $("#complaint_text").val('');
-            if (message.complaint_num_rows == 0) {
+            if (message.complaint_num_rows == 0 && message.complaint_text != '') {
                 $("#insertBookComplaint").trigger('click');
                 alert(message.complaint_success);
                 $(".complaints_field_" + message.book_id).html("");
             } else {
                 $("#insertBookComplaint").trigger('click');
                 alert(message.complaint_error);
-                $(".complaints_field_" + message.book_id).html("");
             }
         })
     }
-
     function insertBookEmotion(context) {
         var emotioned_user_id = context.parentElement.getAttribute('data-emotioned_user_id');
         var book_id = context.parentElement.getAttribute('data-book_id');
@@ -342,7 +356,6 @@
             }
         })
     }
-
     function insertBookFan(context) {
         var fan_user_id = context.parentElement.getAttribute('data-fan_user_id');
         var book_id = context.parentElement.getAttribute('data-book_id');
@@ -384,7 +397,6 @@
             }
         })
     }
-
     $("#getBookComments").on('show.bs.modal', function () {
         history.pushState(null, null, location.href);
         window.onpopstate = function() {
@@ -397,10 +409,10 @@
             $("#getBookEmotions").modal('hide');
         };
     });
-    $("#getPublicationFans").on('show.bs.modal', function () {
+    $("#getBookFans").on('show.bs.modal', function () {
         history.pushState(null, null, location.href);
         window.onpopstate = function() {
-            $("#getPublicationFans").modal('hide');
+            $("#getBookFans").modal('hide');
         };
     });
     $("#insertBookComplaint").on('show.bs.modal', function () {

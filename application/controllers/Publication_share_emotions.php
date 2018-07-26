@@ -10,12 +10,34 @@ class Publication_share_emotions extends CI_Controller {
     }
 
     public function Index() {
-        $friend_ids = array();
-        $data = array(
-            'publications' => $this->publications_model->getPublicationsByFriendIds($friend_ids),
+        $this->load->view('session_user');
+
+        $publication_share_id = $this->input->post('publication_share_id');
+        $publication_share_emotions = $this->publications_model->getPublicationShareEmotionsByPublicationShareId($publication_share_id);
+        $html = '';
+        $html .= "<div class='row'>";
+        if (count($publication_share_emotions) == 0) {
+            $html .= "<h3 class='centered'>Пока никто не ставил эмоцию.</h3>";
+        } else {
+            foreach ($publication_share_emotions as $publication_share_emotion) {
+                $html .= "<div class='col-xs-6 col-sm-4 col-lg-3 emotion_user'>
+                        <a href='" . base_url() . "one_user/$publication_share_emotion->email'>
+                            <div class='emotion_user_image'>
+                                <img src='" . base_url() . "uploads/images/user_images/$publication_share_emotion->main_image' class='action_avatar' style='width: 100px;'>
+                            </div>
+                            <div class='emotion_user_name'>
+                                $publication_share_emotion->nickname $publication_share_emotion->surname
+                            </div>
+                        </a>
+                    </div>";
+            }
+        }
+        $html .= "</div>";
+        $get_emotions_json = array(
+            'one_publication_image_emotions' => $html,
             'csrf_hash' => $this->security->get_csrf_hash()
         );
-        $this->load->view('publications', $data);
+        echo json_encode($get_emotions_json);
     }
 
     public function insert_publication_share_emotion() {

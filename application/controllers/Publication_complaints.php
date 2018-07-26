@@ -40,6 +40,7 @@ class Publication_complaints extends CI_Controller {
             );
             $this->publications_model->insertPublicationComplaint($data_publication_complaints);
             $insert_json = array(
+                'complaint_text' => $complaint_text,
                 'complaint_num_rows' => $complaint_num_rows,
                 'complaint_success' => "Ваша жалоба отправлена и будет рассмотрена при первой же возможности!",
                 'publication_id' => $publication_id,
@@ -48,6 +49,7 @@ class Publication_complaints extends CI_Controller {
         } else {
             $insert_json = array(
                 'complaint_num_rows' => $complaint_num_rows,
+                'complaint_text' => $complaint_text,
                 'complaint_error' => "Невозможно отправить жалобу. Вы уже жаловались на данную публикацию, или текст жалобы пуст, или что-то пошло не так.",
                 'publication_id' => $publication_id,
                 'csrf_hash' => $this->security->get_csrf_hash()

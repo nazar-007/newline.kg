@@ -34,21 +34,11 @@ class Stakes_model extends CI_Model {
         $query = $this->db->get('stake_fans');
         return $query->result();
     }
-    public function getStakePriceById($id) {
-        $this->db->where('id', $id);
-        $query = $this->db->get('stakes');
-        $stakes = $query->result();
-        foreach ($stakes as $stake) {
-            $stake_price = $stake->stake_price;
-        }
-        return $stake_price;
-    }
     public function getStakeFansByFanUserId($fan_user_id) {
         $this->db->select('stake_fans.*, stakes.stake_name, stakes.stake_file');
         $this->db->from('stake_fans');
         $this->db->join('stakes', 'stake_fans.stake_id = stakes.id');
         $this->db->order_by('stake_fans.stake_date DESC, stake_fans.stake_time DESC');
-//        $this->db->join('users', 'stake_fans.fan_user_id = users.id');
         $this->db->where('stake_fans.fan_user_id', $fan_user_id);
         $query = $this->db->get();
         return $query->result();
@@ -59,6 +49,15 @@ class Stakes_model extends CI_Model {
         $this->db->where('fan_user_id', $fan_user_id);
         $query = $this->db->get('stake_fans');
         return $query->num_rows();
+    }
+    public function getStakePriceById($id) {
+        $this->db->where('id', $id);
+        $query = $this->db->get('stakes');
+        $stakes = $query->result();
+        foreach ($stakes as $stake) {
+            $stake_price = $stake->stake_price;
+        }
+        return $stake_price;
     }
 
     public function insertStake($data) {

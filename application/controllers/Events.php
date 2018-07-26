@@ -20,30 +20,63 @@ class Events extends CI_Controller {
         }
         $events = $this->events_model->getEventsByCategoryIds($category_ids, $offset);
         $html = '';
-//        foreach ($events as $event) {
-//            $book_id = $book->id;
-//            $book_name = $book->book_name;
-//            $total_book_emotions = $this->books_model->getTotalByBookIdAndBookTable($book_id, 'book_emotions');
-//            $total_book_fans = $this->books_model->getTotalByBookIdAndBookTable($book_id, 'book_fans');
-//            $html .= "<div class='col-xs-6 col-sm-6 col-md-4 col-lg-4 one_book'>
-//                    <a href='" . base_url() . "one_book/$book_id'>
-//                        <div class='book_cover'>
-//                            <img class='book_image' src='" . base_url() . "uploads/images/book_images/$book->book_image'>
-//                        </div>
-//                        <div class='book_name'>$book_name</div>
-//                    </a>
-//                    <div class='actions'>
-//                        <span class='emotions_field'>
-//                            <img onclick='putEmotionOrFan()' src='" . base_url() . "uploads/icons/emotioned.png'>
-//                            <span class='badge' onclick='getBookEmotions(this)' data-book_id='$book->id' data-toggle='modal' data-target='#getBookEmotions'>$total_book_emotions</span>
-//                        </span>
-//                        <span class='fans_field'>
-//                            <img onclick='putEmotionOrFan()' src='" . base_url() . "uploads/icons/fan.png'>
-//                            <span class='badge' onclick='getBookFans(this)' data-book_id='$book->id' data-toggle='modal' data-target='#getBookFans'>$total_book_fans</span>
-//                        </span>
-//                    </div>
-//                </div>";
-//        }
+        foreach ($events as $event) {
+            $event_id = $event->id;
+            $event_name = $event->event_name;
+            $event_date = $event->event_start_date;
+            $day = $event_date[0] . $event_date[1];
+            $year = $event_date[6] . $event_date[7] . $event_date[8] . $event_date[9];
+            if ($event_date[3] == '0') {
+                $month_index = $event_date[4];
+            } else {
+                $month_index = $event_date[3] . $event_date[4];
+            }
+            $months_array = array(
+                "1"=>"Января","2"=>"Февраля","3"=>"Марта",
+                "4"=>"Апреля","5"=>"Мая", "6"=>"Июня",
+                "7"=>"Июля","8"=>"Августа","9"=>"Сентября",
+                "10"=>"Октября","11"=>"Ноября","12"=>"Декабря"
+            );
+            $month = $months_array[$month_index];
+            $total_event_emotions = $this->events_model->getTotalByEventIdAndEventTable($event_id, 'event_emotions');
+            $total_event_fans = $this->events_model->getTotalByEventIdAndEventTable($event_id, 'event_fans');
+            $html .= "<div class='list col-xs-6 col-sm-6 col-md-4 col-lg-4 event'>
+                    <div class='col-xs-6 centered event-date'>
+                        <a href='" . base_url() . "one_event/$event_id'>
+                            <div class='date'>
+                                $day
+                            </div>
+                            <br>
+                            <div class='date'>
+                                $month
+                            </div>
+                            <br>
+                            <div class='date'>
+                                $year
+                            </div>
+                        </div>
+                    </a>
+                    <div class='col-xs-6 centered'>
+                        <div class='actions'>
+                            <div class='emotions_field'>
+                                <img onclick='putEmotionOrFan()' src='" . base_url() . "uploads/icons/emotioned.png'>
+                                <span class='badge' onclick='getEventEmotions(this)' data-event_id='$event->id' data-toggle='modal' data-target='#getEventEmotions'>$total_event_emotions</span>
+                            </div>
+                            <div class='fans_field'>
+                                <img onclick='putEmotionOrFan()' src='" . base_url() . "uploads/icons/fan.png'>
+                                <span class='badge' onclick='getEventFans(this)' data-event_id='$event->id' data-toggle='modal' data-target='#getEventFans'>$total_event_fans</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='row'>
+                        <div class='col-xs-12 event-name'>
+                            <a href='" . base_url() . "one_event/$event_id'>
+                                $event_name
+                            </a>
+                        </div>
+                    </div>
+                </div>";
+        }
 
         if (isset($_POST['offset'])) {
             $data = array(
@@ -59,6 +92,7 @@ class Events extends CI_Controller {
             }
             $data = array(
                 'events' => $html,
+                'friend_ids' => $friend_ids,
                 'event_actions' => $this->events_model->getEventActionsByFriendIds($friend_ids),
                 'event_categories' => $this->events_model->getEventCategories(),
                 'my_fan_events' => $this->events_model->getEventFansByFanUserId($session_user_id),
@@ -68,38 +102,110 @@ class Events extends CI_Controller {
         }
     }
 
-    public function choose_event_categories() {
-        $choose_category_ids = $this->input->post('category_ids');
-        $category_ids = array();
-        if (isset($choose_category_ids)) {
-            $category_ids = $choose_category_ids;
-        }
-        $events = $this->events_model->getEventsByCategoryIds($category_ids);
-        foreach ($events as $event) {
-            echo "<tr>
-            <td>$event->id</td>
-            <td>
-                <a href='" . base_url() . "models/" . $event->id . "'>" . $event->event_name . "</a>
-            </td>
-         </tr>";
-        }
-    }
-
     public function One_event($id) {
         $event_num_rows = $this->events_model->getEventNumRowsById($id);
+        $this->load->view('session_user');
+        $session_user_id = $_SESSION['user_id'];
         if ($event_num_rows == 1) {
             $data_events = array(
+                'current_id' => $id,
                 'one_event' => $this->events_model->getOneEventById($id),
-                'event_num_rows' => $event_num_rows
+                'complaint_num_rows' => $this->events_model->getEventComplaintNumRowsByEventIdAndComplainedUserId($id, $session_user_id),
+                'emotion_num_rows' => $this->events_model->getEventEmotionNumRowsByEventIdAndEmotionedUserId($id, $session_user_id),
+                'fan_num_rows' => $this->events_model->getEventFanNumRowsByEventIdAndFanUserId($id, $session_user_id),
+                'total_emotions' => $this->events_model->getTotalByEventIdAndEventTable($id, 'event_emotions'),
+                'total_comments' => $this->events_model->getTotalByEventIdAndEventTable($id, 'event_comments'),
+                'total_fans' => $this->events_model->getTotalByEventIdAndEventTable($id, 'event_fans'),
+                'event_num_rows' => $event_num_rows,
+                'csrf_hash' => $this->security->get_csrf_hash()
             );
         } else {
-            echo "Событие либо прошло и удалено, либо ещё не добавлено!";
             $data_events = array(
-                'event_num_rows' => $event_num_rows
+                'current_id' => $id,
+                'event_num_rows' => $event_num_rows,
+                'csrf_hash' => $this->security->get_csrf_hash()
             );
         }
         $this->load->view('one_event', $data_events);
     }
+
+    public function search_events() {
+        $search_by_name = $this->input->post('search_by_name');
+        $html = '';
+        if (iconv_strlen($search_by_name) > 0) {
+            $html .= "<h3 class='centered'>Результаты по запросу $search_by_name</h3>";
+            $events = $this->events_model->searchEventsByEventName($search_by_name);
+            if (count($events) == 0) {
+                $html .= "<div class='red centered'>По Вашему запросу $search_by_name ничего не найдено! :(</div>";
+            }
+        } else {
+            $html .= "<h3 class='centered'>Все события</h3>";
+            $events = $this->events_model->getEventsByCategoryIds(array(), 0);
+        }
+        foreach ($events as $event) {
+            $event_id = $event->id;
+            $event_name = $event->event_name;
+            $event_date = $event->event_start_date;
+            $day = $event_date[0] . $event_date[1];
+            $year = $event_date[6] . $event_date[7] . $event_date[8] . $event_date[9];
+            if ($event_date[3] == '0') {
+                $month_index = $event_date[4];
+            } else {
+                $month_index = $event_date[3] . $event_date[4];
+            }
+            $months_array = array(
+                "1"=>"Января","2"=>"Февраля","3"=>"Марта",
+                "4"=>"Апреля","5"=>"Мая", "6"=>"Июня",
+                "7"=>"Июля","8"=>"Августа","9"=>"Сентября",
+                "10"=>"Октября","11"=>"Ноября","12"=>"Декабря"
+            );
+            $month = $months_array[$month_index];
+            $total_event_emotions = $this->events_model->getTotalByEventIdAndEventTable($event_id, 'event_emotions');
+            $total_event_fans = $this->events_model->getTotalByEventIdAndEventTable($event_id, 'event_fans');
+            $html .= "<div class='list col-xs-6 col-sm-6 col-md-4 col-lg-4 event'>
+                    <div class='col-xs-6 centered event-date'>
+                        <a href='" . base_url() . "one_event/$event_id'>
+                            <div class='date'>
+                                $day
+                            </div>
+                            <br>
+                            <div class='date'>
+                                $month
+                            </div>
+                            <br>
+                            <div class='date'>
+                                $year
+                            </div>
+                        </div>
+                    </a>
+                    <div class='col-xs-6 centered'>
+                        <div class='actions'>
+                            <div class='emotions_field'>
+                                <img onclick='putEmotionOrFan()' src='" . base_url() . "uploads/icons/emotioned.png'>
+                                <span class='badge' onclick='getEventEmotions(this)' data-event_id='$event->id' data-toggle='modal' data-target='#getEventEmotions'>$total_event_emotions</span>
+                            </div>
+                            <div class='fans_field'>
+                                <img onclick='putEmotionOrFan()' src='" . base_url() . "uploads/icons/fan.png'>
+                                <span class='badge' onclick='getEventFans(this)' data-event_id='$event->id' data-toggle='modal' data-target='#getEventFans'>$total_event_fans</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='row'>
+                        <div class='col-xs-12 event-name'>
+                            <a href='" . base_url() . "one_event/$event_id'>
+                                $event_name
+                            </a>
+                        </div>
+                    </div>
+                </div>";
+        }
+        $data = array(
+            'search_events' => $html,
+            'csrf_hash' => $this->security->get_csrf_hash()
+        );
+        echo json_encode($data);
+    }
+
 
     public function insert_event() {
         $event_name = $this->input->post('event_name');

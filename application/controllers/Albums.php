@@ -21,14 +21,34 @@ class Albums extends CI_Controller {
 
     public function insert_album() {
         $album_name = $this->input->post('album_name');
-        $user_id = $this->input->post('user_id');
-        $data_albums = array(
-            'album_name' => $album_name,
-            'user_id' => $user_id
-        );
-        if ($album_name != 'User Album' || $album_name != 'Publication Album') {
+        $session_user_id = $_SESSION['user_id'];
+        $total_albums = $this->albums_model->getTotalAlbumsByUserId($session_user_id);
+
+        if ($album_name == 'My Album' || $album_name == 'Publication Album') {
+            $insert_json = array(
+                'album_error' => "Название альбома совпадает с названием альбома по умолчанию. Придумайте другое название",
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        } else if ($total_albums >= 4) {
+            $insert_json = array(
+                'album_error' => "Вы не можете создавать больше 4 альбомов",
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        } else {
+            $data_albums = array(
+                'album_name' => $album_name,
+                'user_id' => $session_user_id
+            );
             $this->albums_model->insertAlbum($data_albums);
+            $insert_id = $this->db->insert_id();
+            $insert_json = array(
+                'id' => $insert_id,
+                'album_name' => $album_name,
+                'album_success' => "Альбом успешно создан",
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
         }
+        echo json_encode($insert_json);
     }
 
     public function delete_album() {

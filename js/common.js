@@ -2,15 +2,29 @@ $(document).ready(function () {
     $(document).scroll(function(){
         if($(document).scrollTop() > $('header').height ()){
             $('.menu').eq(0).addClass('fixed');
+            $('.menu').eq(0).addClass('menu-animated');
+            $('#mobileMenu').css('display', 'none');
         }
         else{
             $('.menu').eq(0).removeClass('fixed');
+            $('.menu').eq(0).removeClass('menu-animated');
+        }
+
+        if($(document).scrollTop() > $('header').height ()){
+            $('.phone_logo').eq(0).addClass('fixed');
+            $('.phone_logo').eq(0).addClass('menu-animated');
+        }
+        else{
+            $('.phone_logo').eq(0).removeClass('fixed');
+            $('.phone_logo').eq(0).removeClass('menu-animated');
         }
 
         if ($(document).scrollTop() > 100) {
-            $('.scrollup').fadeIn();
+            $('.scrolldown').css('display', 'none');
+            $('.scrollup').fadeIn(1000);
         } else {
-            $('.scrollup').fadeOut();
+            $('.scrollup').css('display', 'none');
+            $('.scrolldown').fadeIn(1000);
         }
     });
 
@@ -19,16 +33,10 @@ $(document).ready(function () {
         return false;
     });
 
-    $('#menuShow').click(function(){
-        if($('#menuShow').is(':visible')){
-            $('#menu').css('display','block');
-        }
-        else{
-            $('#menu').css('display','none');
-        }
-    });
 
     $('#showMobileCategories').click(function(){
         $('#mobileCategories').slideToggle(500);
     });
+
+
 });

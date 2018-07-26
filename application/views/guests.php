@@ -7,10 +7,11 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link rel="shortcut icon" href="<?php echo base_url()?>uploads/images/design_images/default.jpg">
+    <link rel="shortcut icon" href="<?php echo base_url()?>uploads/icons/logo.png">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/guests.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/media.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/common.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/animate.css">
 </head>
 <body>
 
@@ -25,7 +26,7 @@
                 <h3 class="centered">Все гости за неделю</h3>
                 <?php
                 if (count($guests) == 0) {
-                    echo "За последнюю неделю никто не посещал Вашу страницу";
+                    echo "<h4 class='centered'>За последнюю неделю никто не посещал Вашу страницу.</h4>";
                 }
                 foreach ($guests as $guest) {
                     echo "<div class='col-xs-6 col-sm-4 col-lg-3 centered guest'>
@@ -48,7 +49,7 @@
                 <h3 class="centered">У кого я был в гостях за последнюю неделю</h3>
                 <?php
                 if (count($users) == 0) {
-                    echo "За последнюю неделю никто не посещал Вашу страницу";
+                    echo "<h4 class='centered'>За последнюю неделю Вы не посещали ни одной страницы.</h4>";
                 }
                 foreach ($users as $user) {
                     echo "<div class='col-xs-6 col-sm-4 col-lg-3 centered guest'>

@@ -9,7 +9,7 @@ class Guests extends CI_Controller {
     }
 
     public function Index() {
-        $user_id = 1;
+        $user_id = $_SESSION['user_id'];
         $data = array(
             'guests' => $this->users_model->getGuestsByUserId($user_id),
             'users' => $this->users_model->getUsersByGuestId($user_id),

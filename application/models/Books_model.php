@@ -6,8 +6,18 @@ class Books_model extends CI_Model {
         parent::__construct();
         $this->load->database();
         $this->load->helper('url');
+        $this->load->library('session');
+        $sessions = array(
+            'user_id' => $this->session->userdata('user_id'),
+            'user_email' => $this->session->userdata('user_email')
+        );
+        $this->session->set_userdata($sessions);
     }
 
+    public function getBooks() {
+        $query = $this->db->get('books');
+        return $query->result();
+    }
     public function getBookActionsByFriendIds($friend_ids) {
         $this->db->select('book_actions.*, users.nickname, books.book_name, books.book_image');
         $this->db->from('book_actions');
@@ -25,6 +35,7 @@ class Books_model extends CI_Model {
         return $query->result();
     }
     public function getBooksByCategoryIds($category_ids, $offset) {
+        $this->db->order_by('id DESC');
         $limit = 12;
         $this->db->limit($limit, $offset);
         foreach ($category_ids as $key => $category_id) {
@@ -36,16 +47,6 @@ class Books_model extends CI_Model {
         }
         $query = $this->db->get('books');
         return $query->result();
-    }
-    public function getBookFileById($id) {
-        $this->db->select('id, book_file');
-        $this->db->where('id', $id);
-        $query = $this->db->get('books');
-        $books = $query->result();
-        foreach ($books as $book) {
-            $book_file = $book->book_file;
-        }
-        return $book_file;
     }
     public function getBookCategories() {
         $query = $this->db->get('book_categories');
@@ -88,13 +89,6 @@ class Books_model extends CI_Model {
         $query = $this->db->get('book_emotions');
         return $query->num_rows();
     }
-    public function getBookFanNumRowsByBookIdAndFanUserId($book_id, $fan_user_id) {
-        $this->db->where('book_id', $book_id);
-        $this->db->where('fan_user_id', $fan_user_id);
-        $query = $this->db->get('book_fans');
-        return $query->num_rows();
-    }
-
     public function getBookEmotionsByBookId($book_id) {
         $this->db->select('book_emotions.*, users.email, users.nickname, users.surname, users.main_image');
         $this->db->from('book_emotions');
@@ -104,6 +98,13 @@ class Books_model extends CI_Model {
         $query = $this->db->get();
         return $query->result();
     }
+    public function getBookFanNumRowsByBookIdAndFanUserId($book_id, $fan_user_id) {
+        $this->db->where('book_id', $book_id);
+        $this->db->where('fan_user_id', $fan_user_id);
+        $query = $this->db->get('book_fans');
+        return $query->num_rows();
+    }
+
     public function getBookFansByBookId($book_id) {
         $this->db->select('book_fans.*, users.email, users.nickname, users.surname, users.main_image');
         $this->db->from('book_fans');
@@ -123,6 +124,16 @@ class Books_model extends CI_Model {
         $query = $this->db->get();
         return $query->result();
     }
+    public function getBookFileById($id) {
+        $this->db->select('id, book_file');
+        $this->db->where('id', $id);
+        $query = $this->db->get('books');
+        $books = $query->result();
+        foreach ($books as $book) {
+            $book_file = $book->book_file;
+        }
+        return $book_file;
+    }
     public function getBookImageById($id) {
         $this->db->select('id, book_image');
         $this->db->where('id', $id);
@@ -133,19 +144,21 @@ class Books_model extends CI_Model {
         }
         return $book_image;
     }
+    public function getBookNameById($id) {
+        $this->db->select('id, book_name');
+        $this->db->where('id', $id);
+        $query = $this->db->get('books');
+        $books = $query->result();
+        foreach ($books as $book) {
+            $book_name = $book->book_name;
+        }
+        return $book_name;
+    }
     public function getBookNumRowsById($id) {
         $this->db->select('id');
         $this->db->where('id', $id);
         $query = $this->db->get('books');
         return $query->num_rows();
-    }
-    public function getOneBookById($id) {
-        $this->db->select('books.*, book_categories.category_name');
-        $this->db->from('books');
-        $this->db->join('book_categories', 'books.category_id = book_categories.id');
-        $this->db->where('books.id', $id);
-        $query = $this->db->get();
-        return $query->result();
     }
     public function getBookSuggestionsByAdminId($admin_id) {
         $this->db->where('admin_id', $admin_id);
@@ -161,16 +174,6 @@ class Books_model extends CI_Model {
             $book_suggestion_file = $book_suggestion->suggestion_file;
         }
         return $book_suggestion_file;
-    }
-    public function getBookNameById($id) {
-        $this->db->select('id, book_name');
-        $this->db->where('id', $id);
-        $query = $this->db->get('books');
-        $books = $query->result();
-        foreach ($books as $book) {
-            $book_name = $book->book_name;
-        }
-        return $book_name;
     }
     public function getBookSuggestionImageById($id) {
         $this->db->select('id, suggestion_image');
@@ -188,7 +191,14 @@ class Books_model extends CI_Model {
         $query = $this->db->get('book_suggestions');
         return $query->result();
     }
-
+    public function getOneBookById($id) {
+        $this->db->select('books.*, book_categories.category_name');
+        $this->db->from('books');
+        $this->db->join('book_categories', 'books.category_id = book_categories.id');
+        $this->db->where('books.id', $id);
+        $query = $this->db->get();
+        return $query->result();
+    }
     public function getTotalByBookIdAndBookTable($book_id, $book_table) {
         $this->db->select('COUNT(*) as total');
         $this->db->group_by('book_id');
@@ -201,13 +211,13 @@ class Books_model extends CI_Model {
                 return substr($total, 0, 1) . "K";
             } else if(strlen($total) == 5) {
                 return substr($total, 0, 2) . "K";
-            } else if(strlen($total == 6)) {
+            } else if(strlen($total) == 6) {
                 return substr($total, 0, 3) . "K";
             } else if (strlen($total) == 7) {
                 return substr($total, 0, 1) . "M";
             } else if(strlen($total) == 8) {
                 return substr($total, 0, 2) . "M";
-            } else if(strlen($total == 9)) {
+            } else if(strlen($total) == 9) {
                 return substr($total, 0, 3) . "M";
             } else if (strlen($total) == 10) {
                 return substr($total, 0, 1) . "B";
@@ -219,6 +229,65 @@ class Books_model extends CI_Model {
                 return $total;
             }
         }
+    }
+    public function getTotalCommonBooksByTwoUsers($user1, $user2) {
+        $query = $this->db->query(
+            "SELECT COUNT(*) as total
+            FROM book_fans 
+            WHERE book_id IN 
+            (SELECT book_id 
+            FROM book_fans 
+            WHERE fan_user_id 
+            IN ($user1,$user2) 
+            GROUP BY book_id 
+            HAVING COUNT(book_id) = 2) 
+            AND fan_user_id = $user1"
+        );
+        $books = $query->result();
+        foreach ($books as $book) {
+            $total = $book->total;
+            if (strlen($total) == 4) {
+                return substr($total, 0, 1) . "K";
+            } else if(strlen($total) == 5) {
+                return substr($total, 0, 2) . "K";
+            } else if(strlen($total) == 6) {
+                return substr($total, 0, 3) . "K";
+            } else if (strlen($total) == 7) {
+                return substr($total, 0, 1) . "M";
+            } else if(strlen($total) == 8) {
+                return substr($total, 0, 2) . "M";
+            } else if(strlen($total) == 9) {
+                return substr($total, 0, 3) . "M";
+            } else if (strlen($total) == 10) {
+                return substr($total, 0, 1) . "B";
+            } else if(strlen($total) == 11) {
+                return substr($total, 0, 2) . "B";
+            } else if(strlen($total) == 12) {
+                return substr($total, 0, 3) . "B";
+            } else {
+                return $total;
+            }
+        }
+    }
+    public function getCommonBooksByTwoUsers($user1, $user2) {
+        $query = $this->db->query(
+            "SELECT book_fans.*, books.book_name, books.book_image
+                FROM book_fans
+                INNER JOIN books ON(book_fans.book_id = books.id)
+                WHERE book_id IN
+                (SELECT book_id
+                FROM book_fans
+                WHERE fan_user_id IN ($user1,$user2)
+                GROUP BY book_id
+                HAVING COUNT(book_id) = 2)
+                AND book_fans.fan_user_id = $user1"
+        );
+        return $query->result();
+    }
+    public function searchBooksByBookName($book_name) {
+        $this->db->like('book_name', $book_name);
+        $query = $this->db->get('books');
+        return $query->result();
     }
 
     public function insertBook($data) {

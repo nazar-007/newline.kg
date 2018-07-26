@@ -62,6 +62,7 @@ class Books extends CI_Controller {
 
             $data = array(
                 'books' => $html,
+                'friend_ids' => $friend_ids,
                 'book_actions' => $this->books_model->getBookActionsByFriendIds($friend_ids),
                 'book_categories' => $this->books_model->getBookCategories(),
                 'my_fan_books' => $this->books_model->getBookFansByFanUserId($session_user_id),
@@ -77,6 +78,7 @@ class Books extends CI_Controller {
         $session_user_id = $_SESSION['user_id'];
         if ($book_num_rows == 1) {
             $data_books = array(
+                'current_id' => $id,
                 'one_book' => $this->books_model->getOneBookById($id),
                 'complaint_num_rows' => $this->books_model->getBookComplaintNumRowsByBookIdAndComplainedUserId($id, $session_user_id),
                 'emotion_num_rows' => $this->books_model->getBookEmotionNumRowsByBookIdAndEmotionedUserId($id, $session_user_id),
@@ -89,6 +91,7 @@ class Books extends CI_Controller {
             );
         } else {
             $data_books = array(
+                'current_id' => $id,
                 'book_num_rows' => $book_num_rows,
                 'csrf_hash' => $this->security->get_csrf_hash()
             );
@@ -107,6 +110,50 @@ class Books extends CI_Controller {
         } else {
             echo "Не удалось скачать книгу.:(";
         }
+    }
+
+    public function search_books() {
+        $search_by_name = $this->input->post('search_by_name');
+        $html = '';
+        if (iconv_strlen($search_by_name) > 0) {
+            $html .= "<h3 class='centered'>Результаты по запросу $search_by_name</h3>";
+            $books = $this->books_model->searchBooksByBookName($search_by_name);
+            if (count($books) == 0) {
+                $html .= "<div class='red centered'>По Вашему запросу $search_by_name ничего не найдено! :(</div>";
+            }
+        } else {
+            $html .= "<h3 class='centered'>Все книги</h3>";
+            $books = $this->books_model->getBooksByCategoryIds(array(), 0);
+        }
+        foreach ($books as $book) {
+            $book_id = $book->id;
+            $book_name = $book->book_name;
+            $total_book_emotions = $this->books_model->getTotalByBookIdAndBookTable($book_id, 'book_emotions');
+            $total_book_fans = $this->books_model->getTotalByBookIdAndBookTable($book_id, 'book_fans');
+            $html .= "<div class='col-xs-6 col-sm-6 col-md-4 col-lg-4 one_book'>
+                    <a href='" . base_url() . "one_book/$book_id'>
+                        <div class='book_cover'>
+                            <img class='book_image' src='" . base_url() . "uploads/images/book_images/$book->book_image'>             
+                        </div>
+                        <div class='book_name'>$book_name</div>
+                    </a>
+                    <div class='actions'>
+                        <span class='emotions_field'>
+                            <img onclick='putEmotionOrFan()' src='" . base_url() . "uploads/icons/emotioned.png'>
+                            <span class='badge' onclick='getBookEmotions(this)' data-book_id='$book->id' data-toggle='modal' data-target='#getBookEmotions'>$total_book_emotions</span>
+                        </span>
+                        <span class='fans_field'>
+                            <img onclick='putEmotionOrFan()' src='" . base_url() . "uploads/icons/fan.png'>
+                            <span class='badge' onclick='getBookFans(this)' data-book_id='$book->id' data-toggle='modal' data-target='#getBookFans'>$total_book_fans</span>
+                        </span>
+                    </div>
+                </div>";
+        }
+        $data = array(
+            'search_books' => $html,
+            'csrf_hash' => $this->security->get_csrf_hash()
+        );
+        echo json_encode($data);
     }
 
     public function insert_book() {

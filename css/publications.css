@@ -1,104 +1,5 @@
-*{
-    outline: none;
-    text-decoration: none;
-}
-input{
-    margin-top: 7px;
-    border-radius: 5px;
-}
-hr{
-    height: 2px;
-    background-color: #0000FF;
-}
-body{
-    margin:0;
-    padding:0;
-    background-color: snow;
-    width:100%;
-    height: 100vh;
-}
-nav{
-    width: 100%;
-    height: auto;
-    left: 0;
-    right: 0;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    background-color: whitesmoke;
-    margin-bottom: 20px;
-}
-.fixed{
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    box-sizing: border-box;
-    opacity: 0.95;
-}
-.phone_logo{
-    width: 100%;
-    margin: 0 auto;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    text-align: center;
-}
-#menu{
-    display: none;
-}
-.pos_logo{
-    float: left;
-}
-.logo{
-    border-radius: 25px;
-}
-.pos_search{
-    text-align: center;
-}
-.pos_avatar{
-    float: right;
-}
-.avatar{
-    width: 50px;
-    height: 50px;
-}
-ul li{
-    list-style-type: none;
-}
-.stuff{
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    margin: 0 auto;
-}
-.pos_catalog {
-    width: auto;
-    height: 100%;
-    margin-left: -20px;
-    border: none;
-    text-align: left;
-    display: block;
-    padding: 0;
-}
-.catalog {
-    margin: 0 auto;
-    padding: 0;
-}
-.catalog li {
-    /* border-bottom: 1px solid black; */
-    padding: 10px 30px;
-    font-size: 18px;
-    cursor: pointer;
-}
-.catalog li:hover {
-    color: #5c8d94;
-    background-color: #bfc7cd;
-}
 .pos_publications {
-    width: 60%;
+    width: 80%;
     height: auto;
     margin: 0 auto;
     box-shadow: 0 0px 1px;
@@ -160,16 +61,13 @@ ul li{
     border: 1px solid red;
     margin: 20px 0;
 }
-
 .comment-input {
     margin: 20px 0;
 }
-
 .publication-date-time {
     right: 0;
     position: absolute;
 }
-
 .comment-date-time {
     position: absolute;
     right: 30px;
@@ -180,7 +78,6 @@ ul li{
     border-radius: 25px;
     box-shadow: 0 0px 1px;
 }
-
 .commented_user {
     margin: 20px 0 0 0;
 }
@@ -194,81 +91,36 @@ ul li{
     float: right;
     cursor: pointer;
 }
-
 .emotion_user, .share_user {
     height: 150px;
     cursor: pointer;
 }
-
 .emotion_avatar, .share_avatar {
     width: 100px;
     border-radius: 50%;
     box-shadow: 0 0px 1px;
 }
-
-.pos_recommendations {
-    width: 20%;
-    height: 100%;
-    margin: 0 auto;
-    padding: 0;
-    box-shadow: 1px 2px 1px 1px;
-    display: flex;
-    justify-content: center;
-}
-.rec_post{
-    width: 85%;
-    padding: 10px 1px 10px;
-}
-.rec_post a{
-    text-decoration-line: none;
-    margin-bottom: 10px;
-}
-.rec_post a:hover{
-    opacity: 0.9;
-    color: #444749;
-}
-.rec_post img{
-    width:100%;
-    display: block;
-    margin-top: 5px;
-    border-radius: 4px;
-}
-.bout_post{
-    cursor: pointer;
-    color: #363636;
-    font-size: 1.17em;
-}
-.one_post{
-    margin-top: 5px;
-    margin-bottom: 15px;
-}
 .publication_images {
     width: 50%;
     margin: 0 auto;
 }
-
 .publication_image_emotion {
     margin-top: 5px;
     margin-bottom: 5px;
     margin-left: 50%;
 }
-
 .emotion_image {
     margin-right: 7px;
 }
-
 .action_avatar {
     width: 100px;
     border-radius: 50%;
     box-shadow: 0 0px 1px;
 }
-
 .badge {
     background-color: darkslategray;
     cursor: pointer;
 }
-
-
 @media screen and (max-width: 1200px){
     .pos_publications {
         width: 100%;
@@ -277,7 +129,6 @@ ul li{
         width: 100%;
     }
 }
-
 @media screen and (max-width: 768px){
     .user_avatar, .commented_avatar, .emotion_avatar, .share_avatar {
         display: none;

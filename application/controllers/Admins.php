@@ -6,12 +6,62 @@ class Admins extends CI_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->model('admins_model');
+        $this->load->model('books_model');
+        $this->load->model('events_model');
+        $this->load->model('publications_model');
+        $this->load->model('songs_model');
+        $this->load->model('users_model');
     }
     public function Index() {
+        if ($_SESSION['admin_id'] && $_SESSION['admin_email'] && $_SESSION['admin_table']) {
+            redirect(base_url() . 'admin_panel');
+        }
         $data = array(
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         $this->load->view('admins', $data);
+    }
+
+    public function Authorization_admin() {
+        $admin_email = $this->input->post('admin_email');
+        $admin_password = md5($_POST['admin_password']);
+        $admin_table = $this->admins_model->getAdminTableByAdminEmail($admin_email);
+        $num_rows = $this->admins_model->getNumRowsByAdminEmailAndAdminPassword($admin_email, $admin_password);
+        if($num_rows > 0) {
+            $admin_id = $this->admins_model->getAdminIdByAdminEmailAndAdminPassword($admin_email, $admin_password);
+            $_SESSION['admin_id'] = $admin_id;
+            $_SESSION['admin_email'] = $admin_email;
+            $_SESSION['admin_table'] = $admin_table;
+            redirect(base_url() . "admin_panel");
+        } else {
+            redirect(base_url() . "admins");
+        }
+    }
+
+    public function Logout_admin() {
+        session_start();
+        session_destroy();
+        redirect(base_url() . 'admins');
+    }
+
+    public function Admin_panel() {
+        $admin_table = $_SESSION['admin_table'];
+        $data = array();
+        $data['csrf_hash'] = $this->security->get_csrf_hash();
+        if ($admin_table == 'books') {
+            $data['materials'] = $this->books_model->getBooks();
+        } else if ($admin_table == 'events') {
+            $data['materials'] = $this->load->events_model->getEvents();
+        } else if ($admin_table == 'songs') {
+            $data['materials'] = $this->load->songs_model->getSongs();
+        } else if ($admin_table == 'publications') {
+            $data['materials'] = $this->publications_model->getPublications();
+        } else if ($admin_table == 'users') {
+            $data['materials'] = $this->users_model->getUsers();
+        }
+
+        $this->load->view('session_admin');
+        $this->load->view('admin_panel', $data);
     }
 
     public function insert_admin()

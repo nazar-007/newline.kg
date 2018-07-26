@@ -10,6 +10,7 @@ class Gifts extends CI_Controller {
     }
 
     public function Index() {
+        $this->load->view('session_user');
         $category_ids = array();
         $user_id = $_SESSION['user_id'];
         $data_gifts = array(
@@ -17,6 +18,7 @@ class Gifts extends CI_Controller {
             'my_gifts' => $this->gifts_model->getGiftSentByUserId($user_id),
             'friends' => $this->users_model->getFriendsByUserId($user_id),
             'gift_categories' => $this->gifts_model->getGiftCategories(),
+            'currency' => $this->users_model->getCurrencyById($user_id),
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         $this->load->view('gifts', $data_gifts);

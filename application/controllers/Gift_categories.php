@@ -21,8 +21,11 @@ class Gift_categories extends CI_Controller {
         } else {
             $html .= "<h3 class='centered'>Результаты по выбранным категориям</h3>";
         }
-        foreach ($gifts as $gift) {
-            $html .= "<div class='col-xs-6 col-sm-4 col-lg-3 one_gift'>
+        if (count($gifts) == 0) {
+            $html .= "<h3 class='centered'>Ничего не найдено.</h3>";
+        } else {
+            foreach ($gifts as $gift) {
+                $html .= "<div class='col-xs-6 col-sm-4 col-lg-3 one_gift'>
             <span onclick='insertGiftSentPress(this)' data-toggle='modal' data-target='#insertGiftSent' data-id='$gift->id' data-gift_name='$gift->gift_name'>
                 <div class='gift_image'>
                     <img src='" . base_url() . "uploads/images/gift_images/$gift->gift_file'>
@@ -30,13 +33,14 @@ class Gift_categories extends CI_Controller {
                 <div class='gift_name'>
                     $gift->gift_name
                 </div>";
-            if ($gift->gift_price != 0) {
-                $html .= "<div class='badge gift_price'>$gift->gift_price сом</div>";
-            } else {
-                $html .= "<div class='badge gift_price' style='background-color: orange'>Бесплатно!</div>";
-            }
-            $html .= "</span>
+                if ($gift->gift_price != 0) {
+                    $html .= "<div class='badge gift_price'>$gift->gift_price сом</div>";
+                } else {
+                    $html .= "<div class='badge gift_price' style='background-color: orange'>Бесплатно!</div>";
+                }
+                $html .= "</span>
         </div>";
+            }
         }
         $get_json = array(
             'gifts_by_categories' => $html,

@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link rel="shortcut icon" href="<?php echo base_url()?>uploads/images/design_images/default.jpg">
+    <link rel="shortcut icon" href="<?php echo base_url()?>uploads/icons/logo.png">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/index.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/animate.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/media.css">
@@ -107,7 +107,7 @@
                             <option value="">Секретный вопрос</option>
                             <script>
                                 var secret_questions_1 = ["Любимый цвет", "Любимая еда", "Любимый фильм", "Любимая книга", "Любимая песня", "Любимая одежда", "Любимая машина", "Любимая страна", "Любимый напиток", "Любимое имя", "Любимая дата"];
-                                for (var i = 0; i <= secret_questions_1.length; i++) {
+                                for (var i = 0; i < secret_questions_1.length; i++) {
                                     document.write("<option>" + secret_questions_1[i] + "</option>");
                                 }
                             </script>
@@ -125,7 +125,7 @@
                             <option value="">Секретный вопрос</option>
                             <script>
                                 var secret_questions_2 = ["Нелюбимый цвет", "Нелюбимая еда", "Нелюбимый фильм", "Нелюбимая книга", "Нелюбимая песня", "Нелюбимая одежда", "Нелюбимая машина", "Нелюбимая страна", "Нелюбимый напиток", "Нелюбимое имя", "Нелюбимая дата"];
-                                for (var i = 0; i <= secret_questions_2.length; i++) {
+                                for (var i = 0; i < secret_questions_2.length; i++) {
                                     document.write("<option>" + secret_questions_2[i] + "</option>");
                                 }
                             </script>
@@ -197,7 +197,7 @@
         school = school + 1;
         var i = parseInt(school);
         $(e.target).before("<div class='form-group'>" +
-            "<label for='school_" + i + "'>Ваша школа №" + i + ": <img onclick='removeInput(this.parentElement.parentElement)' class='cross' src='/uploads/images/design_images/default.jpg'></label>" +
+            "<label for='school_" + i + "'>Ваша школа №" + i + ": <img onclick='removeInput(this.parentElement.parentElement)' class='cross' src='<?php echo base_url()?>uploads/icons/cancel.png'></label>" +
             "<input type='text' class='form-control common_input' id='school_" + i + "' placeholder='Введите название школы' name='education_schools[]'>" +
             "</div>");
         if (i >= 3) {
@@ -210,7 +210,7 @@
         university = university + 1;
         var i = parseInt(university);
         $(e.target).before("<div class='form-group'>" +
-            "<label for='university_" + i + "'>Ваш университет №" + i + ": <img onclick='removeInput(this.parentElement.parentElement)' class='cross' src='/uploads/images/design_images/default.jpg'></label>" +
+            "<label for='university_" + i + "'>Ваш университет №" + i + ": <img onclick='removeInput(this.parentElement.parentElement)' class='cross' src='<?php echo base_url()?>uploads/icons/cancel.png'></label>" +
             "<input type='text' class='form-control common_input' id='university_" + i + "' placeholder='Введите название университета' name='education_universities[]'>" +
             "</div>");
         if (i >= 3) {
@@ -315,7 +315,7 @@
         });
     }
     window.onload = function () {
-        document.getElementsByClassName('newline-logo')[0].classList.add('menu-animated');
+        document.getElementsByClassName('newline-logo')[0].classList.add('logo-animated');
     };
 </script>
 </body>

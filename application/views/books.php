@@ -7,10 +7,11 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link rel="shortcut icon" href="<?php echo base_url()?>uploads/images/design_images/default.jpg">
+    <link rel="shortcut icon" href="<?php echo base_url()?>uploads/icons/logo.png">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/books.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/media.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/common.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/animate.css">
 </head>
 <body>
 
@@ -23,7 +24,7 @@
         <div class="pos_books col-xs-12 col-sm-6 col-md-6 col-lg-6">
             <div class="row">
                 <div class='col-xs-12 col-sm-3 col-md-3 col-lg-3'>
-                    <div class="link_my_fan_books" data-toggle='modal' data-target='#getMyFanBooks'>Мои книги</div>
+                    <div class="link_my_fan_books" data-toggle='modal' data-target='#getMyFanBooks'>Мои любимые книги</div>
                     <img class='small-hidden book_image_big' src='<?php echo base_url()?>uploads/icons/fan_book.png' data-toggle='modal' data-target='#getMyFanBooks'>
                     <div class="centered">
                         <div class="suggest_btn link_my_fan_books" data-toggle="modal" data-target="#insertBookSuggestion">
@@ -47,7 +48,7 @@
                             <?php
                             foreach ($book_categories as $book_category) {
                                 echo "<div class='col-lg-4 col-md-4 col-sm-6 col-xs-6'>
-                                    <input type='checkbox' id='check_$book_category->id' name='category_ids[]' value='$book_category->id' />
+                                    <input type='checkbox' class='checkbox' id='check_$book_category->id' name='category_ids[]' value='$book_category->id' />
                                     <label for='check_$book_category->id'><span></span>$book_category->category_name</label>
                                 </div>";
                             }
@@ -55,6 +56,12 @@
                         </form>
                     </div>
                 </div>
+            </div>
+            <div>
+                <form method="post" action="javascript:void(0)" onkeyup="searchByName(this)">
+                    <input type="hidden" class="csrf" name="csrf_test_name" value="<?php echo $csrf_hash?>">
+                    <input type="text" class="form-control search_by_name_input" name="search_by_name" placeholder="Поиск по названию книги">
+                </form>
             </div>
             <div class="row" id="all_books">
                 <h3 class="centered">Все книги</h3>
@@ -65,14 +72,18 @@
             <div class="book_actions">
                 <h5 class="centered">Действия друзей</h5>
                 <?php
-                foreach($book_actions as $book_action) {
-                    echo "<div class='action-info'>
-                    <img class='action-image' src='" . base_url() . "uploads/images/book_images/$book_action->book_image'>
-                    <span class='action-text'>
-                        $book_action->book_action <br>
-                        <a href='" . base_url() . "one_book/$book_action->book_id'>Смотреть</a>
-                    </span><hr>
-                </div>";
+                if (count($friend_ids) == 0 || count($book_actions) == 0) {
+                    echo "<h4 class='centered'>Действий с книгами от Ваших друзей пока нет.</h4>";
+                } else {
+                    foreach($book_actions as $book_action) {
+                        echo "<div class='action-info'>
+                        <img class='action-image' src='" . base_url() . "uploads/images/book_images/$book_action->book_image'>
+                        <span class='action-text'>
+                            $book_action->book_action <br>
+                            <a href='" . base_url() . "one_book/$book_action->book_id'>Смотреть</a>
+                        </span><hr>
+                    </div>";
+                    }
                 };
 
                 ?>
@@ -126,9 +137,11 @@
             </div>
             <div class="modal-body row">
                 <?php
-
-                foreach ($my_fan_books as $my_fan_book) {
-                    echo "<div class='col-xs-6 col-sm-6 col-md-4 col-lg-4 one_book'>
+                if (count($my_fan_books) == 0) {
+                    echo "<h4 class='centered'>Пока Вы не добавили ни одной книги.</h4>";
+                } else {
+                    foreach ($my_fan_books as $my_fan_book) {
+                        echo "<div class='col-xs-6 col-sm-6 col-md-4 col-lg-4 one_book'>
                     <a href='" . base_url() . "one_book/$my_fan_book->book_id'>
                         <div class='book_cover'>
                             <img class='book_image' src='" . base_url() . "uploads/images/book_images/$my_fan_book->book_image'>
@@ -136,6 +149,7 @@
                         <div class='book_name'>$my_fan_book->book_name</div>
                     </a>
                 </div>";
+                    }
                 }
                 ?>
             </div>
@@ -188,6 +202,42 @@
 <script type="text/javascript" src="<?php echo base_url()?>js/common.js"></script>
 <script>
 
+    window.onblur = function () {console.log('неактивен')};
+    window.onfocus = function () {console.log('снова активен')};
+
+    var offset = 0;
+    $(document).scroll(function() {
+        if($(document).scrollTop() >= $(document).height() - $(window).height()) {
+            offset = offset + 12;
+            $.ajax({
+                method: "POST",
+                url: "<?php echo base_url()?>books/index",
+                data: {offset: offset, csrf_test_name: $(".csrf").val()},
+                dataType: "JSON"
+            }).done(function (message) {
+                $('.csrf').val(message.csrf_hash);
+                $("#all_books").append(message.books);
+            })
+        }
+    });
+
+    function chooseBooksByCategories(context) {
+        offset = 0;
+        var form = $(context)[0];
+        var all_inputs = new FormData(form);
+        $.ajax({
+            method: "POST",
+            url: "<?php echo base_url()?>book_categories/index",
+            data: all_inputs,
+            dataType: "JSON",
+            contentType: false,
+            processData: false
+        }).done(function (message) {
+            $(".csrf").val(message.csrf_hash);
+            $(".form-control").val('');
+            $("#all_books").html(message.books_by_categories);
+        })
+    }
     function insertBookSuggestion(context) {
         var form = $(context)[0];
         var all_inputs = new FormData(form);
@@ -212,42 +262,29 @@
             }
         })
     }
-
-    window.onblur = function () {console.log('неактивен')};
-    window.onfocus = function () {console.log('снова активен')};
-
-    var offset = 0;
-    $(document).scroll(function() {
-        if($(document).scrollTop() >= $(document).height() - $(window).height()) {
-            offset = offset + 12;
-            $.ajax({
-                method: "POST",
-                url: "<?php echo base_url()?>books/index",
-                data: {offset: offset, csrf_test_name: $(".csrf").val()},
-                dataType: "JSON"
-            }).done(function (message) {
-                $('.csrf').val(message.csrf_hash);
-                $("#all_books").append(message.books);
-            })
-        }
-    });
-
-    function chooseBooksByCategories(context) {
+    function searchByName(context) {
+        offset = 0;
         var form = $(context)[0];
         var all_inputs = new FormData(form);
         $.ajax({
             method: "POST",
-            url: "<?php echo base_url()?>book_categories/index",
+            url: "<?php echo base_url()?>books/search_books",
             data: all_inputs,
             dataType: "JSON",
             contentType: false,
             processData: false
         }).done(function (message) {
             $(".csrf").val(message.csrf_hash);
-            $("#all_books").html(message.books_by_categories);
+            $("#all_books").html(message.search_books);
+
+            var checkbox = document.getElementsByClassName('checkbox');
+            for (var i = 0; i < checkbox.length; i++) {
+                if (checkbox[i].checked) {
+                    checkbox[i].checked = false;
+                }
+            }
         })
     }
-
     function getBookEmotions(context) {
         var book_id = context.getAttribute('data-book_id');
         $.ajax({
@@ -272,7 +309,6 @@
             $("#one_book_fans").html(message.one_book_fans);
         })
     }
-
     function getMyFanBooks(context) {
         var book_id = context.getAttribute('data-book_id');
         $.ajax({
@@ -285,9 +321,8 @@
             $("#one_book_fans").html(message.one_book_fans);
         })
     }
-
     function putEmotionOrFan() {
-        alert('Чтобы поставить эмоцию на книгу или добавить книгу в любимки, войдите в неё!');
+        alert('Чтобы поставить эмоцию на книгу или добавить книгу в любимки, войдите в книгу!');
     }
 
     $("#getBookEmotions").on('show.bs.modal', function () {
@@ -317,7 +352,6 @@
         };
     });
 </script>
-
 
 </body>
 </html>

@@ -11,6 +11,7 @@
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/events.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/media.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/common.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/animate.css">
 </head>
 <body>
 
@@ -23,7 +24,7 @@
         <div class="pos_events col-xs-12 col-sm-6 col-md-6 col-lg-6">
             <div class="row">
                 <div class='col-xs-12 col-sm-3 col-md-3 col-lg-3'>
-                    <div class="link_my_fan_events" data-toggle='modal' data-target='#getMyFanEvents'>Мои события</div>
+                    <div class="link_my_fan_events" data-toggle='modal' data-target='#getMyFanEvents'>Мои любимые события</div>
                     <img class='small-hidden event_image_big' src='<?php echo base_url()?>uploads/icons/big_event.png' data-toggle='modal' data-target='#getMyFanEvents'>
                     <div class="centered">
                         <div class="suggest_btn link_my_fan_events" data-toggle="modal" data-target="#insertEventSuggestion">
@@ -35,7 +36,7 @@
                     </div>
                 </div>
                 <div class='col-xs-12 col-sm-9 col-md-9 col-lg-9'>
-                    <div class="book_events small-hidden">
+                    <div class="event_categories small-hidden">
                         Выберите категории событий
                     </div>
                     <div id="showMobileCategories" class="event_categories huge-hidden big-hidden middle-hidden">
@@ -47,7 +48,7 @@
                             <?php
                             foreach ($event_categories as $event_category) {
                                 echo "<div class='col-lg-4 col-md-4 col-sm-6 col-xs-6'>
-                                    <input type='checkbox' id='check_$event_category->id' name='category_ids[]' value='$event_category->id' />
+                                    <input type='checkbox' class='checkbox' id='check_$event_category->id' name='category_ids[]' value='$event_category->id' />
                                     <label for='check_$event_category->id'><span></span>$event_category->category_name</label>
                                 </div>";
                             }
@@ -56,22 +57,32 @@
                     </div>
                 </div>
             </div>
-            <div class="row" id="all_events">
+            <div>
+                <form method="post" action="javascript:void(0)" onkeyup="searchByName(this)">
+                    <input type="hidden" class="csrf" name="csrf_test_name" value="<?php echo $csrf_hash?>">
+                    <input type="text" class="form-control search_by_name_input" name="search_by_name" placeholder="Поиск по названию события">
+                </form>
+            </div>
+            <div class="row events" id="all_events">
                 <h3 class="centered">Все события</h3>
                 <?php echo $events?>
             </div>
         </div>
         <div class="pos_recommendations small-hidden middle-hidden big-hidden col-xs-3">
-            <div class="book_actions">
+            <div class="event_actions">
                 <h5 class="centered">Действия друзей</h5>
                 <?php
-                foreach($event_actions as $event_action) {
-                    echo "<div class='action-info'>
-                    <span class='action-text'>
-                        $event_action->event_action <br>
-                        <a href='" . base_url() . "one_event/$event_action->event_id'>Смотреть</a>
-                    </span><hr>
-                </div>";
+                if (count($friend_ids) == 0 || count($event_actions) == 0) {
+                    echo "<h4 class='centered'>Действий с событиями от Ваших друзей пока нет.</h4>";
+                } else {
+                    foreach($event_actions as $event_action) {
+                        echo "<div class='action-info'>
+                        <span class='action-text'>
+                            $event_action->event_action <br>
+                            <a href='" . base_url() . "one_event/$event_action->event_id'>Смотреть</a>
+                        </span><hr>
+                    </div>";
+                    }
                 };
 
                 ?>
@@ -125,16 +136,51 @@
             </div>
             <div class="modal-body row">
                 <?php
-//                foreach ($my_fan_books as $my_fan_book) {
-//                    echo "<div class='col-xs-6 col-sm-6 col-md-4 col-lg-4 one_book'>
-//                    <a href='" . base_url() . "one_book/$my_fan_book->book_id'>
-//                        <div class='book_cover'>
-//                            <img class='book_image' src='" . base_url() . "uploads/images/book_images/$my_fan_book->book_image'>
-//                        </div>
-//                        <div class='book_name'>$my_fan_book->book_name</div>
-//                    </a>
-//                </div>";
-//                }
+                if (count($my_fan_events) == 0) {
+                    echo "<h4 class='centered'>Пока Вы не добавили ни одного события.</h4>";
+                } else {
+                    foreach ($my_fan_events as $my_fan_event) {
+                        $event_id = $my_fan_event->event_id;
+                        $event_name = $my_fan_event->event_name;
+                        $event_date = $my_fan_event->event_start_date;
+                        $day = $event_date[0] . $event_date[1];
+                        $year = $event_date[6] . $event_date[7] . $event_date[8] . $event_date[9];
+                        if ($event_date[3] == '0') {
+                            $month_index = $event_date[4];
+                        } else {
+                            $month_index = $event_date[3] . $event_date[4];
+                        }
+                        $months_array = array(
+                            "1" => "Января", "2" => "Февраля", "3" => "Марта",
+                            "4" => "Апреля", "5" => "Мая", "6" => "Июня",
+                            "7" => "Июля", "8" => "Августа", "9" => "Сентября",
+                            "10" => "Октября", "11" => "Ноября", "12" => "Декабря"
+                        );
+                        $month = $months_array[$month_index];
+                        echo "<div class='list col-xs-6 col-sm-6 col-md-6 col-lg-6 event'>
+                        <div class='centered'>
+                        <div class='event-date'>
+                        <a href='" . base_url() . "one_event/$event_id'>
+                            <div class='date'>
+                                $day
+                            </div>
+                            <br>
+                            <div class='date'>
+                                $month
+                            </div>
+                            <br>
+                            <div class='date'>
+                                $year
+                            </div>
+                        </a>
+                        </div>
+                        <div class='event-name'>
+                            $event_name
+                        </div>
+                    </div>
+                    </div>";
+                    }
+                }
                 ?>
             </div>
             <div class="modal-footer">
@@ -159,7 +205,7 @@
                     <label>Описание</label>
                     <textarea required rows="5" class="form-control" name="event_description"></textarea>
                     <label>Адрес</label>
-                    <input required type="text" class="form-control" name="book_author">
+                    <input required type="text" class="form-control" name="event_address">
                     <label>Дата начала события:</label><br>
                     <select required name="day">
                         <option value="">День</option>
@@ -174,7 +220,7 @@
                         <script>
                             var months = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
                             for (var i = 0; i < months.length; i++) {
-                                document.write("<option>" + months[i] + "</option>");
+                                document.write("<option value='" + (i+1) + "'>" + months[i] + "</option>");
                             }
                         </script>
                     </select>
@@ -199,7 +245,7 @@
                         <option value="">Минута</option>
                         <script>
                             for (var i = 0; i < 60; i++) {
-                                document.write("<option>" + months[i] + "</option>");
+                                document.write("<option>" + i + "</option>");
                             }
                         </script>
                     </select><br>
@@ -225,51 +271,27 @@
 <script type="text/javascript" src="<?php echo base_url()?>js/common.js"></script>
 <script>
 
-    function insertEventSuggestion(context) {
-        var form = $(context)[0];
-        var all_inputs = new FormData(form);
-        $.ajax({
-            method: "POST",
-            url: "<?php echo base_url()?>book_suggestions/insert_book_suggestion",
-            data: all_inputs,
-            dataType: "JSON",
-            contentType: false,
-            processData: false
-        }).done(function (message) {
-            $(".csrf").val(message.csrf_hash);
-            if (message.event_date_error) {
-                alert(message.event_date_error);
-            }
-            if (message.event_time_error) {
-                alert(message.event_time_error);
-            }
-            if (message.success_suggestion) {
-                alert(message.success_suggestion);
-                $("#insertEventSuggestion").modal('hide');
-            }
-        })
-    }
-
     window.onblur = function () {console.log('неактивен')};
     window.onfocus = function () {console.log('снова активен')};
 
-//    var offset = 0;
-//    $(document).scroll(function() {
-//        if($(document).scrollTop() >= $(document).height() - $(window).height()) {
-//            offset = offset + 12;
-//            $.ajax({
-//                method: "POST",
-//                url: "<?php //echo base_url()?>//books/index",
-//                data: {offset: offset, csrf_test_name: $(".csrf").val()},
-//                dataType: "JSON"
-//            }).done(function (message) {
-//                $('.csrf').val(message.csrf_hash);
-//                $("#all_books").append(message.books);
-//            })
-//        }
-//    });
+    var offset = 0;
+    $(document).scroll(function() {
+        if($(document).scrollTop() >= $(document).height() - $(window).height()) {
+            offset = offset + 12;
+            $.ajax({
+                method: "POST",
+                url: "<?php echo base_url()?>events/index",
+                data: {offset: offset, csrf_test_name: $(".csrf").val()},
+                dataType: "JSON"
+            }).done(function (message) {
+                $('.csrf').val(message.csrf_hash);
+                $("#all_events").append(message.events);
+            })
+        }
+    });
 
     function chooseEventsByCategories(context) {
+        offset = 0;
         var form = $(context)[0];
         var all_inputs = new FormData(form);
         $.ajax({
@@ -281,10 +303,51 @@
             processData: false
         }).done(function (message) {
             $(".csrf").val(message.csrf_hash);
+            $(".form-control").val('');
             $("#all_events").html(message.events_by_categories);
         })
     }
+    function insertEventSuggestion(context) {
+        var form = $(context)[0];
+        var all_inputs = new FormData(form);
+        $.ajax({
+            method: "POST",
+            url: "<?php echo base_url()?>event_suggestions/insert_event_suggestion",
+            data: all_inputs,
+            dataType: "JSON",
+            contentType: false,
+            processData: false
+        }).done(function (message) {
+            $(".csrf").val(message.csrf_hash);
+            if (message.success_suggestion) {
+                alert(message.success_suggestion);
+                $("#insertEventSuggestion").modal('hide');
+            }
+        })
+    }
+    function searchByName(context) {
+        offset = 0;
+        var form = $(context)[0];
+        var all_inputs = new FormData(form);
+        $.ajax({
+            method: "POST",
+            url: "<?php echo base_url()?>events/search_events",
+            data: all_inputs,
+            dataType: "JSON",
+            contentType: false,
+            processData: false
+        }).done(function (message) {
+            $(".csrf").val(message.csrf_hash);
+            $("#all_events").html(message.search_events);
 
+            var checkbox = document.getElementsByClassName('checkbox');
+            for (var i = 0; i < checkbox.length; i++) {
+                if (checkbox[i].checked) {
+                    checkbox[i].checked = false;
+                }
+            }
+        })
+    }
     function getEventEmotions(context) {
         var event_id = context.getAttribute('data-event_id');
         $.ajax({
@@ -309,7 +372,6 @@
             $("#one_event_fans").html(message.one_event_fans);
         })
     }
-
     function getMyFanEvents(context) {
         var event_id = context.getAttribute('data-event_id');
         $.ajax({
@@ -322,9 +384,8 @@
             $("#one_event_fans").html(message.one_event_fans);
         })
     }
-
     function putEmotionOrFan() {
-        alert('Чтобы поставить эмоцию на событие или добавить событие в любимки, войдите в неё!');
+        alert('Чтобы поставить эмоцию на событие или добавить событие в любимки, войдите в событие!');
     }
 
     $("#getEventEmotions").on('show.bs.modal', function () {
@@ -354,7 +415,5 @@
         };
     });
 </script>
-
-
 </body>
 </html>

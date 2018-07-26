@@ -1,0 +1,44 @@
+.pos_folders, .pos_documents {
+    width: 80%;
+    height: auto;
+    margin: 0 auto;
+    box-shadow: 0 0px 1px;
+    padding:10px;
+}
+.folder, .document {
+    background-color: lightsteelblue;
+    padding: 2%;
+    margin: 0 1%;
+}
+.folder:hover, .document:hover {
+    transition: 1s ease;
+    opacity: 0.7;
+}
+.folder_name, .document_name {
+    font-size: 1.5em;
+}
+.document_date {
+    color: navy;
+    font-size: 1.2em;
+}
+.right {
+    float: right;
+}
+.document_description {
+    height: 60vh;
+}
+.red {
+    color: red;
+}
+.document_form {
+    margin: 5% 5%;
+    border: 5px solid midnightblue;
+}
+@media screen and (max-width: 1200px){
+    .pos_folders {
+        width: 100%;
+    }
+    .pos_documents {
+        width: 100%;
+    }
+}

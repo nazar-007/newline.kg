@@ -16,8 +16,11 @@ class Publication_shares extends CI_Controller {
         $publication_shares = $this->publications_model->getPublicationSharesByPublicationId($publication_id);
         $html = '';
         $html .= "<div class='row'>";
-        foreach ($publication_shares as $publication_share) {
-            $html .= "<div class='col-xs-6 col-sm-4 col-lg-3 share_user'>
+        if (count($publication_shares) == 0) {
+            $html .= "<h3 class='centered'>Пока никто не делился этой публикацией.</h3>";
+        } else {
+            foreach ($publication_shares as $publication_share) {
+                $html .= "<div class='col-xs-6 col-sm-4 col-lg-3 share_user'>
                         <a href='" . base_url() . "one_user/$publication_share->email'>
                             <div class='share_user_image'>
                                 <img src='" . base_url() . "uploads/images/user_images/$publication_share->main_image' class='action_avatar' style='width: 100px;'>
@@ -27,6 +30,7 @@ class Publication_shares extends CI_Controller {
                             </div>
                         </a>
                     </div>";
+            }
         }
         $html .= "</div>";
         $get_shares_json = array(

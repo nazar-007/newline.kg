@@ -21,6 +21,10 @@ class Publications_model extends CI_Model {
         $query = $this->db->get();
         return $query->result();
     }
+    public function getPublications() {
+        $query = $this->db->get('publications');
+        return $query->result();
+    }
     public function getPublicationsByPublishedUserId($published_user_id) {
         $this->db->where('published_user_id', $published_user_id);
         $query = $this->db->get('publications');
@@ -115,12 +119,6 @@ class Publications_model extends CI_Model {
         $query = $this->db->get('publication_image_emotions');
         return $query->num_rows();
     }
-    // НАДО ПРОВЕРИТЬ НА УДАЛЕНИИ ЮЗЕРА!!!
-//    public function getPublicationSharesByPublicationId($publication_id) {
-//        $this->db->where('publication_id', $publication_id);
-//        $query = $this->db->get('publication_shares');
-//        return $query->result();
-//    }
     public function getPublicationShareNumRowsByPublicationIdAndSharedUserId($publication_id, $shared_user_id) {
         $this->db->where('publication_id', $publication_id);
         $this->db->where('shared_user_id', $shared_user_id);
@@ -148,13 +146,13 @@ class Publications_model extends CI_Model {
                 return substr($total, 0, 1) . "K";
             } else if(strlen($total) == 5) {
                 return substr($total, 0, 2) . "K";
-            } else if(strlen($total == 6)) {
+            } else if(strlen($total) == 6) {
                 return substr($total, 0, 3) . "K";
             } else if (strlen($total) == 7) {
                 return substr($total, 0, 1) . "M";
             } else if(strlen($total) == 8) {
                 return substr($total, 0, 2) . "M";
-            } else if(strlen($total == 9)) {
+            } else if(strlen($total) == 9) {
                 return substr($total, 0, 3) . "M";
             } else if (strlen($total) == 10) {
                 return substr($total, 0, 1) . "B";
@@ -179,13 +177,13 @@ class Publications_model extends CI_Model {
                 return substr($total, 0, 1) . "K";
             } else if(strlen($total) == 5) {
                 return substr($total, 0, 2) . "K";
-            } else if(strlen($total == 6)) {
+            } else if(strlen($total) == 6) {
                 return substr($total, 0, 3) . "K";
             } else if (strlen($total) == 7) {
                 return substr($total, 0, 1) . "M";
             } else if(strlen($total) == 8) {
                 return substr($total, 0, 2) . "M";
-            } else if(strlen($total == 9)) {
+            } else if(strlen($total) == 9) {
                 return substr($total, 0, 3) . "M";
             } else if (strlen($total) == 10) {
                 return substr($total, 0, 1) . "B";

@@ -7,10 +7,11 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link rel="shortcut icon" href="<?php echo base_url()?>uploads/images/design_images/default.jpg">
+    <link rel="shortcut icon" href="<?php echo base_url()?>uploads/icons/logo.png">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/gift_stakes.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/media.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/common.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/animate.css">
 </head>
 <body>
 
@@ -22,9 +23,17 @@
         </div>
         <div class="pos_gifts">
             <div class="row">
-                <div class='col-xs-12 col-sm-3 col-md-3 col-lg-3 my_gifts' data-toggle='modal' data-target='#getMyGifts'>
-                    <div class="link_my_gifts">Мои подарки</div><br>
-                    <img class='small-hidden gift_image_big' src='<?php echo base_url()?>uploads/icons/big_gift.png'>
+                <div class='col-xs-12 col-sm-3 col-md-3 col-lg-3'>
+                    <div class="link_my_gifts" data-toggle='modal' data-target='#getMyGifts'>Мои подарки</div>
+                    <img class='small-hidden gift_image_big' src='<?php echo base_url()?>uploads/icons/big_gift.png' data-toggle='modal' data-target='#getMyGifts'>
+                    <div class="centered">
+                        <div class="currency_btn link_my_gifts" data-toggle="modal" data-target="#insertCurrency">
+                            <div class="currency small-hidden">
+                                На Вашем счету <?php echo $currency?> сомов.
+                            </div>
+                            <span>Пополнить счёт</span>
+                        </div>
+                    </div>
                 </div>
                 <div class='col-xs-12 col-sm-9 col-md-9 col-lg-9'>
                     <div class="gift_categories small-hidden">
@@ -82,6 +91,12 @@
                 <h4 class="modal-title">Отправка подарка пользователю</h4>
             </div>
             <div class="modal-body">
+                <div>
+                    <form method="post" action="javascript:void(0)" onkeyup="searchByName(this)">
+                        <input type="hidden" class="csrf" name="csrf_test_name" value="<?php echo $csrf_hash?>">
+                        <input type="text" class="form-control search_by_name_input" name="search_by_name" placeholder="Поиск по емайлу или имени и фамилии пользователя">
+                    </form>
+                </div>
                 <form action="javascript:void(0)" onsubmit="insertGiftSent(this)">
                     <div class="form-group">
                         <input type="hidden" name="gift_id" class="insert_id">
@@ -89,18 +104,20 @@
                         <input type="hidden" name="user_id" class="user_id">
                         <h3 class="insert_name centered"></h3>
                         <div class="row">
-                        <?php
-                        foreach ($friends as $friend) {
-                            echo "<div onclick='chooseUserId(this)' data-user_id='$friend->friend_id' class='col-xs-6 col-sm-4 col-lg-3 friend_$friend->friend_id friend centered'>
-                                    <div class='friend_user_image'>
-                                        <img src='uploads/images/user_images/$friend->main_image' class='friend_avatar'>
-                                    </div>
-                                    <div class='friend_name'>
-                                        $friend->nickname $friend->surname
-                                    </div>
-                                </div>";
-                        }
-                        ?>
+                            <div id="all_friends">
+                            <?php
+                            foreach ($friends as $friend) {
+                                echo "<div onclick='chooseUserId(this)' data-user_id='$friend->friend_id' class='col-xs-6 col-sm-4 col-lg-3 friend_$friend->friend_id friend centered'>
+                                        <div class='friend_user_image'>
+                                            <img src='uploads/images/user_images/$friend->main_image' class='friend_avatar'>
+                                        </div>
+                                        <div class='friend_name'>
+                                            $friend->nickname $friend->surname
+                                        </div>
+                                    </div>";
+                            }
+                            ?>
+                            </div>
                         </div>
                         <br/>
                         <span class="action_buttons">
@@ -159,12 +176,83 @@
     </div>
 </div>
 
+<div class="modal fade" id="insertCurrency" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Пополнение счёта</h4>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="javascript:void(0)" onsubmit="insertCurrency(this)">
+                    <input type="hidden" class="csrf" name="csrf_test_name" value="<?php echo $csrf_hash?>">
+                    <label>Выберите сумму</label>
+                    <select required class="btn btn-warning form-control" name="currency">
+                        <option selected value="">Выберите сумму</option>
+                        <script>
+                            var money = [1,5,10,20,50,100];
+                            for (var i = 0; i < money.length; i++) {
+                                document.write("<option value='" + money[i] + "'>" + money[i] + " сом</option>");
+                            }
+                        </script>
+                    </select>
+
+                    <button type="submit" class="btn btn-success center-block">Пополнить</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?php $this->load->view("footer");?>
 
 
 <script type="text/javascript" src="<?php base_url()?>js/common.js"></script>
 <script>
 
+    function searchByName(context) {
+        offset = 0;
+        var form = $(context)[0];
+        var all_inputs = new FormData(form);
+        $.ajax({
+            method: "POST",
+            url: "<?php echo base_url()?>users/search_gift_users",
+            data: all_inputs,
+            dataType: "JSON",
+            contentType: false,
+            processData: false
+        }).done(function (message) {
+            $(".csrf").val(message.csrf_hash);
+            $('.user_id').val('');
+            $("#all_friends").html(message.search_gift_users);
+        })
+    }
+
+    function insertCurrency(context) {
+        var form = $(context)[0];
+        var all_inputs = new FormData(form);
+        $.ajax({
+            method: "POST",
+            url: "<?php echo base_url()?>" + "users/insert_currency",
+            data: all_inputs,
+            dataType: "JSON",
+            contentType: false,
+            processData: false
+        }).done(function (message) {
+            $(".csrf").val(message.csrf_hash);
+            if (message.currency_error) {
+                alert(message.currency_error);
+            }
+            if (message.currency_success) {
+                $('.currency').html("На Вашем счету " + message.currency + " сомов.");
+                $("#insertCurrency").trigger('click');
+                alert(message.currency_success);
+            }
+        })
+    }
 
     function returnCross(context) {
         var id = context.getAttribute('data-id');
@@ -188,8 +276,7 @@
             if (message.gift_sent_error) {
                 alert(message.gift_sent_error);
             } else {
-                $('.one_my_gift_' + id).remove();
-                alert(message.gift_sent_success);
+                $('.one_my_gift_' + id).fadeOut(500);
             }
         })
     }
@@ -215,7 +302,7 @@
         var id = context.getAttribute('data-id');
         var gift_name = context.getAttribute('data-gift_name');
         $('.insert_id').val(id);
-        $('.insert_name').html('Выберите друга, чтобы отправить ему подарок ' + gift_name);
+        $('.insert_name').html('Выберите друга или найдите пользователя, чтобы отправить ему подарок ' + gift_name);
         $('.friend').removeClass('friend_pressed');
         $('.user_id').val('');
     }
@@ -236,6 +323,7 @@
                 alert(message.gift_sent_error);
             }
             if (message.gift_sent_success) {
+                $('.currency').html("На Вашем счету " + message.currency + " сомов.");
                 $("#insertGiftSent").trigger('click');
                 $('.friend').removeClass('friend_pressed');
                 $('.user_id').val('');
@@ -254,6 +342,13 @@
         history.pushState(null, null, location.href);
         window.onpopstate = function() {
             $("#insertGiftSent").modal('hide');
+        };
+    });
+
+    $("#insertCurrency").on('show.bs.modal', function () {
+        history.pushState(null, null, location.href);
+        window.onpopstate = function() {
+            $("#insertCurrency").modal('hide');
         };
     });
 

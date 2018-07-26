@@ -20,19 +20,24 @@ class Publications extends CI_Controller {
         } else {
             $offset = 0;
         }
-        $publications = $this->publications_model->getPublicationsByFriendIds($friend_ids, $offset);
+
         $html = '';
-        foreach ($publications as $publication) {
-            $published_user_id = $publication->published_user_id;
-            $publication_id = $publication->id;
-            $publication_images = $this->publications_model->getPublicationImagesByPublicationId($publication_id);
-            $complaint_num_rows = $this->publications_model->getPublicationComplaintNumRowsByPublicationIdAndComplainedUserId($publication_id, $session_user_id);
-            $emotion_num_rows = $this->publications_model->getPublicationEmotionNumRowsByPublicationIdAndEmotionedUserId($publication_id, $session_user_id);
-            $share_num_rows = $this->publications_model->getPublicationShareNumRowsByPublicationIdAndSharedUserId($publication_id, $session_user_id);
-            $total_publication_comments = $this->publications_model->getTotalByPublicationIdAndPublicationTable($publication_id, 'publication_comments');
-            $total_publication_emotions = $this->publications_model->getTotalByPublicationIdAndPublicationTable($publication_id, 'publication_emotions');
-            $total_publication_shares = $this->publications_model->getTotalByPublicationIdAndPublicationTable($publication_id, 'publication_shares');
-            $html .= "<div class='one_publication'>
+
+        if (count($friend_ids) == 0) {
+            $html .= "<h3 class='centered'>Здесь появятся публикации Ваших друзей</h3>";
+        } else {
+            $publications = $this->publications_model->getPublicationsByFriendIds($friend_ids, $offset);
+            foreach ($publications as $publication) {
+                $published_user_id = $publication->published_user_id;
+                $publication_id = $publication->id;
+                $publication_images = $this->publications_model->getPublicationImagesByPublicationId($publication_id);
+                $complaint_num_rows = $this->publications_model->getPublicationComplaintNumRowsByPublicationIdAndComplainedUserId($publication_id, $session_user_id);
+                $emotion_num_rows = $this->publications_model->getPublicationEmotionNumRowsByPublicationIdAndEmotionedUserId($publication_id, $session_user_id);
+                $share_num_rows = $this->publications_model->getPublicationShareNumRowsByPublicationIdAndSharedUserId($publication_id, $session_user_id);
+                $total_publication_comments = $this->publications_model->getTotalByPublicationIdAndPublicationTable($publication_id, 'publication_comments');
+                $total_publication_emotions = $this->publications_model->getTotalByPublicationIdAndPublicationTable($publication_id, 'publication_emotions');
+                $total_publication_shares = $this->publications_model->getTotalByPublicationIdAndPublicationTable($publication_id, 'publication_shares');
+                $html .= "<div class='one_publication'>
                         <div class='publication'>
                             <div class='bout_user'>
                                 <a class='user_name' href='" . base_url() . "one_user/$publication->email'>" . $publication->nickname . " " . $publication->surname . "
@@ -43,44 +48,44 @@ class Publications extends CI_Controller {
                             <div class='user_publication'>
                                 <h4 class='publication_name'>$publication->publication_name</h4>
                                 <div class='publication_description'>" .
-                                    $publication->publication_description . "
+                    $publication->publication_description . "
                                 </div>
                             </div>";
-                        if (count($publication_images) > 0) {
-                            $html .= "<div id='carousel_$publication_id' class='carousel slide' data-interval='false' data-ride='carousel'>
+                if (count($publication_images) > 0) {
+                    $html .= "<div id='carousel_$publication_id' class='carousel slide' data-interval='false' data-ride='carousel'>
                                 <div class='carousel-inner'>";
-                                foreach ($publication_images as $key => $publication_image) {
-                                    $publication_image_id = $publication_image->id;
-                                    $image_emotion_num_rows = $this->publications_model->getPublicationImageEmotionNumRowsByPublicationImageIdAndEmotionedUserId($publication_image_id, $session_user_id);
-                                    $total_publication_image_emotions = $this->publications_model->getTotalByPublicationImageIdAndPublicationImageTable($publication_image_id, 'publication_image_emotions');
-                                    if ($key == 0) {
-                                        $html .= "<div class='item active'>
+                    foreach ($publication_images as $key => $publication_image) {
+                        $publication_image_id = $publication_image->id;
+                        $image_emotion_num_rows = $this->publications_model->getPublicationImageEmotionNumRowsByPublicationImageIdAndEmotionedUserId($publication_image_id, $session_user_id);
+                        $total_publication_image_emotions = $this->publications_model->getTotalByPublicationImageIdAndPublicationImageTable($publication_image_id, 'publication_image_emotions');
+                        if ($key == 0) {
+                            $html .= "<div class='item active'>
                                                 <img src='" . base_url() . "uploads/images/publication_images/$publication_image->publication_image_file' class='publication_images' style='width: 200px; margin: 0 auto;'>
                                                 <div class='publication_image_emotion image_emotions_field_$publication_image_id' data-emotioned_user_id='$session_user_id' data-publication_image_id='$publication_image_id'>";
-                                                if ($image_emotion_num_rows == 0) {
-                                                    $html .= "<img class='emotion_image' onclick='insertPublicationImageEmotion(this)' src='" . base_url(). "uploads/icons/unemotioned.png'>";
-                                                } else {
-                                                    $html .= "<img class='emotion_image' onclick='deletePublicationImageEmotion(this)' src='" . base_url(). "uploads/icons/emotioned.png'>";
-                                                }
-                                                    $html .= "<span class='badge' onclick='getPublicationImageEmotions(this)' data-toggle='modal' data-target='#getPublicationImageEmotions'>$total_publication_image_emotions</span>
+                            if ($image_emotion_num_rows == 0) {
+                                $html .= "<img class='emotion_image' onclick='insertPublicationImageEmotion(this)' src='" . base_url() . "uploads/icons/unemotioned.png'>";
+                            } else {
+                                $html .= "<img class='emotion_image' onclick='deletePublicationImageEmotion(this)' src='" . base_url() . "uploads/icons/emotioned.png'>";
+                            }
+                            $html .= "<span class='badge' onclick='getPublicationImageEmotions(this)' data-toggle='modal' data-target='#getPublicationImageEmotions'>$total_publication_image_emotions</span>
                                                 </div>
                                             </div>";
-                                    } else {
-                                        $html .= "<div class='item'>
+                        } else {
+                            $html .= "<div class='item'>
                                                 <img src='" . base_url() . "uploads/images/publication_images/$publication_image->publication_image_file' class='publication_images' style='width: 200px; margin: 0 auto'>
                                                 <div class='publication_image_emotion image_emotions_field_$publication_image_id' data-emotioned_user_id='$session_user_id' data-publication_image_id='$publication_image_id'>";
-                                                if ($image_emotion_num_rows == 0) {
-                                                    $html .= "<img class='emotion_image' onclick='insertPublicationImageEmotion(this)' src='" . base_url(). "uploads/icons/unemotioned.png'>";
-                                                } else {
-                                                    $html .= "<img class='emotion_image' onclick='deletePublicationImageEmotion(this)' src='" . base_url(). "uploads/icons/emotioned.png'>";
-                                                }
-                                                    $html .= "<span class='badge' onclick='getPublicationImageEmotions(this)' data-toggle='modal' data-target='#getPublicationImageEmotions'>$total_publication_image_emotions</span>
+                            if ($image_emotion_num_rows == 0) {
+                                $html .= "<img class='emotion_image' onclick='insertPublicationImageEmotion(this)' src='" . base_url() . "uploads/icons/unemotioned.png'>";
+                            } else {
+                                $html .= "<img class='emotion_image' onclick='deletePublicationImageEmotion(this)' src='" . base_url() . "uploads/icons/emotioned.png'>";
+                            }
+                            $html .= "<span class='badge' onclick='getPublicationImageEmotions(this)' data-toggle='modal' data-target='#getPublicationImageEmotions'>$total_publication_image_emotions</span>
                                                 </div>
                                             </div>";
-                                    }
-                                }
-                                if (count($publication_images) > 1) {
-                                    $html .= "<a class='left carousel-control' href='#carousel_$publication_id' data-slide='prev'>
+                        }
+                    }
+                    if (count($publication_images) > 1) {
+                        $html .= "<a class='left carousel-control' href='#carousel_$publication_id' data-slide='prev'>
                                   <span class='glyphicon glyphicon-chevron-left'></span>
                                   <span class='sr-only'>Previous</span>
                                 </a>
@@ -88,19 +93,19 @@ class Publications extends CI_Controller {
                                   <span class='glyphicon glyphicon-chevron-right'></span>
                                   <span class='sr-only'>Next</span>
                                 </a>";
-                                }
-                            $html .= "</div>
-                        </div>";
-                        }
+                    }
                     $html .= "</div>
+                        </div>";
+                }
+                $html .= "</div>
                     <div class='actions'>
                         <span class='emotions_field_$publication_id' data-published_user_id='$published_user_id' data-emotioned_user_id='$session_user_id' data-publication_id='$publication_id'>";
-                        if ($emotion_num_rows == 0) {
-                            $html .= "<img onclick='insertPublicationEmotion(this)' src='" . base_url(). "uploads/icons/unemotioned.png'>";
-                        } else {
-                            $html .= "<img onclick='deletePublicationEmotion(this)' src='" . base_url(). "uploads/icons/emotioned.png'>";
-                        }
-                        $html .= "<span class='badge' onclick='getPublicationEmotions(this)' data-toggle='modal' data-target='#getPublicationEmotions'>$total_publication_emotions</span>
+                if ($emotion_num_rows == 0) {
+                    $html .= "<img onclick='insertPublicationEmotion(this)' src='" . base_url() . "uploads/icons/unemotioned.png'>";
+                } else {
+                    $html .= "<img onclick='deletePublicationEmotion(this)' src='" . base_url() . "uploads/icons/emotioned.png'>";
+                }
+                $html .= "<span class='badge' onclick='getPublicationEmotions(this)' data-toggle='modal' data-target='#getPublicationEmotions'>$total_publication_emotions</span>
                         </span>
                         <span class='comments_field_$publication_id' data-published_user_id='$published_user_id' data-commented_user_id='$session_user_id' data-publication_id='$publication_id'>
                             <span onclick='getPublicationComments(this)' data-toggle='modal' data-target='#getPublicationComments'>
@@ -108,29 +113,30 @@ class Publications extends CI_Controller {
                             </span>
                         </span>
                         <span class='shares_field_$publication_id' data-published_user_id='$published_user_id' data-shared_user_id='$session_user_id' data-publication_id='$publication_id'>";
-                        if ($share_num_rows == 0) {
-                            $html .= "<img onclick='insertPublicationShare(this)' src='" . base_url(). "uploads/icons/unshared.png'>";
-                        } else {
-                            $html .= "<img onclick='deletePublicationShare(this)' src='" . base_url(). "uploads/icons/shared.png'>";
-                        }
-                        $html .= "<span class='badge' onclick='getPublicationShares(this)' data-toggle='modal' data-target='#getPublicationShares'>$total_publication_shares</span>
+                if ($share_num_rows == 0) {
+                    $html .= "<img onclick='insertPublicationShare(this)' src='" . base_url() . "uploads/icons/unshared.png'>";
+                } else {
+                    $html .= "<img onclick='deletePublicationShare(this)' src='" . base_url() . "uploads/icons/shared.png'>";
+                }
+                $html .= "<span class='badge' onclick='getPublicationShares(this)' data-toggle='modal' data-target='#getPublicationShares'>$total_publication_shares</span>
                         </span>
                         <span class='complaints_field_$publication_id' data-published_user_id='$published_user_id' data-complained_user_id='$session_user_id' data-publication_id='$publication_id'>";
-                        if ($complaint_num_rows == 0) {
-                            $html .= "<img onclick='insertPublicationComplaintPress(this)' data-toggle='modal' data-target='#insertPublicationComplaint' src='" . base_url(). "uploads/icons/complaint.png' class='right'>";
-                        }
-                        $html .= "</span></div></div>";
+                if ($complaint_num_rows == 0) {
+                    $html .= "<img onclick='insertPublicationComplaintPress(this)' data-toggle='modal' data-target='#insertPublicationComplaint' src='" . base_url() . "uploads/icons/complaint.png' class='right'>";
+                }
+                $html .= "</span></div></div>";
+            }
         }
             $data = array(
                 'publications' => $html,
                 'csrf_hash' => $this->security->get_csrf_hash()
             );
-            if (isset($_POST['offset'])) {
+            if (isset($_POST['offset']) && count($friend_ids) > 0) {
                 echo json_encode($data);
             } else {
                 $this->load->view('publications', $data);
             }
-    }
+        }
 
     public function insert_publication() {
         $publication_name = $this->input->post('book_name');
