@@ -1,0 +1,86 @@
+.pos_my_page, .pos_one_user {
+    width: 80%;
+    height: auto;
+    margin: 0 auto;
+    box-shadow: 0 0px 1px;
+    padding:10px;
+}
+#my_page, #one_user, #publications {
+    padding: 0;
+    margin: 0;
+}
+.about {
+    text-align: center;
+    height: 200px;
+}
+.bout_user{
+    height: 30px;
+}
+.main_image {
+    width: 128px;
+    border-radius: 50%;
+}
+.info_th {
+    font-size: 1em;
+}
+.info_td {
+    font-size: 1em;
+    margin-left: 1%;
+}
+.img-thumbnail {
+    padding: 0;
+    background-color: transparent;
+    border-radius: 50%;
+    width: 160px;
+    border: 3px solid navy;
+}
+.user-column {
+    height: 50px;
+    padding-top: 10px;
+    padding-left: 30px;
+    cursor: pointer;
+}
+.active-column {
+    background-color: steelblue;
+}
+.one-interest {
+    background-color: lightsteelblue;
+    padding: 8px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.btn-interests {
+    background-color: navy;
+}
+.btn-interests:hover {
+    transition: 0.5s;
+    border: 5px solid red;
+}
+.white {
+    color: #fff;
+}
+.interests {
+    margin-top: 20px;
+}
+#showMobileInfo, #showMobileInterests {
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+@media screen and (max-width: 1200px){
+    .pos_my_page, .pos_one_user {
+        width: 100%;
+    }
+}
+@media screen and (max-width: 768px){
+    .about {
+        height: auto;
+    }
+    .centered-auto {
+        text-align: center;
+    }
+
+    .interests {
+        margin: auto;
+    }
+
+}

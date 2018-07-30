@@ -29,31 +29,39 @@ class Publication_complaints extends CI_Controller {
         $complained_user_id = $this->input->post('complained_user_id');
 
         $complaint_num_rows = $this->publications_model->getPublicationComplaintNumRowsByPublicationIdAndComplainedUserId($publication_id, $complained_user_id);
-        if ($complaint_num_rows == 0 && $complaint_text != '' && $complained_user_id == $session_user_id) {
-            $data_publication_complaints = array(
-                'complaint_text' => $complaint_text,
-                'complaint_time_unix' => $complaint_time_unix,
-                'admin_id' => $admin_id,
-                'published_user_id' => $published_user_id,
-                'publication_id' => $publication_id,
-                'complained_user_id' => $complained_user_id
-            );
-            $this->publications_model->insertPublicationComplaint($data_publication_complaints);
+
+        if ($published_user_id == $session_user_id) {
             $insert_json = array(
-                'complaint_text' => $complaint_text,
-                'complaint_num_rows' => $complaint_num_rows,
-                'complaint_success' => "Ваша жалоба отправлена и будет рассмотрена при первой же возможности!",
-                'publication_id' => $publication_id,
+                'complaint_error' => "Вы не можете жаловаться на свою публикацию!",
                 'csrf_hash' => $this->security->get_csrf_hash()
             );
         } else {
-            $insert_json = array(
-                'complaint_num_rows' => $complaint_num_rows,
-                'complaint_text' => $complaint_text,
-                'complaint_error' => "Невозможно отправить жалобу. Вы уже жаловались на данную публикацию, или текст жалобы пуст, или что-то пошло не так.",
-                'publication_id' => $publication_id,
-                'csrf_hash' => $this->security->get_csrf_hash()
-            );
+            if ($complaint_num_rows == 0 && $complaint_text != '' && $complained_user_id == $session_user_id) {
+                $data_publication_complaints = array(
+                    'complaint_text' => $complaint_text,
+                    'complaint_time_unix' => $complaint_time_unix,
+                    'admin_id' => $admin_id,
+                    'published_user_id' => $published_user_id,
+                    'publication_id' => $publication_id,
+                    'complained_user_id' => $complained_user_id
+                );
+                $this->publications_model->insertPublicationComplaint($data_publication_complaints);
+                $insert_json = array(
+                    'complaint_text' => $complaint_text,
+                    'complaint_num_rows' => $complaint_num_rows,
+                    'complaint_success' => "Ваша жалоба отправлена и будет рассмотрена при первой же возможности!",
+                    'publication_id' => $publication_id,
+                    'csrf_hash' => $this->security->get_csrf_hash()
+                );
+            } else {
+                $insert_json = array(
+                    'complaint_num_rows' => $complaint_num_rows,
+                    'complaint_text' => $complaint_text,
+                    'complaint_error' => "Невозможно отправить жалобу. Вы уже жаловались на данную публикацию, или текст жалобы пуст, или что-то пошло не так.",
+                    'publication_id' => $publication_id,
+                    'csrf_hash' => $this->security->get_csrf_hash()
+                );
+            }
         }
         echo json_encode($insert_json);
     }

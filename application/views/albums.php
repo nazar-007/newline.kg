@@ -23,13 +23,14 @@
         </div>
         <div class="pos_albums col-xs-6 col-sm-9">
             <h1 class="centered">Мои альбомы</h1>
+            <h5 class="centered">Выберите альбом, чтобы загрузить фотографии</h5>
             <button class="btn btn-primary center-block" data-toggle="modal" data-target="#insertAlbum">Добавить альбом</button>
             <div class="albums row">
                 <?php
                 foreach ($albums as $album) {
                     $session_user_id = $_SESSION['user_id'];
                     echo "<div class='col-xs-6 col-sm-6 col-md-3 col-lg-3 one_album_$album->id'>
-                                <a href='" . base_url() . "images/$album->id'>
+                                <a href='" . base_url() . "user_images/$album->id'>
                                     <img src='" . base_url() . "uploads/icons/my_album.png'>
                                     <div class='one_album_name_$album->id album_name'>
                                         $album->album_name    

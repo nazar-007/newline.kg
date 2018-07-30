@@ -21,6 +21,11 @@
     box-shadow: 0 0px 1px;
     padding:10px;
 }
+
+.update-row {
+    padding: 0;
+    margin: 0;
+}
 @media screen and (max-width: 1200px){
     .pos_update {
         width: 100%;

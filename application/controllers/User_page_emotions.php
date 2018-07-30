@@ -9,10 +9,35 @@ class User_page_emotions extends CI_Controller {
     }
 
     public function Index() {
-        $data = array(
+        $this->load->view('session_user');
+
+        $user_id = $this->input->post('user_id');
+        $user_page_emotions = $this->users_model->getUserPageEmotionsByUserId($user_id);
+        $html = '';
+        $html .= "<div class='row'>";
+        if (count($user_page_emotions) == 0 ) {
+            $html .= "<h3 class='centered'>Пока никто не ставил эмоцию.</h3>";
+        } else {
+            foreach ($user_page_emotions as $user_page_emotion) {
+                $html .= "<div class='col-xs-6 col-sm-4 col-lg-3 emotion_user'>
+                        <a href='" . base_url() . "one_user/$user_page_emotion->email'>
+                            <div class='emotion_user_image'>
+                                <img src='" . base_url() . "uploads/images/user_images/$user_page_emotion->main_image' class='action_avatar' style='width: 100px;'>
+                            </div>
+                            <div class='emotion_user_name'>
+                                $user_page_emotion->nickname $user_page_emotion->surname
+                            </div>
+                        </a>
+                    </div>";
+            }
+        }
+        $html .= "</div>";
+        $get_emotions_json = array(
+            'id' =>$user_id,
+            'one_user_page_emotions' => $html,
             'csrf_hash' => $this->security->get_csrf_hash()
         );
-        $this->load->view('user_page_emotions', $data);
+        echo json_encode($get_emotions_json);
     }
 
     public function insert_user_page_emotion() {

@@ -322,6 +322,7 @@
             if (message.success_suggestion) {
                 alert(message.success_suggestion);
                 $("#insertEventSuggestion").modal('hide');
+                $(".form-control").val('');
             }
         })
     }

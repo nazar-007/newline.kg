@@ -21,7 +21,7 @@ class Book_actions extends CI_Controller {
             $html .= "<h4 class='centered'>Здесь появятся действия Ваших друзей с книгами</h4>";
         } else {
             $book_actions = $this->books_model->getBookActionsByFriendIds($friend_ids);
-            foreach($book_actions as $book_action) {
+            foreach ($book_actions as $book_action) {
                 $html .= "<div class='action-info'>
                         <img class='action-image' src='" . base_url() . "uploads/images/book_images/$book_action->book_image'>
                         <span class='action-text'>
@@ -37,5 +37,5 @@ class Book_actions extends CI_Controller {
         );
         echo json_encode($data);
 
-
+    }
 }

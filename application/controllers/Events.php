@@ -7,6 +7,7 @@ class Events extends CI_Controller {
         parent::__construct();
         $this->load->model('events_model');
         $this->load->model('users_model');
+        $this->load->model('admins_model');
     }
 
     public function Index() {
@@ -206,6 +207,70 @@ class Events extends CI_Controller {
         echo json_encode($data);
     }
 
+    public function get_one_event_by_admin() {
+        $id = $this->input->post('id');
+        if ($_SESSION['admin_id'] && $_SESSION['admin_email'] || $_SESSION['admin_table']) {
+            $one_event = $this->events_model->getOneEventById($id);
+            $event_comments = $this->events_model->getEventCommentsByEventId($id);
+            $html = '';
+            foreach ($one_event as $info_event) {
+                $event_id = $info_event->id;
+                $html.= "<h3 class='centered'>$info_event->event_name</h3>
+                        <div>
+                            <div>
+                                <strong class='event_th'>Описание: </strong>
+                                <span class='event_td'>$info_event->event_description</span>
+                            </div>
+                            <div>
+                                <strong class='event_th'>Место события: </strong>
+                                <span class='event_td'>$info_event->event_address</span>
+                            </div>
+                            <div>
+                                <strong class='event_th'>Дата: </strong>
+                                <span class='event_td'>$info_event->event_start_date</span>
+                            </div>
+                            <div>
+                                <strong class='event_th'>Время: </strong>
+                                <span class='event_td'>$info_event->event_start_time</span>
+                            </div>
+                            <div>
+                                <strong class='event_th'>Категория: </strong>
+                                <span class='event_td'>$info_event->category_name</span>
+                            </div>
+                        </div>";
+            }
+
+            $html .= "<h3 class='centered'>Комменты к событию</h3>";
+
+            if (count($event_comments) == 0) {
+                $html .= 'Комментов к данному событию пока нет';
+            } else {
+                foreach ($event_comments as $event_comment) {
+                    $html .= "<div class='one_comment_$event_comment->id'>
+                        <div class='commented_user'>
+                            <img src='" . base_url() . "uploads/images/user_images/" . $event_comment->main_image . "' class='commented_avatar'>
+                            $event_comment->nickname $event_comment->surname 
+                            <span class='comment-date-time'>$event_comment->comment_date <br> $event_comment->comment_time</span>
+                            <div onclick='deleteEventCommentByAdmin(this)' data-event_comment_id='$event_comment->id' data-comment_text='$event_comment->comment_text' class='right'>X</div>
+                        </div>
+                    <div class='comment_text'>
+                       $event_comment->comment_text
+                    </div>
+                </div>";
+                }
+            }
+            $get_json = array(
+                'get_one_event' => $html,
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        } else {
+            $get_json = array(
+                'get_error' => 'У вас нет прав на просмотр события',
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        }
+        echo json_encode($get_json);
+    }
 
     public function insert_event() {
         $event_name = $this->input->post('event_name');
@@ -277,68 +342,67 @@ class Events extends CI_Controller {
 
     public function delete_event() {
         $id = $this->input->post('id');
-        $user_id = $this->input->post('user_id');
+        $event_name = $this->input->post('event_name');
+        $admin_id = $_SESSION['admin_id'];
+        $admin_email = $_SESSION['admin_email'];
+        $admin_table = $_SESSION['admin_table'];
 
-        $this->events_model->deleteEventActionsByBookId($id);
-        $this->events_model->deleteEventCommentsByBookId($id);
-        $this->events_model->deleteEventComplaintsByBookId($id);
-        $this->events_model->deleteEventEmotionsByBookId($id);
-        $this->events_model->deleteEventFansByBookId($id);
-        $this->events_model->deleteEventById($id);
-
-        $notification_date = date('d.m.Y');
-        $notification_time = date('H:i:s');
-        if ($user_id != 0) {
-            $notification_text = 'Ваше одобренное событие "Встреча крутых айтишников" удалено. С Вашей валюты снялся 1 сом, а с рейтинга - 5 баллов.';
-
-            $data_user_notifications = array(
-                'notification_type' => 'Удаление Вашего одобренного события',
-                'notification_text' => $notification_text,
-                'notification_date' => $notification_date,
-                'notification_time' => $notification_time,
-                'notification_viewed' => 'Не просмотрено',
-                'user_id' => $user_id
+        if (!$admin_id && !$admin_email && !$admin_table) {
+            $delete_json = array(
+                'event_error' => 'Не удалось удалить событие',
+                'csrf_hash' => $this->security->get_csrf_hash()
             );
-            $this->users_model->insertUserNotification($data_user_notifications);
+        } else {
+            $this->events_model->deleteEventActionsByEventId($id);
+            $this->events_model->deleteEventCommentsByEventId($id);
+            $this->events_model->deleteEventComplaintsByEventId($id);
+            $this->events_model->deleteEventEmotionsByEventId($id);
+            $this->events_model->deleteEventFansByEventId($id);
+            $this->events_model->deleteEventById($id);
 
-            $currency_before = $this->users_model->getCurrencyById($user_id);
-            $rating_before = $this->users_model->getRatingById($user_id);
-
-            $data_users = array(
-                'currency' => $currency_before - 1,
-                'rating' => $rating_before - 5
+            $data_admin_actions = array(
+                'admin_action' => "$admin_email удалил событие $event_name под id $id",
+                'admin_table' => $admin_table,
+                'admin_date' => date('d.m.Y'),
+                'admin_time' => date('H:i:s'),
+                'action_admin_id' => $admin_id
             );
-            $this->users_model->updateUserById($user_id, $data_users);
-
-            $rating_after = $this->users_model->getRatingById($user_id);
-            $rank_after = $this->users_model->getRankById($user_id);
-            $this->users_model->updateRankById($user_id, $rating_after, $rank_after);
+            $this->admins_model->insertAdminAction($data_admin_actions);
+            $delete_json = array(
+                'id' => $id,
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
         }
 
-        $delete_json = array(
-            'id' => $id,
-            'csrf_name' => $this->security->get_csrf_token_name (),
-            'csrf_hash' => $this->security->get_csrf_hash()
-        );
         echo json_encode($delete_json);
     }
 
     public function update_event() {
-        $id = $this->input->post('id');
-        $event_name = $this->input->post('event_name');
-        $event_description = $this->input->post('event_description');
-        $event_address = $this->input->post('book_author');
-        $event_start_date = $this->input->post('event_start_date');
-        $event_start_time = $this->input->post('event_start_time');
+        if ($_SESSION['admin_id'] && $_SESSION['admin_email'] && $_SESSION['admin_table']) {
+            $id = $this->input->post('id');
+            $event_name = $this->input->post('event_name');
+            $event_description = $this->input->post('event_description');
+            $event_address = $this->input->post('event_address');
 
-        $data_events = array(
-            'event_name' => $event_name,
-            'event_description' => $event_description,
-            'event_address' => $event_address,
-            'event_start_date' => $event_start_date,
-            'event_start_time' => $event_start_time
-        );
+            $data_events = array(
+                'event_name' => $event_name,
+                'event_description' => $event_description,
+                'event_address' => $event_address
+            );
 
-        $this->events_model->updateEventById($id, $data_events);
+            $this->events_model->updateEventById($id, $data_events);
+
+            $update_json = array(
+                'id' => $id,
+                'event_name' => $event_name,
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        } else {
+            $update_json = array(
+                'update_error' => 'Не удалось сохранить изменения',
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        }
+        echo json_encode($update_json);
     }
 }

@@ -20,7 +20,7 @@ class Publication_comments extends CI_Controller {
         $csrf_hash = $this->security->get_csrf_hash();
         $html .= "<form action='javascript:void(0)' onsubmit='insertPublicationComment(this)'>
                     <input type='hidden' class='csrf' name='csrf_test_name' value='$csrf_hash'>
-                    <textarea id='comment_text' class='form-control comment-input' placeholder='Добавить коммент' name='comment_text'></textarea>
+                    <textarea required id='comment_text' class='form-control comment-input' placeholder='Добавить коммент' name='comment_text'></textarea>
                     <input class='published_user_id' type='hidden' name='published_user_id' value='$published_user_id'>
                     <input class='commented_user_id' type='hidden' name='commented_user_id' value='$session_user_id'>
                     <input class='publication_id' type='hidden' name='publication_id' value='$publication_id'>
@@ -29,6 +29,7 @@ class Publication_comments extends CI_Controller {
                   <div class='comments_by_publication'>";
                     if (count($publication_comments) > 0) {
                         foreach ($publication_comments as $publication_comment) {
+                            $publication_num_rows = $this->publications_model->getPublicationNumRowsByIdAndPublishedUserId($publication_comment->publication_id, $session_user_id);
                             $html .= "<div class='one_comment_$publication_comment->id'>
                                         <div class='commented_user'>
                                             <a href='" . base_url() . "one_user/$publication_comment->email'>
@@ -36,7 +37,7 @@ class Publication_comments extends CI_Controller {
                                                 $publication_comment->nickname $publication_comment->surname 
                                             </a>
                                             <span class='comment-date-time'>$publication_comment->comment_date <br> $publication_comment->comment_time</span>";
-                            if ($publication_comment->email == $session_user_email) {
+                            if ($publication_comment->email == $session_user_email || $publication_num_rows > 0) {
                                 $html .= "<div onclick='deletePublicationComment(this)' data-publication_comment_id='$publication_comment->id' data-publication_id='$publication_id' class='right'>X</div>";
                             }
                             $html .= "</div>
@@ -110,6 +111,28 @@ class Publication_comments extends CI_Controller {
         $session_user_id = $_SESSION['user_id'];
         $comment_num_rows = $this->publications_model->getPublicationCommentNumRowsByIdAndCommentedUserId($id, $session_user_id);
         if ($comment_num_rows > 0) {
+            $this->publications_model->deletePublicationCommentById($id);
+            $total_comments = $this->publications_model->getTotalByPublicationIdAndPublicationTable($publication_id, 'publication_comments');
+            $delete_json = array(
+                'total_comments' => $total_comments,
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        } else {
+            $delete_json = array(
+                'comment_error' => "Не удалось удалить коммент или что-то пошло не так!",
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        }
+
+        echo json_encode($delete_json);
+    }
+
+    public function delete_publication_comment_by_published_user_id() {
+        $id = $this->input->post('id');
+        $published_user_id = $_SESSION['user_id'];
+        $publication_id = $this->input->post('publication_id');
+        $publication_num_rows = $this->publications_model->getPublicationNumRowsByIdAndPublishedUserId($publication_id, $published_user_id);
+        if ($publication_num_rows > 0) {
             $this->publications_model->deletePublicationCommentById($id);
             $total_comments = $this->publications_model->getTotalByPublicationIdAndPublicationTable($publication_id, 'publication_comments');
             $delete_json = array(

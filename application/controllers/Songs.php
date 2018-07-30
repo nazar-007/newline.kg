@@ -7,6 +7,7 @@ class Songs extends CI_Controller {
         parent::__construct();
         $this->load->model('songs_model');
         $this->load->model('users_model');
+        $this->load->model('admins_model');
     }
 
     public function Index() {
@@ -178,28 +179,87 @@ class Songs extends CI_Controller {
         echo json_encode($data);
     }
 
+    public function get_one_song_by_admin() {
+        $id = $this->input->post('id');
+        if ($_SESSION['admin_id'] && $_SESSION['admin_email'] || $_SESSION['admin_table']) {
+            $one_song = $this->songs_model->getOneSongById($id);
+            $song_comments = $this->songs_model->getSongCommentsBySongId($id);
+            $html = '';
+            foreach ($one_song as $info_song) {
+                $html .= "<h3 class='centered'>$info_song->song_singer - $info_song->song_name</h3>
+                    <div>
+                        <audio class='one-player' autoplay src='" . base_url() . "uploads/song_files/$info_song->song_file' controls controlsList='nodownload'></audio>
+                    </div>
+                    <div>
+                        <strong class='song_th'>Текст песни: </strong>
+                        <span class=song_td'>
+                            <pre>
+                                $info_song->song_lyrics
+                            </pre>        
+                        </span>
+                    </div>
+                <div>
+                    <strong class='song_th'>Категория: </strong>
+                    <span class='song_td'>$info_song->category_name</span>
+                </div>";
+            }
+
+            $html .= "<h3 class='centered'>Комменты к песне</h3>";
+
+            if (count($song_comments) == 0) {
+                $html .= 'Комментов к данной песне пока нет';
+            } else {
+                foreach ($song_comments as $song_comment) {
+                    $html .= "<div class='one_comment_$song_comment->id'>
+                        <div class='commented_user'>
+                            <img src='" . base_url() . "uploads/images/user_images/" . $song_comment->main_image . "' class='commented_avatar'>
+                            $song_comment->nickname $song_comment->surname 
+                            <span class='comment-date-time'>$song_comment->comment_date <br> $song_comment->comment_time</span>
+                            <div onclick='deleteSongCommentByAdmin(this)' data-song_comment_id='$song_comment->id' data-comment_text='$song_comment->comment_text' class='right'>X</div>
+                        </div>
+                    <div class='comment_text'>
+                       $song_comment->comment_text
+                    </div>
+                </div>";
+                }
+            }
+            $get_json = array(
+                'get_one_song' => $html,
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        } else {
+            $get_json = array(
+                'get_error' => 'У вас нет прав на просмотр песни',
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        }
+        echo json_encode($get_json);
+    }
+
     public function insert_song() {
 
         $this->load->library('upload');
         $config['upload_path'] = './uploads/song_files';
         $config['allowed_types'] = 'mp3';
-        $config['file_name'] = preg_replace('/[ \t]+/', '_',$_FILES['song_file']['name']);
+        $song_file = str_replace('_mp3', '', str_replace('.', '_', $_FILES['song_file']['name']));
+        $config['file_name'] = $song_file;
         $this->upload->initialize($config);
 
-        if ($this->upload->do_upload('song_file')) {
-            echo 'song upload';
-        }
+        $song_file_extension = pathinfo($song_file, PATHINFO_EXTENSION);
 
+        if ($this->upload->do_upload('song_file')) {
+            echo $song_file . '.' . $song_file_extension;
+        }
 
         $data_songs = array(
             'song_name' => 'Beautiful Mess',
-            'song_file' => $config['file_name'],
+            'song_file' => $song_file . '.' . $song_file_extension,
             'song_singer' => 'Kristian Kostov',
             'song_lyrics' => 'So we stay in this mess, this beautiful mess tonight!',
             'category_id' => 3
         );
 
-      $this->songs_model->insertSong($data_songs);
+//      $this->songs_model->insertSong($data_songs);
 
 
 //
@@ -268,72 +328,69 @@ class Songs extends CI_Controller {
 
     public function delete_song() {
         $id = $this->input->post('id');
-        $user_id = $this->input->post('user_id');
-        $song_file = $this->songs_model->getSongkFileById($id);
-        unlink("./uploads/song_files/$song_file");
+        $song_name = $this->input->post('song_name');
+        $admin_id = $_SESSION['admin_id'];
+        $admin_email = $_SESSION['admin_email'];
+        $admin_table = $_SESSION['admin_table'];
 
-        $this->songs_model->deleteSongActionsBySongId($id);
-        $this->songs_model->deleteSongCommentsBySongId($id);
-        $this->songs_model->deleteSongComplaintsBySongId($id);
-        $this->songs_model->deleteSongEmotionsBySongId($id);
-        $this->songs_model->deleteSongFansBySongId($id);
-        $this->songs_model->deleteSongById($id);
-
-        $notification_date = date("d.m.Y");
-        $notification_time = date("H:i:s");
-
-        if ($user_id != 0) {
-            $notification_text = 'Ваша одобренная песня "A million voices" удалена. С Вашей валюты снялся 1 сом, а с рейтинга - 5 баллов.';
-
-            $data_user_notifications = array(
-                'notification_type' => 'Удаление Вашей одобренной песни',
-                'notification_text' => $notification_text,
-                'notification_date' => $notification_date,
-                'notification_time' => $notification_time,
-                'notification_viewed' => 'Не просмотрено',
-                'link_id' => 0,
-                'link_table' => 0,
-                'user_id' => $user_id
+        if (!$admin_id && !$admin_email && !$admin_table) {
+            $delete_json = array(
+                'song_error' => 'Не удалось удалить книгу',
+                'csrf_hash' => $this->security->get_csrf_hash()
             );
-            $this->users_model->insertUserNotification($data_user_notifications);
+        } else {
+            $song_file = $this->songs_model->getSongFileById($id);
+            unlink("./uploads/song_files/$song_file");
 
-            $currency_before = $this->users_model->getCurrencyById($user_id);
-            $rating_before = $this->users_model->getRatingById($user_id);
+            $this->songs_model->deleteSongActionsBySongId($id);
+            $this->songs_model->deleteSongCommentsBySongId($id);
+            $this->songs_model->deleteSongComplaintsBySongId($id);
+            $this->songs_model->deleteSongEmotionsBySongId($id);
+            $this->songs_model->deleteSongFansBySongId($id);
+            $this->songs_model->deleteSongById($id);
 
-            $data_users = array(
-                'currency' => $currency_before - 1,
-                'rating' => $rating_before - 5
+            $delete_json = array(
+                'id' => $id,
+                'csrf_hash' => $this->security->get_csrf_hash()
             );
-            $this->users_model->updateUserById($user_id, $data_users);
 
-            $rating_after = $this->users_model->getRatingById($user_id);
-            $rank_after = $this->users_model->getRankById($user_id);
-            $this->users_model->updateRankById($user_id, $rating_after, $rank_after);
+            $data_admin_actions = array(
+                'admin_action' => "$admin_email удалил песню $song_name под id $id",
+                'admin_table' => $admin_table,
+                'admin_date' => date('d.m.Y'),
+                'admin_time' => date('H:i:s'),
+                'action_admin_id' => $admin_id
+            );
+            $this->admins_model->insertAdminAction($data_admin_actions);
         }
-
-        $delete_json = array(
-            'id' => $id,
-            'csrf_hash' => $this->security->get_csrf_hash()
-        );
         echo json_encode($delete_json);
     }
 
     public function update_song() {
-        $id = $this->input->post('id');
-        $song_name = $this->input->post('song_name');
-        $song_singer = $this->input->post('song_author');
-        $song_lyrics = $this->input->post('song_description');
-        $song_year = $this->input->post('song_year');
-        $song_http_link = $this->input->post('song_http_link');
+        if ($_SESSION['admin_id'] && $_SESSION['admin_email'] && $_SESSION['admin_table']) {
+            $id = $this->input->post('id');
+            $song_name = $this->input->post('song_name');
+            $song_singer = $this->input->post('song_singer');
+            $song_lyrics = $this->input->post('song_lyrics');
+            $data_songs = array(
+                'song_name' => $song_name,
+                'song_singer' => $song_singer,
+                'song_lyrics' => $song_lyrics
+            );
+            $this->songs_model->updateSongById($id, $data_songs);
 
-        $data_songs = array(
-            'song_name' => $song_name,
-            'song_singer' => $song_singer,
-            'song_lyrics' => $song_lyrics,
-            'song_year' => $song_year,
-            'song_http_link' => $song_http_link
-        );
-
-        $this->songs_model->updateSongById($id, $data_songs);
+            $update_json = array(
+                'id' => $id,
+                'song_name' => $song_name,
+                'song_singer' => $song_singer,
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        } else {
+            $update_json = array(
+                'update_error' => 'Не удалось сохранить изменения',
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        }
+        echo json_encode($update_json);
     }
 }

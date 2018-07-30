@@ -22,11 +22,13 @@ class Publications_model extends CI_Model {
         return $query->result();
     }
     public function getPublications() {
+        $this->db->order_by('id DESC');
         $query = $this->db->get('publications');
         return $query->result();
     }
     public function getPublicationsByPublishedUserId($published_user_id) {
         $this->db->where('published_user_id', $published_user_id);
+        $this->db->order_by('publication_date DESC, publication_time DESC');
         $query = $this->db->get('publications');
         return $query->result();
     }
@@ -94,6 +96,11 @@ class Publications_model extends CI_Model {
         $query = $this->db->get('publication_images');
         return $query->result();
     }
+    public function getPublicationImagesByAlbumId($album_id) {
+        $this->db->where('album_id', $album_id);
+        $query = $this->db->get('publication_images');
+        return $query->result();
+    }
     public function getPublicationImageEmotionsByPublicationImageId($publication_image_id) {
         $this->db->select('publication_image_emotions.*, users.email, users.nickname, users.surname, users.main_image');
         $this->db->from('publication_image_emotions');
@@ -119,6 +126,18 @@ class Publications_model extends CI_Model {
         $query = $this->db->get('publication_image_emotions');
         return $query->num_rows();
     }
+    public function getPublicationNumRowsById($id) {
+        $this->db->select('id');
+        $this->db->where('id', $id);
+        $query = $this->db->get('publications');
+        return $query->num_rows();
+    }
+    public function getPublicationNumRowsByIdAndPublishedUserId($id, $published_user_id) {
+        $this->db->where('id', $id);
+        $this->db->where('published_user_id', $published_user_id);
+        $query = $this->db->get('publications');
+        return $query->num_rows();
+    }
     public function getPublicationShareNumRowsByPublicationIdAndSharedUserId($publication_id, $shared_user_id) {
         $this->db->where('publication_id', $publication_id);
         $this->db->where('shared_user_id', $shared_user_id);
@@ -134,6 +153,16 @@ class Publications_model extends CI_Model {
         $query = $this->db->get();
         return $query->result();
     }
+    public function getPublicationSharesBySharedUserId($shared_user_id) {
+        $this->db->select('publication_shares.*, users.email, users.nickname, users.surname, users.main_image, publications.publication_name, publications.publication_description, publications.publication_date, publications.publication_time, publications.published_user_id');
+        $this->db->from('publication_shares');
+        $this->db->join('publications', 'publication_shares.publication_id = publications.id');
+        $this->db->join('users', 'publication_shares.shared_user_id = users.id');
+        $this->db->order_by('share_date DESC, share_time DESC');
+        $this->db->where('publication_shares.shared_user_id', $shared_user_id);
+        $query = $this->db->get();
+        return $query->result();
+    }
     public function getTotalByPublicationIdAndPublicationTable($publication_id, $publication_table) {
         $this->db->select('COUNT(*) as total');
         $this->db->group_by('publication_id');
@@ -142,7 +171,7 @@ class Publications_model extends CI_Model {
         $publications = $query->result();
         foreach ($publications as $publication) {
             $total = $publication->total;
-            if (strlen($total) == 4) {
+            if (strlen($total) == 2) {
                 return substr($total, 0, 1) . "K";
             } else if(strlen($total) == 5) {
                 return substr($total, 0, 2) . "K";

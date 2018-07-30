@@ -15,6 +15,7 @@ class Books_model extends CI_Model {
     }
 
     public function getBooks() {
+        $this->db->order_by('id DESC');
         $query = $this->db->get('books');
         return $query->result();
     }
@@ -73,8 +74,13 @@ class Books_model extends CI_Model {
         return $query->result();
     }
     public function getBookComplaintsByAdminId($admin_id) {
+        $this->db->select('book_complaints.*, users.email, users.nickname, users.surname, users.main_image, books.book_name, books.book_file, books.book_description, books.book_author');
+        $this->db->from('book_complaints');
+        $this->db->join('users', 'book_complaints.complained_user_id = users.id');
+        $this->db->join('books', 'book_complaints.book_id = books.id');
         $this->db->where('admin_id', $admin_id);
-        $query = $this->db->get('book_complaints');
+        $this->db->order_by('id DESC');
+        $query = $this->db->get();
         return $query->result();
     }
     public function getBookComplaintNumRowsByBookIdAndComplainedUserId($book_id, $complained_user_id) {
@@ -161,8 +167,12 @@ class Books_model extends CI_Model {
         return $query->num_rows();
     }
     public function getBookSuggestionsByAdminId($admin_id) {
+        $this->db->select('book_suggestions.*, users.email, users.nickname, users.surname, users.main_image');
+        $this->db->from('book_suggestions');
+        $this->db->join('users', 'book_suggestions.suggested_user_id = users.id');
         $this->db->where('admin_id', $admin_id);
-        $query = $this->db->get('book_suggestions');
+        $this->db->order_by('id DESC');
+        $query = $this->db->get();
         return $query->result();
     }
     public function getBookSuggestionFileById($id) {

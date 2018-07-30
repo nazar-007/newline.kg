@@ -74,6 +74,7 @@
     $('#showMobileMenu').click(function(){
         $('#mobileMenu').slideToggle(500);
     });
+
     function onLine() {
         $.ajax({
             method: "POST",

@@ -36,7 +36,7 @@
             </div>
             <?php
             if ($book_num_rows != 1) {
-                die('Книга удалена или ещё не добавлена!');
+                die("<h3 class='centered'>Книга удалена или ещё не добавлена!</h3>");
             }
 
 
@@ -68,7 +68,6 @@
                         </div>
                     </div>
                         
-
                     <div class='one_book_actions'>
                         <span class='emotions_field_$book_id' data-emotioned_user_id='$session_user_id' data-book_id='$book_id'>";
                             if ($emotion_num_rows == 0) {
@@ -397,6 +396,47 @@
             }
         })
     }
+
+    $(document).scroll(function(){
+        if($(document).scrollTop() > $('header').height ()){
+            $('.menu').eq(0).addClass('fixed');
+            $('.menu').eq(0).addClass('menu-animated');
+            $('#mobileMenu').css('display', 'none');
+        }
+        else{
+            $('.menu').eq(0).removeClass('fixed');
+            $('.menu').eq(0).removeClass('menu-animated');
+        }
+
+        if($(document).scrollTop() > $('header').height ()){
+            $('.phone_logo').eq(0).addClass('fixed');
+            $('.phone_logo').eq(0).addClass('menu-animated');
+        }
+        else{
+            $('.phone_logo').eq(0).removeClass('fixed');
+            $('.phone_logo').eq(0).removeClass('menu-animated');
+        }
+
+        if ($(document).scrollTop() > 100) {
+            $('.scrolldown').css('display', 'none');
+            $('.scrollup').fadeIn(1000);
+        } else {
+            $('.scrollup').css('display', 'none');
+            $('.scrolldown').fadeIn(1000);
+        }
+    });
+
+    $('.scrollup').click(function(){
+        $("html, body").animate({ scrollTop: 0 }, 600);
+        return false;
+    });
+
+
+    $('#showMobileCategories').click(function(){
+        $('#mobileCategories').slideToggle(500);
+    });
+
+
     $("#getBookComments").on('show.bs.modal', function () {
         history.pushState(null, null, location.href);
         window.onpopstate = function() {

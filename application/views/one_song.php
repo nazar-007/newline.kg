@@ -36,7 +36,7 @@
             </div>
             <?php
             if ($song_num_rows != 1) {
-                die('Песня удалена или ещё не добавлена!');
+                die("<h3 class='centered'>Песня удалена или ещё не добавлена!</h3>");
             }
             $session_user_id = $_SESSION['user_id'];
             foreach ($one_song as $info_song) {
@@ -81,7 +81,7 @@
                         <div>
                             <div>
                                 <strong class='song_th'>Текст песни: </strong>
-                                <span class=song_td'>
+                                <span class='song_td'>
                                     <pre>
                                         $info_song->song_lyrics
                                     </pre>        
@@ -335,7 +335,7 @@
                     $(".emotions_field_" + song_id).html("<img onclick='insertSongEmotion(this)'" +
                         " src='<?php echo base_url()?>uploads/icons/unemotioned.png'>");
                 } else {
-                    $(".emotions_field_" + book_id).html("<img onclick='insertSongEmotion(this)'" +
+                    $(".emotions_field_" + song_id).html("<img onclick='insertSongEmotion(this)'" +
                         " src='<?php echo base_url()?>uploads/icons/unemotioned.png'><span class='badge' onclick='getSongEmotions(this)' data-toggle='modal' data-target='#getSongEmotions'>" + message.total_emotions + "</span>");
                 }
             } else {
@@ -376,7 +376,7 @@
                     $(".fans_field_" + song_id).html("<img onclick='insertSongFan(this)'" +
                         " src='<?php echo base_url()?>uploads/icons/not-fan.png'>");
                 } else {
-                    $(".fans_field_" + song_id).html("<img onclick='insertSpngFan(this)'" +
+                    $(".fans_field_" + song_id).html("<img onclick='insertSongFan(this)'" +
                         " src='<?php echo base_url()?>uploads/icons/not-fan.png'><span class='badge' onclick='getSongFans(this)' data-toggle='modal' data-target='#getSongFans'>" + message.total_fans + "</span>");
                 }
             } else {
@@ -384,6 +384,46 @@
             }
         })
     }
+
+    $(document).scroll(function(){
+        if($(document).scrollTop() > $('header').height ()){
+            $('.menu').eq(0).addClass('fixed');
+            $('.menu').eq(0).addClass('menu-animated');
+            $('#mobileMenu').css('display', 'none');
+        }
+        else{
+            $('.menu').eq(0).removeClass('fixed');
+            $('.menu').eq(0).removeClass('menu-animated');
+        }
+
+        if($(document).scrollTop() > $('header').height ()){
+            $('.phone_logo').eq(0).addClass('fixed');
+            $('.phone_logo').eq(0).addClass('menu-animated');
+        }
+        else{
+            $('.phone_logo').eq(0).removeClass('fixed');
+            $('.phone_logo').eq(0).removeClass('menu-animated');
+        }
+
+        if ($(document).scrollTop() > 100) {
+            $('.scrolldown').css('display', 'none');
+            $('.scrollup').fadeIn(1000);
+        } else {
+            $('.scrollup').css('display', 'none');
+            $('.scrolldown').fadeIn(1000);
+        }
+    });
+
+    $('.scrollup').click(function(){
+        $("html, body").animate({ scrollTop: 0 }, 600);
+        return false;
+    });
+
+
+    $('#showMobileCategories').click(function(){
+        $('#mobileCategories').slideToggle(500);
+    });
+
 
     $("#getSongComments").on('show.bs.modal', function () {
         history.pushState(null, null, location.href);

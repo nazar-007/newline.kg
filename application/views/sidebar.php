@@ -7,7 +7,7 @@
     </li>
     <li>
         <a href="<?php echo base_url()?>publications">
-            <img src="<?php echo base_url()?>uploads/icons/my_page.png">
+            <img src="<?php echo base_url()?>uploads/icons/publications.png">
             Публикации
         </a>
     </li>

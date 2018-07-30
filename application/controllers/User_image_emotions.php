@@ -11,7 +11,7 @@ class User_image_emotions extends CI_Controller {
     public function Index() {
         $this->load->view('session_user');
         $user_image_id = $this->input->post('user_image_id');
-        $user_image_emotions = $this->songs_model->getUserImageEmotionsByUserImageId($user_image_id);
+        $user_image_emotions = $this->users_model->getUserImageEmotionsByUserImageId($user_image_id);
         $html = '';
         $html .= "<div class='row'>";
         if (count($user_image_emotions) == 0 ) {
@@ -32,7 +32,7 @@ class User_image_emotions extends CI_Controller {
         }
         $html .= "</div>";
         $get_emotions_json = array(
-            'one_image_emotions' => $html,
+            'one_user_image_emotions' => $html,
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($get_emotions_json);
@@ -40,54 +40,89 @@ class User_image_emotions extends CI_Controller {
 
 
     public function insert_user_image_emotion() {
+        $this->load->view('session_user');
+        $session_user_id = $_SESSION['user_id'];
         $emotion_date = date('d.m.Y');
         $emotion_time = date('H:i:s');
         $user_id = $this->input->post('user_id');
         $emotioned_user_id = $this->input->post('emotioned_user_id');
         $user_image_id = $this->input->post('user_image_id');
+        $emotion_num_rows = $this->users_model->getUserImageEmotionNumRowsByUserImageIdAndEmotionedUserId($user_image_id, $emotioned_user_id);
 
-        $data_user_image_emotions = array(
-            'emotion_date' => $emotion_date,
-            'emotion_time' => $emotion_time,
-            'user_id' => $user_id,
-            'emotioned_user_id' => $emotioned_user_id,
-            'user_image_id' => $user_image_id
-        );
-        $this->users_model->insertUserImageEmotion($data_user_image_emotions);
+        if ($emotion_num_rows == 0 && $emotioned_user_id == $session_user_id) {
+            $data_user_image_emotions = array(
+                'emotion_date' => $emotion_date,
+                'emotion_time' => $emotion_time,
+                'user_id' => $user_id,
+                'emotioned_user_id' => $emotioned_user_id,
+                'user_image_id' => $user_image_id
+            );
+            $this->users_model->insertUserImageEmotion($data_user_image_emotions);
 
-        $notification_text = 'Пользователь Назар оставил эмоцию на Вашу фотку';
+            $emotioned_user_name = $this->users_model->getNicknameAndSurnameById($emotioned_user_id);
+            $notification_text = "$emotioned_user_name поставил эмоцию на Вашу фотку";
+            $data_user_notifications = array(
+                'notification_type' => 'Эмоция на Вашу фотку',
+                'notification_text' => $notification_text,
+                'notification_date' => $emotion_date,
+                'notification_time' => $emotion_time,
+                'notification_viewed' => 'Не просмотрено',
+                'link_id' => $user_image_id,
+                'link_table' => 'user_images',
+                'user_id' => $user_id
+            );
+            $this->users_model->insertUserNotification($data_user_notifications);
 
-        $data_user_notifications = array(
-            'notification_type' => 'Эмоция на Вашу фотку',
-            'notification_text' => $notification_text,
-            'notification_date' => $emotion_date,
-            'notification_time' => $emotion_time,
-            'notification_viewed' => 'Не просмотрено',
-            'link_id' => $user_image_id,
-            'link_table' => 'user_images',
-            'user_id' => $user_id
-        );
-        $this->users_model->insertUserNotification($data_user_notifications);
+            $user_name = $this->users_model->getNicknameAndSurnameById($user_id);
+            $user_image_action = "$emotioned_user_name поставил эмоцию на фотку пользователя $user_name";
 
-        $user_image_action = 'Пользователь Назар поставил эмоцию на фотку пользователя Edil';
+            $data_user_image_actions = array(
+                'user_image_action' => $user_image_action,
+                'user_image_time_unix' => time(),
+                'user_id' => $user_id,
+                'action_user_id' => $emotioned_user_id,
+                'user_image_id' => $user_image_id
+            );
+            $this->users_model->insertUserImageAction($data_user_image_actions);
 
-        $data_user_image_actions = array(
-            'user_image_action' => $user_image_action,
-            'user_image_time_unix' => time(),
-            'user_id' => $user_id,
-            'action_user_id' => $emotioned_user_id,
-            'user_image_id' => $user_image_id
-        );
-        $this->users_model->insertUserImageAction($data_user_image_actions);
+            $total_emotions = $this->users_model->getTotalByUserImageIdAndUserImageTable($user_image_id, 'user_image_emotions');
+            $insert_json = array(
+                'image_emotion_num_rows' => $emotion_num_rows,
+                'total_emotions' => $total_emotions,
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        } else {
+            $insert_json = array(
+                'image_emotion_num_rows' => $emotion_num_rows,
+                'emotion_error' => "Вы уже ставили эмоцию на данную книгу или что-то пошло не так!",
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        }
+        echo json_encode($insert_json);
     }
 
     public function delete_user_image_emotion() {
-        $id = $this->input->post('id');
-        $this->users_model->deleteUserImageEmotionById($id);
-        $delete_json = array(
-            'id' => $id,
-            'csrf_hash' => $this->security->get_csrf_hash()
-        );
+        $this->load->view('session_user');
+        $session_user_id = $_SESSION['user_id'];
+        $user_image_id = $this->input->post('user_image_id');
+        $emotioned_user_id = $this->input->post('emotioned_user_id');
+        $emotion_num_rows = $this->users_model->getUserImageEmotionNumRowsByUserImageIdAndEmotionedUserId($user_image_id, $emotioned_user_id);
+
+        if ($emotion_num_rows > 0 && $emotioned_user_id == $session_user_id) {
+            $this->users_model->deleteUserImageEmotionByUserImageIdAndEmotionedUserId($user_image_id, $emotioned_user_id);
+            $total_emotions = $this->users_model->getTotalByUserImageIdAndUserImageTable($user_image_id, 'user_image_emotions');
+            $delete_json = array(
+                'image_emotion_num_rows' => $emotion_num_rows,
+                'total_emotions' => $total_emotions,
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        } else {
+            $delete_json = array(
+                'image_emotion_num_rows' => $emotion_num_rows,
+                'emotion_error' => "Вы ещё не ставили эмоцию на данную фотку публикации или что-то пошло не так",
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        }
         echo json_encode($delete_json);
     }
 }

@@ -50,43 +50,50 @@ class Publication_emotions extends CI_Controller {
         $publication_id = $this->input->post('publication_id');
         $emotion_num_rows = $this->publications_model->getPublicationEmotionNumRowsByPublicationIdAndEmotionedUserId($publication_id, $emotioned_user_id);
 
-        if ($emotion_num_rows == 0 && $emotioned_user_id == $session_user_id) {
-            $data_publication_emotions = array(
-                'emotion_date' => $emotion_date,
-                'emotion_time' => $emotion_time,
-                'published_user_id' => $published_user_id,
-                'emotioned_user_id' => $emotioned_user_id,
-                'publication_id' => $publication_id
-            );
-            $this->publications_model->insertPublicationEmotion($data_publication_emotions);
-
-            $user_name = $this->users_model->getNicknameAndSurnameById($emotioned_user_id);
-
-            $notification_text = "$user_name поставил эмоцию на Вашу публикацию.";
-
-            $total_emotions = $this->publications_model->getTotalByPublicationIdAndPublicationTable($publication_id, 'publication_emotions');
-            $data_user_notifications = array(
-                'notification_type' => 'Эмоция на Вашу публикацию',
-                'notification_text' => $notification_text,
-                'notification_date' => $emotion_date,
-                'notification_time' => $emotion_time,
-                'notification_viewed' => 'Не просмотрено',
-                'link_id' => $publication_id,
-                'link_table' => 'publications',
-                'user_id' => $published_user_id
-            );
-            $this->users_model->insertUserNotification($data_user_notifications);
+        if ($published_user_id == $session_user_id) {
             $insert_json = array(
-                'emotion_num_rows' => $emotion_num_rows,
-                'total_emotions' => $total_emotions,
+                'emotion_error' => "Вы не можете ставить эмоцию на свою публикацию!",
                 'csrf_hash' => $this->security->get_csrf_hash()
             );
         } else {
-            $insert_json = array(
-                'emotion_num_rows' => $emotion_num_rows,
-                'emotion_error' => "Вы уже ставили эмоцию на данную публикацию или что-то пошло не так!",
-                'csrf_hash' => $this->security->get_csrf_hash()
-            );
+            if ($emotion_num_rows == 0 && $emotioned_user_id == $session_user_id) {
+                $data_publication_emotions = array(
+                    'emotion_date' => $emotion_date,
+                    'emotion_time' => $emotion_time,
+                    'published_user_id' => $published_user_id,
+                    'emotioned_user_id' => $emotioned_user_id,
+                    'publication_id' => $publication_id
+                );
+                $this->publications_model->insertPublicationEmotion($data_publication_emotions);
+
+                $user_name = $this->users_model->getNicknameAndSurnameById($emotioned_user_id);
+
+                $notification_text = "$user_name поставил эмоцию на Вашу публикацию.";
+
+                $total_emotions = $this->publications_model->getTotalByPublicationIdAndPublicationTable($publication_id, 'publication_emotions');
+                $data_user_notifications = array(
+                    'notification_type' => 'Эмоция на Вашу публикацию',
+                    'notification_text' => $notification_text,
+                    'notification_date' => $emotion_date,
+                    'notification_time' => $emotion_time,
+                    'notification_viewed' => 'Не просмотрено',
+                    'link_id' => $publication_id,
+                    'link_table' => 'publications',
+                    'user_id' => $published_user_id
+                );
+                $this->users_model->insertUserNotification($data_user_notifications);
+                $insert_json = array(
+                    'emotion_num_rows' => $emotion_num_rows,
+                    'total_emotions' => $total_emotions,
+                    'csrf_hash' => $this->security->get_csrf_hash()
+                );
+            } else {
+                $insert_json = array(
+                    'emotion_num_rows' => $emotion_num_rows,
+                    'emotion_error' => "Вы уже ставили эмоцию на данную публикацию или что-то пошло не так!",
+                    'csrf_hash' => $this->security->get_csrf_hash()
+                );
+            }
         }
         echo json_encode($insert_json);
     }

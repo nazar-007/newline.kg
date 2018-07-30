@@ -6,15 +6,109 @@ class User_images extends CI_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->model('users_model');
+        $this->load->model('albums_model');
     }
 
-    public function Index() {
-        $user_id = 1;
-        $data = array(
-            'albums' => $this->albums_model->getAlbums($user_id),
-            'csrf_hash' => $this->security->get_csrf_hash()
-        );
-        $this->load->view('albums', $data);
+    public function Index($album_id) {
+        $album_num_rows = $this->albums_model->getAlbumNumRowsById($album_id);
+        $album_user_id = $this->albums_model->getUserIdByAlbumId($album_id);
+        if ($album_num_rows == 1) {
+            $album_name = $this->albums_model->getAlbumNameById($album_id);
+        } else {
+            $album_name = '';
+        }
+        $session_user_id = $_SESSION['user_id'];
+        if ($album_num_rows == 1 && $album_name == 'Publication Album') {
+            redirect(base_url() . "publication_images/$album_id");
+        } else if ($album_num_rows == 1) {
+            $html = "<h3 class='centered'>Фотки альбома $album_name</h3>";
+            $user_images = $this->users_model->getUserImagesByAlbumId($album_id);
+            if (count($user_images) == 0) {
+                $html .= "<h5 class='centered'>В данном альбоме фоток пока нет.</h5>";
+            } else {
+                if (count($user_images) > 0) {
+                    $html .= "<div id='carousel' class='carousel slide' data-interval='false' data-ride='carousel'>
+                            <div class='carousel-inner'>";
+                    foreach ($user_images as $key => $user_image) {
+                        $user_image_id = $user_image->id;
+                        $user_image_file = $user_image->user_image_file;
+                        $user_id = $user_image->user_id;
+                        $image_emotion_num_rows = $this->users_model->getUserImageEmotionNumRowsByUserImageIdAndEmotionedUserId($user_image_id, $session_user_id);
+                        $total_user_image_emotions = $this->users_model->getTotalByUserImageIdAndUserImageTable($user_image_id, 'user_image_emotions');
+                        if ($key == 0) {
+                            $html .= "<div class='item active'>
+                                    <img src='" . base_url() . "uploads/images/user_images/$user_image_file' class='user_images' style='width: 200px; margin: 0 auto;'>
+                                    <div class='user_image_emotion image_emotions_field_$user_image_id' data-user_id='$user_id' data-emotioned_user_id='$session_user_id' data-user_image_id='$user_image_id'>";
+                            if ($image_emotion_num_rows == 0) {
+                                $html .= "<img class='emotion_image' onclick='insertUserImageEmotion(this)' src='" . base_url() . "uploads/icons/unemotioned.png'>";
+                            } else {
+                                $html .= "<img class='emotion_image' onclick='deleteUserImageEmotion(this)' src='" . base_url() . "uploads/icons/emotioned.png'>";
+                            }
+                            $html .= "<span class='badge' onclick='getUserImageEmotions(this)' data-toggle='modal' data-target='#getUserImageEmotions'>$total_user_image_emotions</span>
+                                            </div>
+                                        </div>";
+                        } else {
+                            $html .= "<div class='item'>
+                                            <img src='" . base_url() . "uploads/images/user_images/$user_image_file' class='user_images' style='width: 200px; margin: 0 auto'>
+                                                <div class='user_image_emotion image_emotions_field_$user_image_id' data-user_id='$user_id' data-emotioned_user_id='$session_user_id' data-user_image_id='$user_image_id'>";
+                            if ($image_emotion_num_rows == 0) {
+                                $html .= "<img class='emotion_image' onclick='insertUserImageEmotion(this)' src='" . base_url() . "uploads/icons/unemotioned.png'>";
+                            } else {
+                                $html .= "<img class='emotion_image' onclick='deleteUserImageEmotion(this)' src='" . base_url() . "uploads/icons/emotioned.png'>";
+                            }
+                            $html .= "<span class='badge' onclick='getUserImageEmotions(this)' data-toggle='modal' data-target='#getUserImageEmotions'>$total_user_image_emotions</span>
+                                            </div>
+                                        </div>";
+                        }
+                    }
+                    if (count($user_images) > 1) {
+                        $html .= "<a class='left carousel-control' href='#carousel' data-slide='prev'>
+                              <span class='glyphicon glyphicon-chevron-left'></span>
+                              <span class='sr-only'>Previous</span>
+                            </a>
+                            <a class='right carousel-control' href='#carousel' data-slide='next'>
+                              <span class='glyphicon glyphicon-chevron-right'></span>
+                              <span class='sr-only'>Next</span>
+                            </a>";
+                    }
+                    $html .= "</div>
+                    </div>";
+
+                }
+
+            }
+            $user_name = $this->users_model->getNicknameAndSurnameById($album_user_id);
+            $user_albums = $this->albums_model->getAlbumsByUserId($album_user_id);
+
+            $html .= "<h3 class='centered'>Все альбомы пользователя $user_name</h3>";
+
+            foreach ($user_albums as $user_album) {
+                $user_album_id = $user_album->id;
+                $user_album_name = $user_album->album_name;
+                $html .= "<div class='col-xs-6 col-sm-6 col-md-3 col-lg-3 one_album_$user_album_id'>
+                        <a href='" . base_url() . "user_images/$user_album_id'>
+                            <img src='" . base_url() . "uploads/icons/my_album.png'>
+                            <div class='one_album_name_$user_album_id album_name'>
+                                $user_album_name
+                            </div>
+                        </a>
+                    </div>";
+            }
+
+            $data = array(
+                'images' => $html,
+                'album_num_rows' => $album_num_rows,
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+
+            $this->load->view('user_images', $data);
+        } else {
+            $data_users = array(
+                'album_num_rows' => $album_num_rows,
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+            $this->load->view('user_images', $data_users);
+        }
     }
 
     public function insert_user_image() {

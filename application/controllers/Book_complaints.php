@@ -11,12 +11,60 @@ class Book_complaints extends CI_Controller {
     }
 
     public function Index() {
-        $admin_id = 2;
-        $data = array(
-            'book_complaints' => $this->books_model->getBookComplaintsByAdminId($admin_id),
-            'csrf_hash' => $this->security->get_csrf_hash()
-        );
-        $this->load->view('book_complaints', $data);
+        $material = $this->input->post('material');
+        $admin_id = $_SESSION['admin_id'];
+        $admin_email = $_SESSION['admin_email'];
+        $admin_table = $_SESSION['admin_table'];
+        if ($material == 'book' && $admin_id && $admin_email && $admin_table) {
+
+            $html = "<h3 class='centered'>Вы - админ книг.</h3>
+            <table border='3'>
+                <tr>
+                    <td>ID</td>
+                    <td>Жалобщик</td>
+                    <td>Текст жалобы</td>
+                    <td>Проверка книги</td>
+                    <td>Удалить жалобу</td>
+                    <td>Принять жалобу</td>
+                </tr>";
+
+            $book_complaints = $this->books_model->getBookComplaintsByAdminId($admin_id);
+
+            foreach ($book_complaints as $book_complaint) {
+                $id = $book_complaint->id;
+                $email = $book_complaint->email;
+                $complaint_text = $book_complaint->complaint_text;
+                $book_id = $book_complaint->book_id;
+                $book_name = $book_complaint->book_name;
+                $html .= "<tr class='one-complaint-$id'>
+                        <td>$id</td>
+                        <td>$email</td>
+                        <td>$complaint_text</td>
+                        <td>
+                            <button onclick='getOneBookByAdmin(this)' type='button' class='btn btn-default' data-toggle='modal' data-target='#getOneBook' data-id='$book_id'><span class='glyphicon glyphicon-align-justify'></span></button>
+                        </td> 
+                        <td>
+                            <button onclick='deletePressBookComplaint(this)' type='button' class='btn btn-success' data-toggle='modal' data-target='#deleteBookComplaint' data-complaint_id='$id' data-complaint_text='$complaint_text' data-book_name='$book_name'><span class='glyphicon glyphicon-trash'></span></button>
+                        </td>
+                        <td>
+                            <button onclick='deletePressBookComplaintAndDeletePressBook(this)' type='button' class='btn btn-danger' data-toggle='modal' data-target='#deleteBookComplaintAndBook' data-complaint_id='$id' data-book_id='$book_id' data-complaint_text='$complaint_text' data-book_name='$book_name'><span class='glyphicon glyphicon-trash'></span></button>
+                        </td>
+                    </tr>";
+            }
+
+            $html .= "</table>";
+
+            $data = array(
+                'book_complaints' => $html,
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        } else {
+            $data = array(
+                'complaint_error' => 'У вас нет прав на просмотр жалоб на книги',
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        }
+        echo json_encode($data);
     }
 
     public function insert_book_complaint() {
@@ -58,33 +106,78 @@ class Book_complaints extends CI_Controller {
 
     public function delete_book_complaint() {
         $id = $this->input->post('id');
-        $this->books_model->deleteBookComplaintById($id);
-        $delete_json = array(
-            'id' => $id,
-            'csrf_hash' => $this->security->get_csrf_hash()
-        );
+        $book_name = $this->input->post('book_name');
+        $complaint_text = $this->input->post('complaint_text');
+
+        $admin_id = $_SESSION['admin_id'];
+        $admin_email = $_SESSION['admin_email'];
+        $admin_table = $_SESSION['admin_table'];
+        if ($admin_id && $admin_email && $admin_table) {
+            $this->books_model->deleteBookComplaintById($id);
+            $data_admin_actions = array(
+                'admin_action' => "$admin_email отклонил жалобу на книгу '$book_name' с текстом $complaint_text под id $id",
+                'admin_table' => $admin_table,
+                'admin_date' => date('d.m.Y'),
+                'admin_time' => date('H:i:s'),
+                'action_admin_id' => $admin_id
+            );
+            $this->admins_model->insertAdminAction($data_admin_actions);
+            $delete_json = array(
+                'id' => $id,
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        } else {
+            $delete_json = array(
+                'complaint_error' => "Не удалось удалить жалобу.",
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        }
         echo json_encode($delete_json);
     }
 
-    public function delete_book_complaints_by_complained_user_id() {
-        $complained_user_id = $this->input->post('complained_user_id');
-        $this->books_model->deleteBookComplaintsByComplainedUserId($complained_user_id);
-        $delete_json = array(
-            'complained_user_id' => $complained_user_id,
-            'csrf_hash' => $this->security->get_csrf_hash()
-        );
-        echo json_encode($delete_json);
-    }
-
-    public function update_book_complaint() {
+    public function delete_book_complaint_and_book() {
         $id = $this->input->post('id');
-        $admin_table = $this->input->post('admin_table');
-        $admin_id = $this->admins_model->getRandomAdminIdByAdminTable($admin_table);
+        $book_id = $this->input->post('book_id');
+        $book_name = $this->input->post('book_name');
+        $complaint_text = $this->input->post('complaint_text');
 
-        $data_book_complaints = array(
-            'complaint_time_unix' => time(),
-            'admin_id' => $admin_id
-        );
-        $this->books_model->updateBookComplaintById($id, $data_book_complaints);
+        $admin_id = $_SESSION['admin_id'];
+        $admin_email = $_SESSION['admin_email'];
+        $admin_table = $_SESSION['admin_table'];
+        if ($admin_id && $admin_email && $admin_table) {
+            $this->books_model->deleteBookComplaintsByBookId($book_id);
+
+            $book_file = $this->books_model->getBookFileById($book_id);
+            $book_image = $this->books_model->getBookImageById($book_id);
+            unlink("./uploads/book_files/$book_file");
+            unlink("./uploads/images/book_images/$book_image");
+
+            $this->books_model->deleteBookActionsByBookId($book_id);
+            $this->books_model->deleteBookCommentsByBookId($book_id);
+            $this->books_model->deleteBookComplaintsByBookId($book_id);
+            $this->books_model->deleteBookEmotionsByBookId($book_id);
+            $this->books_model->deleteBookFansByBookId($book_id);
+            $this->books_model->deleteBookById($book_id);
+            $data_admin_actions = array(
+                'admin_action' => "$admin_email принял жалобу на книгу '$book_name' с текстом $complaint_text под id $id и удалил эту книгу под id $book_id",
+                'admin_table' => $admin_table,
+                'admin_date' => date('d.m.Y'),
+                'admin_time' => date('H:i:s'),
+                'action_admin_id' => $admin_id
+            );
+            $this->admins_model->insertAdminAction($data_admin_actions);
+            $delete_json = array(
+                'id' => $id,
+                'complaint_success' => 'Жалоба успешно принята',
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        } else {
+            $delete_json = array(
+                'complaint_error' => "Не удалось удалить жалобу.",
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        }
+        echo json_encode($delete_json);
     }
+
 }

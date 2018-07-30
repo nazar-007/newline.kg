@@ -218,6 +218,14 @@ ul li{
     width: 250px;
 }
 
+.mobile-search {
+    top: 1px;
+}
+
+.relative {
+    position: relative;
+}
+
 input[type="checkbox"] {
     display:none;
 }

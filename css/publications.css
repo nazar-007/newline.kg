@@ -1,4 +1,4 @@
-.pos_publications {
+.pos_publications, .pos_one_publication {
     width: 80%;
     height: auto;
     margin: 0 auto;
@@ -121,11 +121,12 @@
     background-color: darkslategray;
     cursor: pointer;
 }
+.navigation {
+    background-color: powderblue;
+    margin-bottom: 20px;
+}
 @media screen and (max-width: 1200px){
-    .pos_publications {
-        width: 100%;
-    }
-    .pos_books {
+    .pos_publications, .pos_one_publication {
         width: 100%;
     }
 }

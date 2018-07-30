@@ -14,9 +14,19 @@ class Messages_model extends CI_Model {
         $this->session->set_userdata($sessions);
     }
     public function getGuestMessagesByUserId($user_id) {
-        $this->db->where('user_id', $user_id);
-        $query = $this->db->get('guest_messages');
+        $this->db->select('guest_messages.*, users.email, users.nickname, users.surname, users.main_image');
+        $this->db->from('guest_messages');
+        $this->db->join('users', 'guest_messages.guest_id = users.id');
+        $this->db->order_by('message_date DESC, message_time DESC');
+        $this->db->where('guest_messages.user_id', $user_id);
+        $query = $this->db->get();
         return $query->result();
+    }
+    public function getGuestMessageNumRowsByIdAndGuestId($id, $guest_id) {
+        $this->db->where('id', $id);
+        $this->db->where('guest_id', $guest_id);
+        $query = $this->db->get('guest_messages');
+        return $query->num_rows();
     }
     public function getFeedbackMessages() {
         $query = $this->db->get('feedback_messages');
@@ -30,7 +40,7 @@ class Messages_model extends CI_Model {
         $this->db->insert('feedback_messages', $data);
     }
 
-    public function deleteGuestMessage($id) {
+    public function deleteGuestMessageById($id) {
         $this->db->where('id', $id);
         $this->db->delete('guest_messages');
     }

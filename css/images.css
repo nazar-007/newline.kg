@@ -1,0 +1,38 @@
+.pos_images {
+    width: 80%;
+    height: auto;
+    margin: 0 auto;
+    box-shadow: 0 0px 1px;
+    padding:10px;
+}
+
+#all_images {
+    padding: 0;
+    margin: 0;
+}
+
+.right {
+    float: right;
+    cursor: pointer;
+}
+.user_images, .publication_images {
+    width: 50%;
+    margin: 0 auto;
+}
+.user_image_emotion, .publication_image_emotion {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 50%;
+}
+.emotion_image {
+    margin-right: 7px;
+}
+.badge {
+    background-color: darkslategray;
+    cursor: pointer;
+}
+@media screen and (max-width: 1200px){
+    .pos_images {
+        width: 100%;
+    }
+}

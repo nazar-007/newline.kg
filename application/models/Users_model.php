@@ -14,6 +14,7 @@ class Users_model extends CI_Model {
         $this->session->set_userdata($sessions);
     }
     public function getUsers() {
+        $this->db->order_by('id DESC');
         $query = $this->db->get('users');
         return $query->result();
     }
@@ -147,12 +148,19 @@ class Users_model extends CI_Model {
         foreach ($users as $user) {
             $nickname = $user->nickname;
             $surname = $user->surname;
+            return $nickname . " " . $surname;
         }
-        return $nickname . " " . $surname;
     }
     public function getNumRowsByEmail($email) {
         $this->db->select('id, email');
         $this->db->where('email', $email);
+        $query = $this->db->get('users');
+        return $query->num_rows();
+    }
+    public function getNumRowsByEmailAndCurrentEmail($email, $current_email) {
+        $this->db->select('id, email');
+        $this->db->where('email', $email);
+        $this->db->where('email !=', $current_email);
         $query = $this->db->get('users');
         return $query->num_rows();
     }
@@ -214,9 +222,76 @@ class Users_model extends CI_Model {
         }
         return $rating;
     }
+    public function getTotalByFanUserIdAndFanTable($fan_user_id, $fan_table) {
+        $this->db->select('COUNT(*) as total');
+        $this->db->group_by('fan_user_id');
+        $this->db->where('fan_user_id', $fan_user_id);
+        $query = $this->db->get($fan_table);
+        $books = $query->result();
+        foreach ($books as $book) {
+            $total = $book->total;
+            if (strlen($total) == 4) {
+                return substr($total, 0, 1) . "K";
+            } else if(strlen($total) == 5) {
+                return substr($total, 0, 2) . "K";
+            } else if(strlen($total) == 6) {
+                return substr($total, 0, 3) . "K";
+            } else if (strlen($total) == 7) {
+                return substr($total, 0, 1) . "M";
+            } else if(strlen($total) == 8) {
+                return substr($total, 0, 2) . "M";
+            } else if(strlen($total) == 9) {
+                return substr($total, 0, 3) . "M";
+            } else if (strlen($total) == 10) {
+                return substr($total, 0, 1) . "B";
+            } else if(strlen($total) == 11) {
+                return substr($total, 0, 2) . "B";
+            } else if(strlen($total) == 12) {
+                return substr($total, 0, 3) . "B";
+            } else {
+                return $total;
+            }
+        }
+    }
+    public function getTotalByUserImageIdAndUserImageTable($user_image_id, $user_image_table) {
+        $this->db->select('COUNT(*) as total');
+        $this->db->group_by('user_image_id');
+        $this->db->where('user_image_id', $user_image_id);
+        $query = $this->db->get($user_image_table);
+        $user_images = $query->result();
+        foreach ($user_images as $user_image) {
+            $total = $user_image->total;
+            if (strlen($total) == 4) {
+                return substr($total, 0, 1) . "K";
+            } else if(strlen($total) == 5) {
+                return substr($total, 0, 2) . "K";
+            } else if(strlen($total) == 6) {
+                return substr($total, 0, 3) . "K";
+            } else if (strlen($total) == 7) {
+                return substr($total, 0, 1) . "M";
+            } else if(strlen($total) == 8) {
+                return substr($total, 0, 2) . "M";
+            } else if(strlen($total) == 9) {
+                return substr($total, 0, 3) . "M";
+            } else if (strlen($total) == 10) {
+                return substr($total, 0, 1) . "B";
+            } else if(strlen($total) == 11) {
+                return substr($total, 0, 2) . "B";
+            } else if(strlen($total) == 12) {
+                return substr($total, 0, 3) . "B";
+            } else {
+                return $total;
+            }
+        }
+    }
     public function getUserBlacklistByUserId($user_id) {
         $this->db->where('user_id', $user_id);
         $query = $this->db->get('user_blacklist');
+        return $query->result();
+    }
+    public function getUserById($id) {
+        $this->db->where('id', $id);
+        $query = $this->db->get('users');
         return $query->result();
     }
     public function getUserComplaintsByAdminId($admin_id) {
@@ -280,6 +355,21 @@ class Users_model extends CI_Model {
         $query = $this->db->get('user_images');
         return $query->result();
     }
+    public function getUserImageEmotionNumRowsByUserImageIdAndEmotionedUserId($user_image_id, $emotioned_user_id) {
+        $this->db->where('user_image_id', $user_image_id);
+        $this->db->where('emotioned_user_id', $emotioned_user_id);
+        $query = $this->db->get('user_image_emotions');
+        return $query->num_rows();
+    }
+    public function getUserImageEmotionsByUserImageId($user_image_id) {
+        $this->db->select('user_image_emotions.*, users.email, users.nickname, users.surname, users.main_image');
+        $this->db->from('user_image_emotions');
+        $this->db->join('users', 'user_image_emotions.emotioned_user_id = users.id');
+        $this->db->order_by('user_image_emotions.emotion_date DESC, user_image_emotions.emotion_time DESC');
+        $this->db->where('user_image_emotions.user_image_id', $user_image_id);
+        $query = $this->db->get();
+        return $query->result();
+    }
     public function getUserImageFileById($id) {
         $this->db->select('id, user_image_file');
         $this->db->where('id', $id);
@@ -318,6 +408,15 @@ class Users_model extends CI_Model {
         $this->db->where('email', $email);
         $query = $this->db->get('users');
         return $query->num_rows();
+    }
+    public function getUserPageEmotionsByUserId($user_id) {
+        $this->db->select('user_page_emotions.*, users.email, users.nickname, users.surname, users.main_image');
+        $this->db->from('user_page_emotions');
+        $this->db->join('users', 'user_page_emotions.emotioned_user_id = users.id');
+        $this->db->order_by('emotion_date DESC, emotion_time DESC');
+        $this->db->where('user_page_emotions.user_id', $user_id);
+        $query = $this->db->get();
+        return $query->result();
     }
     public function getTotalCommonFriendsByTwoUsers($user1, $user2) {
         $query = $this->db->query(
@@ -596,6 +695,11 @@ class Users_model extends CI_Model {
     public function deleteUserImageEmotionsByUserIdOrEmotionedUserId($user_id) {
         $this->db->where('user_id', $user_id);
         $this->db->or_where('emotioned_user_id', $user_id);
+        $this->db->delete('user_image_emotions');
+    }
+    public function deleteUserImageEmotionByUserImageIdAndEmotionedUserId($user_image_id, $emotioned_user_id) {
+        $this->db->where('emotioned_user_id', $emotioned_user_id);
+        $this->db->where('user_image_id', $user_image_id);
         $this->db->delete('user_image_emotions');
     }
     public function deleteUserInviteByUserIdAndInvitedUserId($user_id, $invited_user_id) {

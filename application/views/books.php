@@ -259,6 +259,7 @@
             if (message.success_suggestion) {
                 alert(message.success_suggestion);
                 $("#insertBookSuggestion").modal('hide');
+                $(".form-control").val('');
             }
         })
     }

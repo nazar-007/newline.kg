@@ -7,6 +7,7 @@ class Book_comments extends CI_Controller {
         parent::__construct();
         $this->load->model('books_model');
         $this->load->model('users_model');
+        $this->load->model('admins_model');
     }
 
     public function Index() {
@@ -19,7 +20,7 @@ class Book_comments extends CI_Controller {
         $csrf_hash = $this->security->get_csrf_hash();
         $html .= "<form action='javascript:void(0)' onsubmit='insertBookComment(this)'>
                     <input type='hidden' class='csrf' name='csrf_test_name' value='$csrf_hash'>
-                    <textarea id='comment_text' class='form-control comment-input' placeholder='Добавить коммент' name='comment_text'></textarea>
+                    <textarea required id='comment_text' class='form-control comment-input' placeholder='Добавить коммент' name='comment_text'></textarea>
                     <input class='commented_user_id' type='hidden' name='commented_user_id' value='$session_user_id'>
                     <input class='book_id' type='hidden' name='book_id' value='$book_id'>
                     <button class='btn btn-success center-block' type='submit'>Комментировать</button>
@@ -128,6 +129,37 @@ class Book_comments extends CI_Controller {
             );
         }
 
+        echo json_encode($delete_json);
+    }
+
+    public function delete_book_comment_by_admin() {
+        $id = $this->input->post('id');
+        $comment_text = $this->input->post('comment_text');
+        $admin_id = $_SESSION['admin_id'];
+        $admin_email = $_SESSION['admin_email'];
+        $admin_table = $_SESSION['admin_table'];
+
+        if ($_SESSION['admin_id'] && $_SESSION['admin_email'] && $_SESSION['admin_table']) {
+            $this->books_model->deleteBookCommentById($id);
+
+            $data_admin_actions = array(
+                'admin_action' => "$admin_email удалил коммент с текстом $comment_text под id $id",
+                'admin_table' => $admin_table,
+                'admin_date' => date('d.m.Y'),
+                'admin_time' => date('H:i:s'),
+                'action_admin_id' => $admin_id
+            );
+            $this->admins_model->insertAdminAction($data_admin_actions);
+            $delete_json = array(
+                'id' => $id,
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        } else {
+            $delete_json = array(
+                'comment_error' => 'У вас нет прав на удаление комментов в книге',
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        }
         echo json_encode($delete_json);
     }
 

@@ -49,15 +49,20 @@ class Admins extends CI_Controller {
         $data = array();
         $data['csrf_hash'] = $this->security->get_csrf_hash();
         if ($admin_table == 'books') {
-            $data['materials'] = $this->books_model->getBooks();
+            $data['material'] = 'book';
+            $data['books'] = $this->books_model->getBooks();
         } else if ($admin_table == 'events') {
-            $data['materials'] = $this->load->events_model->getEvents();
+            $data['material'] = 'event';
+            $data['events'] = $this->events_model->getEvents();
         } else if ($admin_table == 'songs') {
-            $data['materials'] = $this->load->songs_model->getSongs();
+            $data['material'] = 'song';
+            $data['songs'] = $this->songs_model->getSongs();
         } else if ($admin_table == 'publications') {
-            $data['materials'] = $this->publications_model->getPublications();
+            $data['material'] = 'publication';
+            $data['publications'] = $this->publications_model->getPublications();
         } else if ($admin_table == 'users') {
-            $data['materials'] = $this->users_model->getUsers();
+            $data['material'] = 'user';
+            $data['users'] = $this->users_model->getUsers();
         }
 
         $this->load->view('session_admin');

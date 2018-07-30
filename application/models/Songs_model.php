@@ -23,9 +23,10 @@ class Songs_model extends CI_Model {
         return $query->result();
     }
     public function getSongs() {
-    $query = $this->db->get('songs');
-    return $query->result();
-}
+        $this->db->order_by('id DESC');
+        $query = $this->db->get('songs');
+        return $query->result();
+    }
     public function getSongActionsByFriendIds($friend_ids) {
         $this->db->select('song_actions.*, users.nickname, songs.song_name, songs.song_file');
         $this->db->from('song_actions');
@@ -81,8 +82,13 @@ class Songs_model extends CI_Model {
         return $query->result();
     }
     public function getSongComplaintsByAdminId($admin_id) {
+        $this->db->select('song_complaints.*, users.email, users.nickname, users.surname, users.main_image, songs.song_name');
+        $this->db->from('song_complaints');
+        $this->db->join('users', 'song_complaints.complained_user_id = users.id');
+        $this->db->join('songs', 'song_complaints.song_id = songs.id');
         $this->db->where('admin_id', $admin_id);
-        $query = $this->db->get('song_complaints');
+        $this->db->order_by('id DESC');
+        $query = $this->db->get();
         return $query->result();
     }
     public function getSongComplaintNumRowsBySongIdAndComplainedUserId($song_id, $complained_user_id) {
@@ -141,6 +147,16 @@ class Songs_model extends CI_Model {
         }
         return $song_file;
     }
+    public function getSongNameById($id) {
+        $this->db->select('id, song_name');
+        $this->db->where('id', $id);
+        $query = $this->db->get('songs');
+        $songs = $query->result();
+        foreach ($songs as $song) {
+            $song_name = $song->song_name;
+        }
+        return $song_name;
+    }
     public function getSongNumRowsById($id) {
         $this->db->select('id');
         $this->db->where('id', $id);
@@ -148,8 +164,12 @@ class Songs_model extends CI_Model {
         return $query->num_rows();
     }
     public function getSongSuggestionsByAdminId($admin_id) {
+        $this->db->select('song_suggestions.*, users.email, users.nickname, users.surname, users.main_image');
+        $this->db->from('song_suggestions');
+        $this->db->join('users', 'song_suggestions.suggested_user_id = users.id');
         $this->db->where('admin_id', $admin_id);
-        $query = $this->db->get('song_suggestions');
+        $this->db->order_by('id DESC');
+        $query = $this->db->get();
         return $query->result();
     }
     public function getSongSuggestionFileById($id) {

@@ -10,6 +10,14 @@
         <div id="mobileMenu" class="small-hidden mobMenuContent" style="display: none">
             <ul class="mobile-catalog">
                 <li>
+                    <form method="get" action="<?php echo base_url()?>search_users">
+                        <div class="relative">
+                            <input required class="form-control" type="text" name="search" size="50" placeholder="Поиск людей">
+                            <button class="search-img mobile-search" type="submit"></button>
+                        </div>
+                    </form>
+                </li>
+                <li>
                     <a href="<?php echo base_url()?>my_page">
                         Моя страница
                     </a>
@@ -81,7 +89,7 @@
         <div class="pos_search small-hidden">
             <form method="get" action="<?php echo base_url()?>search_users">
                 <div class="search">
-                    <input required class="search-input" id="search" type="text" name="search" size="50" placeholder="Поиск">
+                    <input required class="search-input" type="text" name="search" size="50" placeholder="Поиск людей">
                     <button class="search-img" type="submit"></button>
                 </div>
             </form>
@@ -94,15 +102,6 @@
         </div>
     </nav>
 </header>
-
-<script>
-
-    function searcha() {
-        console.log($("#search").val());
-    }
-</script>
-
-
 
 
 

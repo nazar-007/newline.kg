@@ -33,14 +33,26 @@ class Users extends CI_Controller {
         $email = $this->input->post('email');
         $password = md5($this->input->post('password'));
         $user_id = $this->users_model->getUserIdByEmailAndPassword($email, $password);
+        $user_email = $this->users_model->getEmailById($user_id);
         $num_rows = $this->users_model->getNumRowsByEmailAndPassword($email, $password);
         if($num_rows > 0) {
             $_SESSION['user_id'] = $user_id;
-            $_SESSION['user_email'] = $email;
+            $_SESSION['user_email'] = $user_email;
             redirect(base_url() . "publications");
         } else {
             redirect(base_url());
         }
+    }
+
+    public function My_page() {
+        $user_id = $_SESSION['user_id'];
+        $users = $this->users_model->getUserById($user_id);
+        $data = array(
+            'users' => $users,
+            'total_user_page_emotions' => $this->users_model->getTotalByUserIdAndUserTable($user_id, 'user_page_emotions'),
+            'csrf_hash' => $this->security->get_csrf_hash()
+        );
+        $this->load->view('my_page', $data);
     }
 
     public function One_user($email) {
@@ -75,16 +87,25 @@ class Users extends CI_Controller {
                 $this->users_model->updateGuestByUserIdAndGuestId($user_id, $guest_id, $data_guests);
             }
             $data_users = array(
-                'one_user' => $this->users_model->getOneUserByEmail($email),
-                'common_books' => $this->books_model->getCommonBooksByTwoUsers($guest_id, $user_id),
-                'total_common_books' => $this->books_model->getTotalCommonBooksByTwoUsers($guest_id, $user_id),
+                'users' => $this->users_model->getUserById($user_id),
+                'user_books' => $this->books_model->getBookFansByFanUserId($user_id),
+                'user_events' => $this->events_model->getEventFansByFanUserId($user_id),
+                'user_songs' => $this->songs_model->getSongFansByFanUserId($user_id),
+                'user_gifts' => $this->gifts_model->getGiftSentByUserId($user_id),
+                'user_stakes' => $this->stakes_model->getStakeFansByFanUserId($user_id),
+                'total_user_page_emotions' => $this->users_model->getTotalByUserIdAndUserTable($user_id, 'user_page_emotions'),
+                'total_friends' => $this->users_model->getTotalByUserIdAndUserTable($user_id, 'friends'),
+                'total_books' => $this->users_model->getTotalByFanUserIdAndFanTable($user_id, "book_fans"),
+                'total_events' => $this->users_model->getTotalByFanUserIdAndFanTable($user_id, "event_fans"),
+                'total_songs' => $this->users_model->getTotalByFanUserIdAndFanTable($user_id, "song_fans"),
                 'user_num_rows' => $user_num_rows,
-                'user_id' => $this->users_model->getUserIdByEmail($email)
+                'csrf_hash' => $this->security->get_csrf_hash(),
+                'user_id' => $user_id
             );
             $this->load->view('one_user', $data_users);
         } else {
-            echo "Страница удалена или ещё не создана!";
             $data_users = array(
+                'csrf_hash' => $this->security->get_csrf_hash(),
                 'user_num_rows' => $user_num_rows
             );
             $this->load->view('one_user', $data_users);
@@ -610,120 +631,130 @@ class Users extends CI_Controller {
 
     public function update_user() {
         $id = $this->input->post('id');
-        $email = $this->input->post('email');
-        $nickname = $this->input->post('nickname');
-        $surname = $this->input->post('surname');
-        $day = $this->input->post('day');
-        $month = $this->input->post('month');
-        $birth_date = $day . " " . $month;
-        $birth_year = $this->input->post('birth_year');
-        $gender = $this->input->post('gender');
-        $home_land = $this->input->post('home_land');
-        $schools = $this->input->post('education_schools');
-        $universities = $this->input->post('education_universities');
-        $family_position = $this->input->post('family_position');
-        $num_rows = $this->users_model->getNumRowsByEmail($email);
-
-        $db_home_land = $this->users_model->getHomeLandById($id);
-        $db_birth_date = $this->users_model->getBirthDateById($id);
-        $db_birth_year = $this->users_model->getBirthYearById($id);
-        $db_education_schools = $this->users_model->getEducationSchoolsById($id);
-        $db_education_universities = $this->users_model->getEducationUniversitiesById($id);
-        $db_family_position = $this->users_model->getFamilyPositionById($id);
 
         $messages = array(
             'csrf_hash' => $this->security->get_csrf_hash()
         );
 
-        if ($num_rows > 0 || strlen($email) < 5 || empty($email) || empty($nickname) || strlen($nickname) < 2 || empty($surname)
-            || strlen($surname) < 2 || ($birth_date == '30 февраля' && $birth_year != '') || ($birth_date == '31 февраля' && $birth_year != '') || ($birth_date == '31 апреля' && $birth_year != '')
-            || ($birth_date == '31 июня' && $birth_year != '') || ($birth_date == '31 сентября' && $birth_year != '') || ($birth_date == '31 ноября' && $birth_year != '')
-            || ($birth_date == '29 февраля' && $birth_year % 4 != 0) || $birth_year == '') {
+        if ($id == $_SESSION['user_id']) {
 
-            if ($num_rows > 0) {
-                $messages['email_num_rows'] = $num_rows;
-                $messages['email_exist'] = 'Такой email уже существует! Придумайте другой!';
-            }
-            if (empty($email)) {
-                $messages['email_empty'] = 'Email пустой, введите корректный логин';
-            }
-            if (strlen($email) < 5) {
-                $messages['email_less'] = 'Email слишком короткий, введите не менее 5 символов';
-            }
-            if (empty($nickname)) {
-                $messages['nickname_empty'] = 'Имя пустое, введите корректное имя!';
-            }
-            if (strlen($nickname) < 2) {
-                $messages['nickname_less'] = 'Имя слишком короткое, введите не менее 2 символов!';
-            }
-            if (empty($surname)) {
-                $messages['surname_empty'] = 'Фамилия пустая, введите корректную фамилию!';
-            }
-            if (strlen($surname) < 2) {
-                $messages['surname_less'] = 'Фамилия слишком короткая, введите не менее 2 символов!';
-            }
-            if (($birth_date == '30 февраля' && $birth_year != '') || ($birth_date == '31 февраля' && $birth_year != '') || ($birth_date == '31 апреля' && $birth_year != '')
+            $email = $this->input->post('email');
+            $nickname = $this->input->post('nickname');
+            $surname = $this->input->post('surname');
+            $day = $this->input->post('day');
+            $month = $this->input->post('month');
+            $birth_date = $day . " " . $month;
+            $birth_year = $this->input->post('birth_year');
+            $gender = $this->input->post('gender');
+            $home_land = $this->input->post('home_land');
+            $schools = $this->input->post('education_schools');
+            $universities = $this->input->post('education_universities');
+            $family_position = $this->input->post('family_position');
+
+            $db_current_email = $this->users_model->getEmailById($id);
+            $db_home_land = $this->users_model->getHomeLandById($id);
+            $db_birth_date = $this->users_model->getBirthDateById($id);
+            $db_birth_year = $this->users_model->getBirthYearById($id);
+            $db_education_schools = $this->users_model->getEducationSchoolsById($id);
+            $db_education_universities = $this->users_model->getEducationUniversitiesById($id);
+            $db_family_position = $this->users_model->getFamilyPositionById($id);
+
+            $num_rows = $this->users_model->getNumRowsByEmailAndCurrentEmail($email, $db_current_email);
+
+            if ($num_rows > 0 || strlen($email) < 5 || empty($email) || empty($nickname) || strlen($nickname) < 2 || empty($surname)
+                || strlen($surname) < 2 || ($birth_date == '30 февраля' && $birth_year != '') || ($birth_date == '31 февраля' && $birth_year != '') || ($birth_date == '31 апреля' && $birth_year != '')
                 || ($birth_date == '31 июня' && $birth_year != '') || ($birth_date == '31 сентября' && $birth_year != '') || ($birth_date == '31 ноября' && $birth_year != '')
-                || ($birth_date == '29 февраля' && $birth_year % 4 != 0) || ($birth_date && $birth_year == '')) {
+                || ($birth_date == '29 февраля' && $birth_year % 4 != 0)
+                || ($day == '' && $month != '') || ($day != '' && $month == '') || ($day != '' && $month != '' && $birth_year == '') || ($birth_date == ' ' && $birth_year != '')
+            ) {
+                if ($num_rows > 0) {
+                    $messages['email_num_rows'] = $num_rows;
+                    $messages['email_exist'] = 'Такой email уже существует! Придумайте другой!';
+                }
+                if (empty($email)) {
+                    $messages['email_empty'] = 'Email пустой, введите корректный логин';
+                }
+                if (strlen($email) < 5) {
+                    $messages['email_less'] = 'Email слишком короткий, введите не менее 5 символов';
+                }
+                if (empty($nickname)) {
+                    $messages['nickname_empty'] = 'Имя пустое, введите корректное имя!';
+                }
+                if (strlen($nickname) < 2) {
+                    $messages['nickname_less'] = 'Имя слишком короткое, введите не менее 2 символов!';
+                }
+                if (empty($surname)) {
+                    $messages['surname_empty'] = 'Фамилия пустая, введите корректную фамилию!';
+                }
+                if (strlen($surname) < 2) {
+                    $messages['surname_less'] = 'Фамилия слишком короткая, введите не менее 2 символов!';
+                }
+                if (($birth_date == '30 февраля' && $birth_year != '') || ($birth_date == '31 февраля' && $birth_year != '') || ($birth_date == '31 апреля' && $birth_year != '')
+                    || ($birth_date == '31 июня' && $birth_year != '') || ($birth_date == '31 сентября' && $birth_year != '') || ($birth_date == '31 ноября' && $birth_year != '')
+                    || ($birth_date == '29 февраля' && $birth_year % 4 != 0) || ($day == '' && $month != '') || ($day != '' && $month == '') || ($day != '' && $month != '' && $birth_year == '') || ($birth_date == ' ' && $birth_year != '')
+                ) {
                     $messages['birth_date_incorrect'] = 'Введенные данные не совпадают с реальностью! Введите корректную дату!';
-            }
-            if (empty($gender)) {
-                $messages['gender_empty'] = 'Пол не указан, введите свой пол!';
+                }
+                if (empty($gender)) {
+                    $messages['gender_empty'] = 'Пол не указан, введите свой пол!';
+                }
+            } else {
+                if (count($schools) > 0) {
+                    $education_schools = '';
+                    for ($i = 0; $i < count($schools); $i++) {
+                        $last_index = count($schools) - 1;
+                        if ($schools[$i] != '') {
+                            if ($i != $last_index) {
+                                $education_schools .= $schools[$i] . ", ";
+                            } else {
+                                $education_schools .= $schools[$i];
+                            }
+                        }
+                    }
+                } else {
+                    $education_schools = $db_education_schools;
+                }
+                if (count($universities) > 0) {
+                    $education_universities = '';
+                    for ($i = 0; $i < count($universities); $i++) {
+                        $last_index = count($universities) - 1;
+                        if ($universities[$i] != '') {
+                            if ($i != $last_index) {
+                                $education_universities .= $universities[$i] . ", ";
+                            } else {
+                                $education_universities .= $universities[$i];
+                            }
+                        }
+                    }
+                } else {
+                    $education_universities = $db_education_universities;
+                }
+
+                $birth_date = $birth_date == ' ' ? $db_birth_date : $birth_date;
+                $birth_year = $birth_year == '' ? $db_birth_year : $birth_year;
+                $home_land = $home_land == '' ? $db_home_land : $home_land;
+                $family_position = $family_position == '' ? $db_family_position : $family_position;
+                $education_schools = $education_schools == '' ? $db_education_schools : $education_schools;
+                $education_universities = $education_universities == '' ? $db_education_universities : $education_universities;
+
+                $data_users = array(
+                    'email' => $email,
+                    'nickname' => $nickname,
+                    'surname' => $surname,
+                    'birth_date' => $birth_date,
+                    'birth_year' => $birth_year,
+                    'gender' => $gender,
+                    'home_land' => $home_land,
+                    'education_schools' => $education_schools,
+                    'education_universities' => $education_universities,
+                    'family_position' => $family_position,
+                );
+                $this->users_model->updateUserById($id, $data_users);
+                $_SESSION['user_email'] = $email;
+                $messages['success_update'] = 'Ваши данные успешно обновлены!';
             }
         } else {
-            if (count($schools) > 0) {
-                $education_schools = '';
-                for ($i = 0; $i < count($schools); $i++) {
-                    $last_index = count($schools) - 1;
-                    if ($schools[$i] != '') {
-                        if ($i != $last_index) {
-                            $education_schools .= $schools[$i] . ", ";
-                        } else {
-                            $education_schools .= $schools[$i];
-                        }
-                    }
-                }
-            } else {
-                $education_schools = $db_education_schools;
-            }
-            if (count($universities) > 0) {
-                $education_universities = '';
-                for ($i = 0; $i < count($universities); $i++) {
-                    $last_index = count($universities) - 1;
-                    if ($universities[$i] != '') {
-                        if ($i != $last_index) {
-                            $education_universities .= $universities[$i] . ", ";
-                        } else {
-                            $education_universities .= $universities[$i];
-                        }
-                    }
-                }
-            } else {
-                $education_universities = $db_education_universities;
-            }
-
-            $birth_date = $birth_date == ' ' ? $db_birth_date : $birth_date;
-            $birth_year = $birth_year == '' ? $db_birth_year : $birth_year;
-            $home_land = $home_land == '' ? $db_home_land : $home_land;
-            $family_position = $family_position == '' ? $db_family_position : $family_position;
-            $education_schools = $education_schools == '' ? $db_education_schools : $education_schools;
-            $education_universities = $education_universities == '' ? $db_education_universities : $education_universities;
-
-            $data_users = array(
-                'email' => $email,
-                'nickname' => $nickname,
-                'surname' => $surname,
-                'birth_date' => $birth_date,
-                'birth_year' => $birth_year,
-                'gender' => $gender,
-                'home_land' => $home_land,
-                'education_schools' => $education_schools,
-                'education_universities' => $education_universities,
-                'family_position' => $family_position,
-            );
-            $this->users_model->updateUserById($id, $data_users);
-            $_SESSION['user_email'] = $email;
-            $messages['success_update'] = 'Ваши данные успешно обновлены!';
+            $messages['user_error'] = 'Вы не можете менять данные, потому что это не Ваш идентификатор';
         }
         $messages_json = json_encode($messages);
         echo $messages_json;

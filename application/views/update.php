@@ -27,18 +27,15 @@
             <?php $this->load->view('sidebar'); ?>
         </div>
         <div class="pos_update col-xs-6 col-sm-9">
-            <div class="row friend-row">
-                <div onclick="chooseUpdateForm(this)" data-id="0" class="col-xs-3 col-sm-3 col-md-3 col-lg-3 update-column active-column">
-                    Данные                 <?php echo $_SESSION['user_email']?>
+            <div class="row update-row">
+                <div onclick="chooseUpdateForm(this)" data-id="0" class="col-xs-4 col-sm-4 col-md-4 col-lg-4 update-column active-column">
+                    Данные
                 </div>
-                <div onclick="chooseUpdateForm(this)" data-id="1" class="col-xs-3 col-sm-3 col-md-3 col-lg-3 update-column">
+                <div onclick="chooseUpdateForm(this)" data-id="1" class="col-xs-4 col-sm-4 col-md-4 col-lg-4 update-column">
                     Пароль
                 </div>
-                <div onclick="chooseUpdateForm(this)" data-id="2" class="col-xs-3 col-sm-3 col-md-3 col-lg-3 update-column">
+                <div onclick="chooseUpdateForm(this)" data-id="2" class="col-xs-4 col-sm-4 col-md-4 col-lg-4 update-column">
                     Вопросы
-                </div>
-                <div onclick="chooseUpdateForm(this)" data-id="3" class="col-xs-3 col-sm-3 col-md-3 col-lg-3 update-column">
-                    Фотка
                 </div>
             </div>
             <div id="update_field">
@@ -262,6 +259,9 @@
             processData: false
         }).done(function(message) {
             $('.csrf').val(message.csrf_hash);
+            if (message.user_error) {
+                alert(message.user_error);
+            }
             if (message.email_num_rows === 1) {
                 $("#email_error").html(message.email_exist);
             } else if (message.email_empty) {

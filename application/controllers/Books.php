@@ -7,6 +7,7 @@ class Books extends CI_Controller {
         parent::__construct();
         $this->load->model('books_model');
         $this->load->model('users_model');
+        $this->load->model('admins_model');
     }
 
     public function Index() {
@@ -156,158 +157,201 @@ class Books extends CI_Controller {
         echo json_encode($data);
     }
 
-    public function insert_book() {
-        $config['upload_path'] = './uploads/song_files';
-        $config['allowed_types'] = 'pdf';
-        $book_file = preg_replace('/[ \t]+/', '_', $_FILES['book_file']['name']);
-        $config['file_name'] = $book_file;
-        $this->load->library('upload', $config);
+    public function get_one_book_by_admin() {
+        $id = $this->input->post('id');
+        if ($_SESSION['admin_id'] && $_SESSION['admin_email'] || $_SESSION['admin_table']) {
+            $one_book = $this->books_model->getOneBookById($id);
+            $book_comments = $this->books_model->getBookCommentsByBookId($id);
+            $html = '';
+            foreach ($one_book as $info_book) {
+                $book_id = $info_book->id;
+                $book_file = $info_book->book_file;
+                $html .= "<h3 class='centered'>$info_book->book_name</h3>
+                    <div class='row'>
+                        <div class='col-xs-12 col-sm-9 col-md-9 col-lg-9'>
+                            <div>
+                                <strong class='book_th'>Автор: </strong>
+                                <span class='book_td'>$info_book->book_author</span>
+                            </div>
+                            <div>
+                                <strong class='book_th'>Описание: </strong>
+                                <span class='book_td'>$info_book->book_description</span>
+                            </div>
+                            <div>
+                                <strong class='book_th'>Категория: </strong>
+                                <span class='book_td'>$info_book->category_name</span>
+                            </div>
+                        </div>
+                    </div>
+                <div class='book-iframe'>
+                    <iframe width='560' height='315' src='" . base_url() . "uploads/book_files/$book_file' frameborder='0'></iframe>
+                </div>";
+            }
 
-        if ($this->upload->do_upload('book_file')) {
-            echo 'Файл успешно загружен!';
+            $html .= "<h3 class='centered'>Комменты к книге</h3>";
+
+            if (count($book_comments) == 0) {
+                $html .= 'Комментов к данной книге пока нет';
+            } else {
+                foreach ($book_comments as $book_comment) {
+                    $html .= "<div class='one_comment_$book_comment->id'>
+                        <div class='commented_user'>
+                            <img src='" . base_url() . "uploads/images/user_images/" . $book_comment->main_image . "' class='commented_avatar'>
+                            $book_comment->nickname $book_comment->surname 
+                            <span class='comment-date-time'>$book_comment->comment_date <br> $book_comment->comment_time</span>
+                            <div onclick='deleteBookCommentByAdmin(this)' data-book_comment_id='$book_comment->id' data-comment_text='$book_comment->comment_text' class='right'>X</div>
+                        </div>
+                    <div class='comment_text'>
+                       $book_comment->comment_text
+                    </div>
+                </div>";
+                    }
+                }
+            $get_json = array(
+                'get_one_book' => $html,
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
         } else {
-            echo 'НЕ УДАЛОСЬ ЗАГРУЗИТЬ ФАЙЛ!';
+            $get_json = array(
+                'get_error' => 'У вас нет прав на просмотр книги',
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
         }
-
-//        $book_name = "To kill the Mockingbird";
-//        $book_author = 'Harper Li';
-//        $book_description = 'lorem ipsum';
-//        $book_image = 'aliceinwonder.jpg';
-//        $book_year = 2015;
-//        $book_http_link = 'http://google.com';
-//        $category_id = 2;
-//        $user_id = 1;
-//
-//        $data_books = array(
-//            'book_name' => $book_name,
-//            'book_file' => $book_file,
-//            'book_author' => $book_author,
-//            'book_description' => $book_description,
-//            'book_image' => $book_image,
-//            'book_year' => $book_year,
-//            'book_http_link' => $book_http_link,
-//            'category_id' => $category_id,
-//            'user_id' => $user_id
-//        );
-//
-//        $this->books_model->insertBook($data_books);
-//        $insert_book_id = $this->db->insert_id();
-//
-//        // НАДО ДОДЕЛАТЬ ЭКШН
-//
-//        $book_action = 'Предложенную книгу Назара "Убить пересмешника" одобрили админы.';
-//        $data_book_actions = array(
-//            'book_action' => $book_action,
-//            'book_time_unix' => time(),
-//            'action_user_id' => $user_id,
-//            'book_id' => $insert_book_id
-//        );
-//        $this->books_model->insertBookAction($data_book_actions);
-//
-//        $notification_date = date('d.m.Y');
-//        $notification_time = date('H:i:s');
-//        if ($user_id != 0) {
-//            $notification_text = 'Админ одобрил Вашу книгу "Убить пересмешника". К Вашей валюте прибавился 1 сом, а к рейтингу - 5 баллов.';
-//
-//            $data_user_notifications = array(
-//                'notification_type' => 'Одобрение Вашей книги',
-//                'notification_text' => $notification_text,
-//                'notification_date' => $notification_date,
-//                'notification_time' => $notification_time,
-//                'notification_viewed' => 'Не просмотрено',
-//                'link_id' => $insert_book_id,
-//                'link_table' => 'books',
-//                'user_id' => $user_id
-//            );
-//            $this->users_model->insertUserNotification($data_user_notifications);
-//
-//            $currency_before = $this->users_model->getCurrencyById($user_id);
-//            $rating_before = $this->users_model->getRatingById($user_id);
-//
-//            $data_users = array(
-//                'currency' => $currency_before + 1,
-//                'rating' => $rating_before + 5
-//            );
-//            $this->users_model->updateUserById($user_id, $data_users);
-//
-//            $rating_after = $this->users_model->getRatingById($user_id);
-//            $rank_after = $this->users_model->getRankById($user_id);
-//            $this->users_model->updateRankById($user_id, $rating_after, $rank_after);
-//
-//            $suggestion_id = $this->input->post('suggestion_id');
-//            $this->books_model->deleteBookSuggestionById($suggestion_id);
-//        }
+        echo json_encode($get_json);
     }
 
-    public function delete_book() {
-        $id = $this->input->post('id');
-        $user_id = $this->input->post('user_id');
-        $book_file = $this->books_model->getBookFileById($id);
-        $book_image = $this->books_model->getBookImageById($id);
-        unlink("./uploads/book_files/$book_file");
-        unlink("./uploads/images/book_images/$book_image");
+    public function insert_book() {
+        $book_name = $this->input->post('book_name');
+        $book_file = $this->input->post('book_file');
+        $book_author = $this->input->post('book_author');
+        $book_description = $this->input->post('book_description');
+        $book_image = $this->input->post('book_image');
+        $category_id = $this->input->post('category_id');
+        $suggested_user_id = $this->input->post('suggested_user_id');
 
-        $this->books_model->deleteBookActionsByBookId($id);
-        $this->books_model->deleteBookCommentsByBookId($id);
-        $this->books_model->deleteBookComplaintsByBookId($id);
-        $this->books_model->deleteBookEmotionsByBookId($id);
-        $this->books_model->deleteBookFansByBookId($id);
-        $this->books_model->deleteBookById($id);
+        $data_books = array(
+            'book_name' => $book_name,
+            'book_file' => $book_file,
+            'book_author' => $book_author,
+            'book_description' => $book_description,
+            'book_image' => $book_image,
+            'category_id' => $category_id,
+        );
+
+        $this->books_model->insertBook($data_books);
+        $insert_book_id = $this->db->insert_id();
+
+        $user_name = $this->users_model->getNicknameAndSurnameById($suggested_user_id);
+        $book_name = $this->books_model->getBookNameById($insert_book_id);
+
+        $data_book_actions = array(
+            'book_action' => "Предложенную книгу $book_name пользователя $user_name опубликовали админы.",
+            'book_time_unix' => time(),
+            'action_user_id' => $suggested_user_id,
+            'book_id' => $insert_book_id
+        );
+        $this->books_model->insertBookAction($data_book_actions);
 
         $notification_date = date('d.m.Y');
         $notification_time = date('H:i:s');
-        if ($user_id != 0) {
-            $notification_text = 'Ваша одобренная книга "Убить пересмешника" удалена. С Вашей валюты снялся 1 сом, а с рейтинга - 5 баллов.';
+        $notification_text = "Админ одобрил Вашу предложенную книгу $book_name. К Вашей валюте прибавился 1 сом, а к рейтингу - 5 баллов.";
 
-            $data_user_notifications = array(
-                'notification_type' => 'Удаление Вашей одобренной книги',
-                'notification_text' => $notification_text,
-                'notification_date' => $notification_date,
-                'notification_time' => $notification_time,
-                'notification_viewed' => 'Не просмотрено',
-                'user_id' => $user_id
-            );
-            $this->users_model->insertUserNotification($data_user_notifications);
+        $data_user_notifications = array(
+            'notification_type' => 'Одобрение Вашей книги',
+            'notification_text' => $notification_text,
+            'notification_date' => $notification_date,
+            'notification_time' => $notification_time,
+            'notification_viewed' => 'Не просмотрено',
+            'link_id' => $insert_book_id,
+            'link_table' => 'books',
+            'user_id' => $suggested_user_id
+        );
+        $this->users_model->insertUserNotification($data_user_notifications);
 
             $currency_before = $this->users_model->getCurrencyById($user_id);
             $rating_before = $this->users_model->getRatingById($user_id);
 
             $data_users = array(
-                'currency' => $currency_before - 1,
-                'rating' => $rating_before - 5
+                'currency' => $currency_before + 1,
+                'rating' => $rating_before + 5
             );
             $this->users_model->updateUserById($user_id, $data_users);
 
             $rating_after = $this->users_model->getRatingById($user_id);
             $rank_after = $this->users_model->getRankById($user_id);
             $this->users_model->updateRankById($user_id, $rating_after, $rank_after);
+
+            $suggestion_id = $this->input->post('suggestion_id');
+            $this->books_model->deleteBookSuggestionById($suggestion_id);
         }
 
-        $delete_json = array(
-            'id' => $id,
-            'csrf_name' => $this->security->get_csrf_token_name (),
-            'csrf_hash' => $this->security->get_csrf_hash()
-        );
+    public function delete_book() {
+        $id = $this->input->post('id');
+        $book_name = $this->input->post('book_name');
+        $admin_id = $_SESSION['admin_id'];
+        $admin_email = $_SESSION['admin_email'];
+        $admin_table = $_SESSION['admin_table'];
+
+        if (!$admin_id && !$admin_email && !$admin_table) {
+            $delete_json = array(
+                'book_error' => 'Не удалось удалить книгу',
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        } else {
+            $book_file = $this->books_model->getBookFileById($id);
+            $book_image = $this->books_model->getBookImageById($id);
+            unlink("./uploads/book_files/$book_file");
+            unlink("./uploads/images/book_images/$book_image");
+
+            $this->books_model->deleteBookActionsByBookId($id);
+            $this->books_model->deleteBookCommentsByBookId($id);
+            $this->books_model->deleteBookComplaintsByBookId($id);
+            $this->books_model->deleteBookEmotionsByBookId($id);
+            $this->books_model->deleteBookFansByBookId($id);
+            $this->books_model->deleteBookById($id);
+
+            $data_admin_actions = array(
+                'admin_action' => "$admin_email удалил книгу $book_name под id $id",
+                'admin_table' => $admin_table,
+                'admin_date' => date('d.m.Y'),
+                'admin_time' => date('H:i:s'),
+                'action_admin_id' => $admin_id
+            );
+            $this->admins_model->insertAdminAction($data_admin_actions);
+
+            $delete_json = array(
+                'id' => $id,
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        }
         echo json_encode($delete_json);
     }
 
     public function update_book() {
-        $id = $this->input->post('id');
-        $book_name = $this->input->post('book_name');
-        $book_author = $this->input->post('book_author');
-        $book_description = $this->input->post('book_description');
-        $book_year = $this->input->post('book_year');
-        $book_http_link = $this->input->post('book_http_link');
+        if ($_SESSION['admin_id'] && $_SESSION['admin_email'] && $_SESSION['admin_table']) {
+            $id = $this->input->post('id');
+            $book_name = $this->input->post('book_name');
+            $book_author = $this->input->post('book_author');
+            $book_description = $this->input->post('book_description');
+            $data_books = array(
+                'book_name' => $book_name,
+                'book_author' => $book_author,
+                'book_description' => $book_description,
+            );
+            $this->books_model->updateBookById($id, $data_books);
 
-        $data_books = array(
-            'book_name' => $book_name,
-            'book_author' => $book_author,
-            'book_description' => $book_description,
-            'book_year' => $book_year,
-            'book_http_link' => $book_http_link
-        );
-
-        $this->books_model->updateBookById($id, $data_books);
+            $update_json = array(
+                'id' => $id,
+                'book_name' => $book_name,
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        } else {
+            $update_json = array(
+                'update_error' => 'Не удалось сохранить изменения',
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        }
+        echo json_encode($update_json);
     }
 
 }

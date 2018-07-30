@@ -225,6 +225,7 @@
                 alert(message.song_file_error);
             }
             if (message.success_suggestion) {
+                $(".form-control").val('');
                 alert(message.success_suggestion);
                 $("#insertSongSuggestion").modal('hide');
             }

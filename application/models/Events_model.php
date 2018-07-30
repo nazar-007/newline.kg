@@ -14,6 +14,7 @@ class Events_model extends CI_Model {
         $this->session->set_userdata($sessions);
     }
     public function getEvents() {
+        $this->db->order_by('id DESC');
         $query = $this->db->get('events');
         return $query->result();
     }
@@ -67,8 +68,13 @@ class Events_model extends CI_Model {
         return $query->result();
     }
     public function getEventComplaintsByAdminId($admin_id) {
+        $this->db->select('event_complaints.*, users.email, users.nickname, users.surname, users.main_image, events.event_name');
+        $this->db->from('event_complaints');
+        $this->db->join('users', 'event_complaints.complained_user_id = users.id');
+        $this->db->join('events', 'event_complaints.event_id = events.id');
         $this->db->where('admin_id', $admin_id);
-        $query = $this->db->get('event_complaints');
+        $this->db->order_by('id DESC');
+        $query = $this->db->get();
         return $query->result();
     }
     public function getEventComplaintNumRowsByEventIdAndComplainedUserId($song_id, $complained_user_id) {
@@ -134,8 +140,12 @@ class Events_model extends CI_Model {
         return $query->num_rows();
     }
     public function getEventSuggestionsByAdminId($admin_id) {
+        $this->db->select('event_suggestions.*, users.email, users.nickname, users.surname, users.main_image');
+        $this->db->from('event_suggestions');
+        $this->db->join('users', 'event_suggestions.suggested_user_id = users.id');
         $this->db->where('admin_id', $admin_id);
-        $query = $this->db->get('event_suggestions');
+        $this->db->order_by('id DESC');
+        $query = $this->db->get();
         return $query->result();
     }
     public function getOneEventById($id) {
@@ -164,7 +174,7 @@ class Events_model extends CI_Model {
                 return substr($total, 0, 1) . "M";
             } else if(strlen($total) == 8) {
                 return substr($total, 0, 2) . "M";
-            } else if(strlen($total == 9)) {
+            } else if(strlen($total) == 9) {
                 return substr($total, 0, 3) . "M";
             } else if (strlen($total) == 10) {
                 return substr($total, 0, 1) . "B";
