@@ -572,6 +572,12 @@ class Users_model extends CI_Model {
             }
         }
     }
+    public function getUserPageEmotionNumRowsByUserIdAndEmotionedUserId($user_id, $emotioned_user_id) {
+        $this->db->where('user_id', $user_id);
+        $this->db->where('emotioned_user_id', $emotioned_user_id);
+        $query = $this->db->get('user_page_emotions');
+        return $query->num_rows();
+    }
     public function searchUsers($search_value) {
         $this->db->select('id, email, nickname, surname, main_image, last_visit');
         $this->db->like("CONCAT(nickname, ' ', surname)", $search_value);

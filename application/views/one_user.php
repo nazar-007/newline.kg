@@ -70,18 +70,26 @@
                     <?php endforeach;?>
                 </div>
                 <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 centered">
-                    <img src="/uploads/icons/emotioned.png">
-                    <span data-toggle="modal" data-target="#getUserPageEmotions" onclick="getUserPageEmotions(this)" data-user_id="<?php echo $user_id;?>" class="badge"><?php echo $total_user_page_emotions?></span>
+                    <span class="user_page_emotions" data-user_id="<?php echo $user_id;?>" data-emotioned_user_id="<?php echo $_SESSION['user_id']?>">
+                    <?php if ($user_page_emotion_num_rows > 0) {
+                        echo "<img onclick='deleteUserPageEmotion(this)' src='" . base_url() . "uploads/icons/emotioned.png'>";
+                    } else {
+                        echo "<img onclick='insertUserPageEmotion(this)' src='" . base_url() . "uploads/icons/unemotioned.png'>";
+                    }
+                    ?>
+                        <span data-toggle="modal" data-target="#getUserPageEmotions" onclick="getUserPageEmotions(this)" class="badge"><?php echo $total_user_page_emotions?></span>
+                    </span>
                     <button class="btn btn-default">
-                        <a href='/update'>
-                            <img src="/uploads/icons/update.png">
+                        <a href='<?php echo base_url()?>update'>
+                            <img src="<?php echo base_url()?>uploads/icons/update.png">
+                            <?php echo $user_page_emotion_num_rows?>
                         </a>
                     </button>
                     <img id="showMobileInterests" class="middle-hidden big-hidden huge-hidden" src="/uploads/icons/world.png">
                     <div id="mobileInterests" class="small-hidden interests">
                         <div class="one-interest">
                             <button class="btn btn-primary btn-interests">
-                                <a class="white" href="/friends">Друзья <?php if ($total_friends > 0) { echo '(' .  $total_friends . ')';}?></a>
+                                <a class="white" href="<?php echo base_url()?>friends">Друзья <?php if ($total_friends > 0) { echo '(' .  $total_friends . ')';}?></a>
                             </button>
                         </div>
                         <div class="one-interest">
@@ -449,6 +457,27 @@
 <?php $this->load->view("footer");?>
 
 <script>
+
+    function insertUserPageEmotion(context) {
+        var user_id = context.parentElement.getAttribute('data-user_id');
+        var emotioned_user_id = context.parentElement.getAttribute('data-emotioned_user_id');
+        console.log(emotioned_user_id);
+        con
+//        $.ajax({
+//            method: "POST",
+//            url: "<?php //echo base_url()?>//publication_emotions/insert_publication_emotion",
+//            data: {published_user_id: published_user_id, emotioned_user_id: emotioned_user_id, publication_id: publication_id, csrf_test_name: $(".csrf").val()},
+//            dataType: "JSON"
+//        }).done(function (message) {
+//            $(".csrf").val(message.csrf_hash);
+//            if (message.emotion_num_rows == 0) {
+//                $(".emotions_field_" + publication_id).html("<img onclick='deletePublicationEmotion(this)'" +
+//                    " src='<?php //echo base_url()?>//uploads/icons/emotioned.png'><span class='badge' onclick='getPublicationEmotions(this)' data-toggle='modal' data-target='#getPublicationEmotions'>" + message.total_emotions + "</span>");
+//            } else {
+//                alert(message.emotion_error);
+//            }
+//        })
+    }
 
     function insertGuestMessage(context) {
         var form = $(context)[0];

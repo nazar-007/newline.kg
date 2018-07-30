@@ -45,6 +45,7 @@ class Users extends CI_Controller {
     }
 
     public function My_page() {
+        $this->load->view('session_user');
         $user_id = $_SESSION['user_id'];
         $users = $this->users_model->getUserById($user_id);
         $data = array(
@@ -56,6 +57,7 @@ class Users extends CI_Controller {
     }
 
     public function One_user($email) {
+        $this->load->view('session_user');
         $user_num_rows = $this->users_model->getUserNumRowsByEmail($email);
         if ($user_num_rows == 1 && $email == $_SESSION['user_email']) {
             redirect(base_url() . "my_page");
@@ -93,6 +95,7 @@ class Users extends CI_Controller {
                 'user_songs' => $this->songs_model->getSongFansByFanUserId($user_id),
                 'user_gifts' => $this->gifts_model->getGiftSentByUserId($user_id),
                 'user_stakes' => $this->stakes_model->getStakeFansByFanUserId($user_id),
+                'user_page_emotion_num_rows' => $this->users_model->getUserPageEmotionNumRowsByUserIdAndEmotionedUserId($user_id, $guest_id),
                 'total_user_page_emotions' => $this->users_model->getTotalByUserIdAndUserTable($user_id, 'user_page_emotions'),
                 'total_friends' => $this->users_model->getTotalByUserIdAndUserTable($user_id, 'friends'),
                 'total_books' => $this->users_model->getTotalByFanUserIdAndFanTable($user_id, "book_fans"),
