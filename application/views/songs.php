@@ -24,7 +24,7 @@
         <div class="pos_songs col-xs-12 col-sm-6 col-md-6 col-lg-6">
             <div class="row">
                 <div class='col-xs-12 col-sm-3 col-md-3 col-lg-3'>
-                    <div class="link_my_fan_songs" data-toggle='modal' data-target='#getMyFanSongs'>Мои любимые песни</div>
+                    <div class="link_my_fan_songs" data-toggle='modal' data-target='#getMyFanSongs'>Мои любимые песни <?php if ($total_songs > 0) { echo '(' .  $total_songs . ')';}?></div>
                     <img class='small-hidden song_image_big' src='<?php echo base_url()?>uploads/icons/fan_song.png' data-toggle='modal' data-target='#getMyFanSongs'>
                     <div class="centered">
                         <div class="suggest_btn link_my_fan_songs" data-toggle="modal" data-target="#insertSongSuggestion">

@@ -22,6 +22,11 @@ class User_invites extends CI_Controller {
             'invited_user_id' => $invited_user_id
         );
         $this->users_model->insertUserInvite($data_user_invites);
+
+        $json = array(
+            'csrf_hash' => $this->security->get_csrf_hash()
+        );
+        echo json_encode($json);
     }
 
     public function delete_user_invite_by_user_id() {
@@ -48,7 +53,7 @@ class User_invites extends CI_Controller {
                 'notification_viewed' => 'Не просмотрено',
                 'link_id' => 0,
                 'link_table' => 0,
-                'user_id' => $user_id
+                'user_id' => $invited_user_id
             );
             $this->users_model->insertUserNotification($data_user_notifications);
 
@@ -70,7 +75,6 @@ class User_invites extends CI_Controller {
         $invited_user_id = $this->input->post('invited_user_id');
         $this->users_model->deleteUserInviteByUserIdAndInvitedUserId($user_id, $invited_user_id);
         $delete_json = array(
-            'invited_user_id' => $invited_user_id,
             'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($delete_json);

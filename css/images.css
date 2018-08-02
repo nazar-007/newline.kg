@@ -11,6 +11,11 @@
     margin: 0;
 }
 
+.absolute {
+    position: absolute;
+    right:1%;
+}
+
 .right {
     float: right;
     cursor: pointer;

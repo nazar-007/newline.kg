@@ -44,39 +44,76 @@ class User_page_emotions extends CI_Controller {
         $emotion_date = date('d.m.Y');
         $emotion_time = date('H:i:s');
         $user_id = $this->input->post('user_id');
+        $session_user_id = $_SESSION['user_id'];
         $emotioned_user_id = $this->input->post('emotioned_user_id');
+        $emotion_num_rows = $this->users_model->getUserPageEmotionNumRowsByUserIdAndEmotionedUserId($user_id, $emotioned_user_id);
 
-        $data_user_page_emotions = array(
-            'emotion_date' => $emotion_date,
-            'emotion_time' => $emotion_time,
-            'user_id' => $user_id,
-            'emotioned_user_id' => $emotioned_user_id
-        );
-        $this->users_model->insertUserPageEmotion($data_user_page_emotions);
+        if ($user_id == $emotioned_user_id) {
+            $insert_json = array(
+                'emotion_error' => "Вы не можете ставить эмоцию на свою страницу!",
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        } else {
+            if ($emotion_num_rows == 0 && $emotioned_user_id == $session_user_id) {
+                $data_user_page_emotions = array(
+                    'emotion_date' => $emotion_date,
+                    'emotion_time' => $emotion_time,
+                    'user_id' => $user_id,
+                    'emotioned_user_id' => $emotioned_user_id
+                );
+                $this->users_model->insertUserPageEmotion($data_user_page_emotions);
 
-        $notification_text = 'Пользователь Назар оставил эмоцию на Ващу страницу';
+                $user_name = $this->users_model->getNicknameAndSurnameById($emotioned_user_id);
+                $notification_text = "$user_name поставил эмоцию на Вашу страницу.";
 
-        $data_user_notifications = array(
-            'notification_type' => 'Эмоция на Вашу страницу',
-            'notification_text' => $notification_text,
-            'notification_date' => $emotion_date,
-            'notification_time' => $emotion_time,
-            'notification_viewed' => 'Не просмотрено',
-            'link_id' => 0,
-            'link_table' => 'users',
-            'user_id' => $user_id
-        );
-        $this->users_model->insertUserNotification($data_user_notifications);
+                $total_emotions = $this->users_model->getTotalByUserIdAndUserTable($user_id, 'user_page_emotions');
+                $data_user_notifications = array(
+                    'notification_type' => 'Эмоция на Вашу страницу',
+                    'notification_text' => $notification_text,
+                    'notification_date' => $emotion_date,
+                    'notification_time' => $emotion_time,
+                    'notification_viewed' => 'Не просмотрено',
+                    'link_id' => $user_id,
+                    'link_table' => 'users',
+                    'user_id' => $user_id
+                );
+                $this->users_model->insertUserNotification($data_user_notifications);
+                $insert_json = array(
+                    'emotion_num_rows' => $emotion_num_rows,
+                    'total_emotions' => $total_emotions,
+                    'csrf_hash' => $this->security->get_csrf_hash()
+                );
+            } else {
+                $insert_json = array(
+                    'emotion_num_rows' => $emotion_num_rows,
+                    'emotion_error' => "Вы уже ставили эмоцию на эту страницу или что-то пошло не так!",
+                    'csrf_hash' => $this->security->get_csrf_hash()
+                );
+            }
+        }
+        echo json_encode($insert_json);
     }
 
     public function delete_user_page_emotion() {
-        $id = $this->input->post('id');
-        $this->users_model->deleteUserPageEmotionById($id);
-        $delete_json = array(
-            'id' => $id,
-            'csrf_name' => $this->security->get_csrf_token_name (),
-            'csrf_hash' => $this->security->get_csrf_hash()
-        );
+        $user_id = $this->input->post('user_id');
+        $session_user_id = $_SESSION['user_id'];
+        $emotioned_user_id = $this->input->post('emotioned_user_id');
+        $emotion_num_rows = $this->users_model->getUserPageEmotionNumRowsByUserIdAndEmotionedUserId($user_id, $emotioned_user_id);
+        if ($emotion_num_rows > 0 && $emotioned_user_id == $session_user_id) {
+            $this->users_model->deleteUserPageEmotionByUserIdAndEmotionedUserId($user_id, $emotioned_user_id);
+            $total_emotions = $this->users_model->getTotalByUserIdAndUserTable($user_id, 'user_page_emotions');
+            $delete_json = array(
+                'emotion_num_rows' => $emotion_num_rows,
+                'total_emotions' => $total_emotions,
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        } else {
+            $delete_json = array(
+                'emotion_num_rows' => $emotion_num_rows,
+                'emotion_error' => "Вы ещё не ставили эмоцию на эту страницу или что-то пошло не так",
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        }
         echo json_encode($delete_json);
     }
 }

@@ -49,27 +49,38 @@ class Publication_image_emotions extends CI_Controller {
         $publication_image_id = $this->input->post('publication_image_id');
         $emotion_num_rows = $this->publications_model->getPublicationImageEmotionNumRowsByPublicationImageIdAndEmotionedUserId($publication_image_id, $emotioned_user_id);
 
-        if ($emotion_num_rows == 0 && $emotioned_user_id == $session_user_id) {
-            $data_publication_image_emotions = array(
-                'emotion_date' => $emotion_date,
-                'emotion_time' => $emotion_time,
-                'emotioned_user_id' => $emotioned_user_id,
-                'publication_image_id' => $publication_image_id
-            );
-            $this->publications_model->insertPublicationImageEmotion($data_publication_image_emotions);
+        $publication_id = $this->publications_model->getPublicationIdByPublicationImageId($publication_image_id);
+        $published_user_id = $this->publications_model->getPublishedUserIdByPublicationId($publication_id);
 
-            $total_emotions = $this->publications_model->getTotalByPublicationImageIdAndPublicationImageTable($publication_image_id, 'publication_image_emotions');
+
+        if ($published_user_id == $session_user_id) {
             $insert_json = array(
-                'image_emotion_num_rows' => $emotion_num_rows,
-                'total_emotions' => $total_emotions,
+                'emotion_error' => "Вы не можете ставить эмоцию на фотку своей публикации!",
                 'csrf_hash' => $this->security->get_csrf_hash()
             );
         } else {
-            $insert_json = array(
-                'image_emotion_num_rows' => $emotion_num_rows,
-                'emotion_error' => "Вы уже ставили эмоцию на данную фотку публикации или что-то пошло не так!",
-                'csrf_hash' => $this->security->get_csrf_hash()
-            );
+            if ($emotion_num_rows == 0 && $emotioned_user_id == $session_user_id) {
+                $data_publication_image_emotions = array(
+                    'emotion_date' => $emotion_date,
+                    'emotion_time' => $emotion_time,
+                    'emotioned_user_id' => $emotioned_user_id,
+                    'publication_image_id' => $publication_image_id
+                );
+                $this->publications_model->insertPublicationImageEmotion($data_publication_image_emotions);
+
+                $total_emotions = $this->publications_model->getTotalByPublicationImageIdAndPublicationImageTable($publication_image_id, 'publication_image_emotions');
+                $insert_json = array(
+                    'image_emotion_num_rows' => $emotion_num_rows,
+                    'total_emotions' => $total_emotions,
+                    'csrf_hash' => $this->security->get_csrf_hash()
+                );
+            } else {
+                $insert_json = array(
+                    'image_emotion_num_rows' => $emotion_num_rows,
+                    'emotion_error' => "Вы уже ставили эмоцию на данную фотку публикации или что-то пошло не так!",
+                    'csrf_hash' => $this->security->get_csrf_hash()
+                );
+            }
         }
         echo json_encode($insert_json);
     }

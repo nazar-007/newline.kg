@@ -11,6 +11,8 @@ $route['one_document/(:num)/(:num)'] = 'documents/one_document/$1/$2';
 $route['search_users'] = 'users/search_users';
 $route['update'] = 'users/update';
 
+$route['restore'] = 'users/restore';
+
 $route['user_images/(:num)'] = 'user_images/index/$1';
 $route['publication_images/(:num)'] = 'publication_images/index/$1';
 

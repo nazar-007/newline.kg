@@ -94,6 +94,7 @@ class Events extends CI_Controller {
             $data = array(
                 'events' => $html,
                 'friend_ids' => $friend_ids,
+                'total_events' => $this->users_model->getTotalByFanUserIdAndFanTable($session_user_id, "event_fans"),
                 'event_actions' => $this->events_model->getEventActionsByFriendIds($friend_ids),
                 'event_categories' => $this->events_model->getEventCategories(),
                 'my_fan_events' => $this->events_model->getEventFansByFanUserId($session_user_id),

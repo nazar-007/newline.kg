@@ -21,7 +21,11 @@ class User_images extends CI_Controller {
         if ($album_num_rows == 1 && $album_name == 'Publication Album') {
             redirect(base_url() . "publication_images/$album_id");
         } else if ($album_num_rows == 1) {
-            $html = "<h3 class='centered'>Фотки альбома $album_name</h3>";
+            $html = '';
+            if ($album_user_id == $session_user_id) {
+                $html .= "<button data-toggle='modal' data-target='#insertUserImage' class='btn btn-success center-block absolute'>Добавить фотографии</button>";
+            }
+            $html .= "<h3 class='centered'>Фотки альбома $album_name</h3>";
             $user_images = $this->users_model->getUserImagesByAlbumId($album_id);
             if (count($user_images) == 0) {
                 $html .= "<h5 class='centered'>В данном альбоме фоток пока нет.</h5>";
@@ -36,8 +40,12 @@ class User_images extends CI_Controller {
                         $image_emotion_num_rows = $this->users_model->getUserImageEmotionNumRowsByUserImageIdAndEmotionedUserId($user_image_id, $session_user_id);
                         $total_user_image_emotions = $this->users_model->getTotalByUserImageIdAndUserImageTable($user_image_id, 'user_image_emotions');
                         if ($key == 0) {
-                            $html .= "<div class='item active'>
-                                    <img src='" . base_url() . "uploads/images/user_images/$user_image_file' class='user_images' style='width: 200px; margin: 0 auto;'>
+                            $html .= "<div class='item active'>";
+                                if ($album_user_id == $session_user_id) {
+                                    $html .= "<div data-image='$user_image_file' style='text-align: center; font-size: 1.5em; color: forestgreen;' onclick='changeMainImage(this)'>Сделать главной</div>";
+                                }
+                                $html.=
+                                    "<img src='" . base_url() . "uploads/images/user_images/$user_image_file' class='user_images' style='width: initial; margin: 0 auto;'>
                                     <div class='user_image_emotion image_emotions_field_$user_image_id' data-user_id='$user_id' data-emotioned_user_id='$session_user_id' data-user_image_id='$user_image_id'>";
                             if ($image_emotion_num_rows == 0) {
                                 $html .= "<img class='emotion_image' onclick='insertUserImageEmotion(this)' src='" . base_url() . "uploads/icons/unemotioned.png'>";
@@ -48,8 +56,12 @@ class User_images extends CI_Controller {
                                             </div>
                                         </div>";
                         } else {
-                            $html .= "<div class='item'>
-                                            <img src='" . base_url() . "uploads/images/user_images/$user_image_file' class='user_images' style='width: 200px; margin: 0 auto'>
+                            $html .= "<div class='item'>";
+                                if ($album_user_id == $session_user_id) {
+                                    $html .= "<div data-image='$user_image_file' style='text-align: center; font-size: 1.5em; color: forestgreen;' onclick='changeMainImage(this)'>Сделать главной</div>";
+                                }
+                                $html.=
+                                            "<img src='" . base_url() . "uploads/images/user_images/$user_image_file' class='user_images' style='width: initial; margin: 0 auto'>
                                                 <div class='user_image_emotion image_emotions_field_$user_image_id' data-user_id='$user_id' data-emotioned_user_id='$session_user_id' data-user_image_id='$user_image_id'>";
                             if ($image_emotion_num_rows == 0) {
                                 $html .= "<img class='emotion_image' onclick='insertUserImageEmotion(this)' src='" . base_url() . "uploads/icons/unemotioned.png'>";
@@ -96,6 +108,7 @@ class User_images extends CI_Controller {
             }
 
             $data = array(
+                'current_id' => $album_id,
                 'images' => $html,
                 'album_num_rows' => $album_num_rows,
                 'csrf_hash' => $this->security->get_csrf_hash()
@@ -111,67 +124,78 @@ class User_images extends CI_Controller {
         }
     }
 
+    public function change_main_image() {
+        $id = $_SESSION['user_id'];
+        $user_image = $this->input->post('user_image');
+        $data = array(
+            'main_image' => $user_image
+        );
+        $this->users_model->updateUserById($id, $data);
+
+        $update_json = array(
+            'csrf_hash' => $this->security->get_csrf_hash(),
+            'image_success' => 'Фотка поставлена на главную'
+        );
+        echo json_encode($update_json);
+    }
+
     public function insert_user_image() {
-        $album_id = $this->input->post('album_id');
-        $user_id = $this->input->post('user_id');
-        $count_files = count($_FILES['user_image']['name']);
-        $files = $_FILES;
-        $upload_images = array();
-
-        for ($i = 0; $i < $count_files; $i++) {
-            $_FILES['user_image']['name'] = $files['user_image']['name'][$i];
-            $_FILES['user_image']['type'] = $files['user_image']['type'][$i];
-            $_FILES['user_image']['tmp_name'] = $files['user_image']['tmp_name'][$i];
-            $_FILES['user_image']['error'] = $files['user_image']['error'][$i];
-            $_FILES['user_image']['size'] = $files['user_image']['size'][$i];
-
-            $config['upload_path'] = './uploads/images/user_images';
-            $config['allowed_types'] = 'gif|jpg|png|jpeg|ico|svg';
-            $this->load->library('upload', $config);
-
-            if (!$this->upload->do_upload('user_image')) {
-                $errors = array('error' => $this->upload->display_errors());
-                echo 'не удалось загрузить файлы';
-            } else {
-                $file_name = $this->upload->data()['file_name'];
-                $upload_images[] = $file_name;
-            }
-        }
-        $this->load->library('image_lib');
-
         $user_image_date = date('d.m.Y');
         $user_image_time = date('H:i:s');
 
-        foreach ($upload_images as $upload_image) {
-            $config['image_library'] = 'gd2';
-            $config['source_image'] = "./uploads/images/user_image/$upload_image";
-            $config['create_thumb'] = FALSE;
-            $config['maintain_ratio'] = TRUE;
-            $config['width'] = 100;
-            $config['height'] = 50;
-            $config['new_image'] = "./uploads/images/user_image/thumb/$upload_image";
-            $this->image_lib->clear();
-            $this->image_lib->initialize($config);
-            $this->image_lib->resize();
+        $album_id = $this->input->post('album_id');
+        $user_id = $this->input->post('user_id');
+        $session_user_id = $_SESSION['user_id'];
+        $count_files = count($_FILES['user_image']['name']);
+        $files = $_FILES;
+        $upload_images = array();
+        $album_num_rows = $this->albums_model->getAlbumNumRowsById($album_id);
+        $album_user_id = $this->albums_model->getUserIdByAlbumId($album_id);
 
-            $data_user_images = array(
-                'user_image_file' => $upload_image,
-                'user_image_date' => $user_image_date,
-                'user_image_time' => $user_image_time,
-                'album_id' => $album_id,
-                'user_id' => $user_id
+        if ($user_id != $session_user_id || $album_num_rows == 0 || $album_user_id != $session_user_id) {
+            $insert_json = array(
+                'images_error' => "Не удалось добавить фотографии. Возможно, альбом не существует или Вы пытаетесь это в альбоме другого пользователя",
+                'csrf_hash' => $this->security->get_csrf_hash()
             );
-            $this->users_model->insertUserImage($data_user_images);
-        }
+        } else {
+            if ($_FILES['user_image']['name'][0] != '') {
+                for ($i = 0; $i < $count_files; $i++) {
+                    $_FILES['user_image']['name'] = $files['user_image']['name'][$i];
+                    $_FILES['user_image']['type'] = $files['user_image']['type'][$i];
+                    $_FILES['user_image']['tmp_name'] = $files['user_image']['tmp_name'][$i];
+                    $_FILES['user_image']['error'] = $files['user_image']['error'][$i];
+                    $_FILES['user_image']['size'] = $files['user_image']['size'][$i];
 
-        $user_image_action = 'Назар добавил новые фотки в свой альбом.';
-        $data_user_image_actions = array(
-            'user_image_action' => $user_image_action,
-            'user_image_time_unix' => time(),
-            'action_user_id' => $user_id,
-            'user_image_id' => $user_image_id
-        );
-        $this->users_model->insertUserImageAction($data_user_image_actions);
+                    $config['upload_path'] = './uploads/images/user_images';
+                    $config['allowed_types'] = 'gif|jpg|png|jpeg';
+                    $config['encrypt_name'] = true;
+                    $this->load->library('upload', $config);
+
+                    if ($this->upload->do_upload('user_image')) {
+                        $file_name = $this->upload->data()['file_name'];
+                        $upload_images[] = $file_name;
+                    }
+                }
+                $this->load->library('image_lib');
+
+                foreach ($upload_images as $upload_image) {
+                    $data_user_images = array(
+                        'user_image_file' => $upload_image,
+                        'user_image_date' => $user_image_date,
+                        'user_image_time' => $user_image_time,
+                        'album_id' => $album_id,
+                        'user_id' => $user_id
+                    );
+                    $this->users_model->insertUserImage($data_user_images);
+                    $insert_user_image_id = $this->db->insert_id();
+                }
+            }
+            $insert_json = array(
+                'images_success' => "Фотки добавлены!",
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        }
+        echo json_encode($insert_json);
     }
 
     public function delete_user_image() {

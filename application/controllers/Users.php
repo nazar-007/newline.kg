@@ -90,6 +90,10 @@ class Users extends CI_Controller {
             }
             $data_users = array(
                 'users' => $this->users_model->getUserById($user_id),
+                'user_invite_num_rows' => $this->users_model->getUserInviteNumRowsByUserIdAndInvitedUserId($user_id, $guest_id),
+                'friend_num_rows' => $this->users_model->getFriendNumRowsByUserIdAndFriendId($user_id, $guest_id),
+                'user_friends' => $this->users_model->getFriendsByUserId($user_id),
+                'user_albums' => $this->albums_model->getAlbumsByUserId($user_id),
                 'user_books' => $this->books_model->getBookFansByFanUserId($user_id),
                 'user_events' => $this->events_model->getEventFansByFanUserId($user_id),
                 'user_songs' => $this->songs_model->getSongFansByFanUserId($user_id),
@@ -220,7 +224,9 @@ class Users extends CI_Controller {
                     }
                         $html .= "</div>
                         <div class='col-xs-4 col-sm-4 col-md-4 col-lg-4'>
+                        <a class='link-friend' href='" . base_url() . "one_user/$email'>
                             <img class='img-thumbnail' src='" . base_url() . "uploads/images/user_images/$main_image'>
+                        </a>
                         </div></div>
                    </div>";
                 }
@@ -846,5 +852,103 @@ class Users extends CI_Controller {
         }
         $messages_json = json_encode($messages);
         echo $messages_json;
+    }
+
+    public function restore() {
+        $data = array(
+            'csrf_hash' => $this->security->get_csrf_hash()
+        );
+        $this->load->view('restore', $data);
+    }
+
+    public function check_email() {
+        $email = $this->input->post('email');
+        $num_rows = $this->users_model->getNumRowsByEmail($email);
+
+        if ($num_rows > 0) {
+
+            $first_secret_question = $this->users_model->getFirstSecretQuestionByEmail($email);
+            $second_secret_question = $this->users_model->getSecondSecretQuestionByEmail($email);
+
+            $check_json = array(
+                'email_success' => "Такой емайл существует. Переходим к следующему шагу",
+                'first_secret_question' => $first_secret_question,
+                'second_secret_question' => $second_secret_question,
+                'email' => $email,
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        } else {
+            $check_json = array(
+                'email_error' => "Такого емайла не существует!",
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        }
+        echo json_encode($check_json);
+    }
+
+    public function check_secret_answers() {
+        $email = $this->input->post('email');
+        $first_secret_answer = $this->input->post('first_secret_answer');
+        $second_secret_answer = $this->input->post('second_secret_answer');
+
+        if ($email == '') {
+            $check_json = array(
+                'answers_error' => "Вы пытаетесь восстановить чужой аккаунт. Так нельзя.",
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        } else {
+            $db_first_secret_question = $this->users_model->getFirstSecretAnswerByEmail($email);
+            $db_second_secret_question = $this->users_model->getSecondSecretAnswerByEmail($email);
+
+            if ($first_secret_answer == $db_first_secret_question && $second_secret_answer == $db_second_secret_question) {
+                $check_json = array(
+                    'email' => $email,
+                    'answers_success' => "Переходим к следующему шагу",
+                    'csrf_hash' => $this->security->get_csrf_hash()
+                );
+            } else {
+                $check_json = array(
+                    'answers_error' => "Секретные ответы неправильные!",
+                    'csrf_hash' => $this->security->get_csrf_hash()
+                );
+            }
+        }
+        echo json_encode($check_json);
+
+    }
+
+    public function set_new_password() {
+        $email = $this->input->post('email');
+        $password = $_POST['new_password'];
+
+        if ($email == '') {
+            $check_json = array(
+                'password_error' => "Вы пытаетесь восстановить чужой аккаунт. Так нельзя.",
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        } else {
+            $id = $this->users_model->getUserIdByEmail($email);
+            $num_rows = $this->users_model->getNumRowsByEmail($email);
+            if ($num_rows > 0 && strlen($password) >= 6) {
+                $_SESSION['user_id'] = $id;
+                $_SESSION['user_email'] = $email;
+                $data_users = array(
+                    'password' => md5($password)
+                );
+                $this->users_model->updateUserById($id, $data_users);
+                $check_json = array(
+                    'password_success' => "Ура!",
+                    'csrf_hash' => $this->security->get_csrf_hash()
+                );
+            } else {
+                $check_json = array(
+                    'password_error' => "Пароль слишком мал.",
+                    'csrf_hash' => $this->security->get_csrf_hash()
+                );
+            }
+        }
+
+        echo json_encode($check_json);
+
     }
 }

@@ -222,6 +222,46 @@ class Users_model extends CI_Model {
         }
         return $rating;
     }
+    public function getFirstSecretQuestionByEmail($email) {
+        $this->db->select('id, email, secret_question_1');
+        $this->db->where('email', $email);
+        $query = $this->db->get("users");
+        $users = $query->result();
+        foreach ($users as $user) {
+            $first_secret_question = $user->secret_question_1;
+        }
+        return $first_secret_question;
+    }
+    public function getFirstSecretAnswerByEmail($email) {
+        $this->db->select('id, email, secret_answer_1');
+        $this->db->where('email', $email);
+        $query = $this->db->get("users");
+        $users = $query->result();
+        foreach ($users as $user) {
+            $first_secret_answer = $user->secret_answer_1;
+        }
+        return $first_secret_answer;
+    }
+    public function getSecondSecretQuestionByEmail($email) {
+        $this->db->select('id, email, secret_question_2');
+        $this->db->where('email', $email);
+        $query = $this->db->get("users");
+        $users = $query->result();
+        foreach ($users as $user) {
+            $second_secret_question = $user->secret_question_2;
+        }
+        return $second_secret_question;
+    }
+    public function getSecondSecretAnswerByEmail($email) {
+        $this->db->select('id, email, secret_answer_2');
+        $this->db->where('email', $email);
+        $query = $this->db->get("users");
+        $users = $query->result();
+        foreach ($users as $user) {
+            $second_secret_answer = $user->secret_answer_2;
+        }
+        return $second_secret_answer;
+    }
     public function getTotalByFanUserIdAndFanTable($fan_user_id, $fan_table) {
         $this->db->select('COUNT(*) as total');
         $this->db->group_by('fan_user_id');
@@ -347,6 +387,7 @@ class Users_model extends CI_Model {
     }
     public function getUserImagesByAlbumId($album_id) {
         $this->db->where('album_id', $album_id);
+        $this->db->order_by('user_image_date DESC, user_image_time DESC');
         $query = $this->db->get('user_images');
         return $query->result();
     }
@@ -726,8 +767,9 @@ class Users_model extends CI_Model {
         $this->db->where('user_id', $user_id);
         $this->db->delete('user_notifications');
     }
-    public function deleteUserPageEmotionById($id) {
-        $this->db->where('id', $id);
+    public function deleteUserPageEmotionByUserIdAndEmotionedUserId($user_id, $emotioned_user_id) {
+        $this->db->where('user_id', $user_id);
+        $this->db->where('emotioned_user_id', $emotioned_user_id);
         $this->db->delete('user_page_emotions');
     }
     public function deleteUserPageEmotionsByUserIdOrEmotionedUserId($user_id) {

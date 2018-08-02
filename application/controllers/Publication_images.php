@@ -37,7 +37,7 @@ class Publication_images extends CI_Controller {
                         $total_publication_image_emotions = $this->publications_model->getTotalByPublicationImageIdAndPublicationImageTable($publication_image_id, 'publication_image_emotions');
                         if ($key == 0) {
                             $html .= "<div class='item active'>
-                                                <img src='" . base_url() . "uploads/images/publication_images/$publication_image_file' class='publication_images' style='width: 200px; margin: 0 auto;'>
+                                                <img src='" . base_url() . "uploads/images/publication_images/$publication_image_file' class='publication_images' style='width: initial; margin: 0 auto;'>
                                                 <div class='publication_image_emotion image_emotions_field_$publication_image_id' data-emotioned_user_id='$session_user_id' data-publication_image_id='$publication_image_id'>";
                             if ($image_emotion_num_rows == 0) {
                                 $html .= "<img class='emotion_image' onclick='insertPublicationImageEmotion(this)' src='" . base_url() . "uploads/icons/unemotioned.png'>";
@@ -49,7 +49,7 @@ class Publication_images extends CI_Controller {
                                             </div>";
                         } else {
                             $html .= "<div class='item'>
-                                                <img src='" . base_url() . "uploads/images/publication_images/$publication_image_file' class='publication_images' style='width: 200px; margin: 0 auto'>
+                                                <img src='" . base_url() . "uploads/images/publication_images/$publication_image_file' class='publication_images' style='width: initial; margin: 0 auto'>
                                                 <div class='publication_image_emotion image_emotions_field_$publication_image_id' data-emotioned_user_id='$session_user_id' data-publication_image_id='$publication_image_id'>";
                             if ($image_emotion_num_rows == 0) {
                                 $html .= "<img class='emotion_image' onclick='insertPublicationImageEmotion(this)' src='" . base_url() . "uploads/icons/unemotioned.png'>";

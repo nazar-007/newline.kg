@@ -91,6 +91,24 @@ class Publications_model extends CI_Model {
         $query = $this->db->get();
         return $query->result();
     }
+    public function getPublicationIdByPublicationImageId($publication_image_id) {
+        $this->db->where('id', $publication_image_id);
+        $query = $this->db->get('publication_images');
+        $publication_images = $query->result();
+        foreach ($publication_images as $publication_image) {
+            $publication_id = $publication_image->publication_id;
+        }
+        return $publication_id;
+    }
+    public function getPublishedUserIdByPublicationId($publication_id) {
+        $this->db->where('id', $publication_id);
+        $query = $this->db->get('publications');
+        $publications = $query->result();
+        foreach ($publications as $publication) {
+            $published_user_id = $publication->published_user_id;
+        }
+        return $published_user_id;
+    }
     public function getPublicationImagesByPublicationId($publication_id) {
         $this->db->where('publication_id', $publication_id);
         $query = $this->db->get('publication_images');

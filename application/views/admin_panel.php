@@ -279,6 +279,23 @@
     </div>
 </div>
 
+<div class="modal fade" id="getOneBook" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Просмотр книги</h4>
+            </div>
+            <div id="get_one_book" class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="getOneBookSuggestion" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">

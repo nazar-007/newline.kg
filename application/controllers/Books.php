@@ -64,6 +64,7 @@ class Books extends CI_Controller {
             $data = array(
                 'books' => $html,
                 'friend_ids' => $friend_ids,
+                'total_books' => $this->users_model->getTotalByFanUserIdAndFanTable($session_user_id, "book_fans"),
                 'book_actions' => $this->books_model->getBookActionsByFriendIds($friend_ids),
                 'book_categories' => $this->books_model->getBookCategories(),
                 'my_fan_books' => $this->books_model->getBookFansByFanUserId($session_user_id),

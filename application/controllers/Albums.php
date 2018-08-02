@@ -10,7 +10,7 @@ class Albums extends CI_Controller {
     }
 
     public function Index() {
-        $user_id = 1;
+        $user_id = $_SESSION['user_id'];
         $data = array(
             'albums' => $this->albums_model->getAlbumsByUserId($user_id),
             'csrf_hash' => $this->security->get_csrf_hash()
@@ -69,8 +69,13 @@ class Albums extends CI_Controller {
                 'id' => $id,
                 'csrf_hash' => $this->security->get_csrf_hash()
             );
-            echo json_encode($delete_json);
+        } else {
+            $delete_json = array(
+                'album_error' => "Не удалось удалить альбом",
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
         }
+        echo json_encode($delete_json);
     }
 
     public function update_album() {
@@ -81,7 +86,19 @@ class Albums extends CI_Controller {
         );
         if ($album_name != 'User Album' || $album_name != 'Publication Album') {
             $this->albums_model->updateAlbumById($id, $data_albums);
+            $update_json = array(
+                'id' => $id,
+                'album_name' => $album_name,
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        } else {
+            $update_json = array(
+                'album_error' => 'Не удалось обновить название альбома',
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
         }
+        echo json_encode($update_json);
+
     }
 
 }

@@ -96,9 +96,6 @@
         </div>
         <div class="pos_avatar small-hidden">
             <img onclick="getMyNotifications(this)" data-toggle="modal" data-target="#getMyNotifications" src="<?php echo base_url()?>uploads/icons/notification.png">
-            <a href="<?php echo base_url()?>my_page">
-                <img class="avatar" src="<?php echo base_url()?>uploads/images/user_images/">
-            </a>
         </div>
     </nav>
 </header>

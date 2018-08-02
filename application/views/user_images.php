@@ -9,6 +9,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="shortcut icon" href="<?php echo base_url()?>uploads/icons/logo.png">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/images.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/publications.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/media.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/common.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/animate.css">
@@ -51,10 +52,71 @@
     </div>
 </div>
 
+<div class="modal fade" id="insertUserImage" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Добавление новых фотографий в свой альбом</h4>
+            </div>
+            <div class="modal-body">
+                <form onsubmit="insertUserImage(this)" action="javascript:void(0)" enctype="multipart/form-data">
+                    <input type="hidden" class="csrf" name="csrf_test_name" value="<?php echo $csrf_hash;?>">
+                    <input required type="file" class="form-control" multiple name="user_image[]">
+                    <input type="hidden" name="album_id" value="<?php echo $current_id?>">
+                    <input type="hidden" name="user_id" value="<?php echo $_SESSION['user_id']?>">
+                    <button class="btn btn-primary center-block" type="submit">Добавить фотографии</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?php $this->load->view("footer");?>
 
 
 <script>
+
+    function changeMainImage(context) {
+        var user_image = context.getAttribute('data-image');
+        $.ajax({
+            method: "POST",
+            url: "<?php echo base_url()?>user_images/change_main_image",
+            data: {user_image: user_image, csrf_test_name: $('.csrf').val()},
+            dataType: "JSON"
+        }).done(function (message) {
+            $(".csrf").val(message.csrf_hash);
+            if (message.image_success) {
+                alert(message.image_success);
+                location.reload(true);
+            }
+        })
+    }
+
+    function insertUserImage(context) {
+        var form = $(context)[0];
+        var all_inputs = new FormData(form);
+        $.ajax({
+            method: "POST",
+            url: "<?php echo base_url()?>user_images/insert_user_image",
+            data: all_inputs,
+            dataType: "JSON",
+            contentType: false,
+            processData: false
+        }).done(function (message) {
+            $(".csrf").val(message.csrf_hash);
+            if (message.images_error) {
+                alert(message.images_error);
+            }
+            if (message.images_success) {
+                alert(message.images_success);
+                location.reload(true);
+            }
+        })
+    }
 
     function getUserImageEmotions(context) {
         var user_image_id = context.parentElement.getAttribute('data-user_image_id');

@@ -33,6 +33,9 @@
                         <label>Пароль:</label>
                         <input type="password" class="form-control" placeholder="Введите пароль" name="password">
                     </div>
+                    <div class="form-group">
+                        <a href="<?php echo base_url()?>restore">Забыли пароль?</a>
+                    </div>
                     <button type="submit" class="btn btn-primary center-block">Войти</button>
                 </form>
             </div>

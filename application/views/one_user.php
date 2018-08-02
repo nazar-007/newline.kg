@@ -8,6 +8,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="shortcut icon" href="<?php echo base_url()?>uploads/icons/logo.png">
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/albums_images.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/publications.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/books.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/events.css">
@@ -30,13 +31,14 @@
             <div class="row" id="user_page">
                 <?php
                 if ($user_num_rows != 1) {
-                    die('Страница удалена или ещё не создана!');
+                    die("<h3 class='centered'>Страница удалена или ещё не создана!</h3>");
                 }
+                $session_user_id = $_SESSION['user_id'];
                 ?>
 
                 <?php foreach ($users as $user):?>
                 <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 about">
-                    <img class="img-thumbnail" src="<?php echo base_url()?>uploads/images/user_images/<?php echo $user->main_image?>">
+                    <img data-toggle="modal" data-target="#getUserAlbums" class="img-thumbnail" src="<?php echo base_url()?>uploads/images/user_images/<?php echo $user->main_image?>">
                 </div>
                 <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 about">
                     <h2 class="centered"><?php echo $user->nickname . ' ' . $user->surname?></h2>
@@ -70,7 +72,7 @@
                     <?php endforeach;?>
                 </div>
                 <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 centered">
-                    <span class="user_page_emotions" data-user_id="<?php echo $user_id;?>" data-emotioned_user_id="<?php echo $_SESSION['user_id']?>">
+                    <span style="display: inline-block" class="user_page_emotions" data-user_id="<?php echo $user_id;?>" data-emotioned_user_id="<?php echo $_SESSION['user_id']?>">
                     <?php if ($user_page_emotion_num_rows > 0) {
                         echo "<img onclick='deleteUserPageEmotion(this)' src='" . base_url() . "uploads/icons/emotioned.png'>";
                     } else {
@@ -79,18 +81,53 @@
                     ?>
                         <span data-toggle="modal" data-target="#getUserPageEmotions" onclick="getUserPageEmotions(this)" class="badge"><?php echo $total_user_page_emotions?></span>
                     </span>
-                    <button class="btn btn-default">
-                        <a href='<?php echo base_url()?>update'>
-                            <img src="<?php echo base_url()?>uploads/icons/update.png">
-                            <?php echo $user_page_emotion_num_rows?>
-                        </a>
-                    </button>
+                    <div style='display: inline-block' class='dropdown common-mark centered'>
+                        <button class='btn btn-default dropdown-toggle' type='button' data-toggle='dropdown'>
+                            <img src='<?php echo base_url()?>uploads/icons/friends.png'>
+                            <span class='caret'></span></button>
+                        <ul id="dropdown-invite" class='dropdown-menu' data-user_id='<?php echo $user_id?>' data-invited_user_id='<?php echo $session_user_id;?>'>
+                    <?php if ($user_invite_num_rows == 0 && $friend_num_rows == 0) {
+                        echo "
+                            <li class='action-invite'>
+                                <span>
+                                    <span onclick='insertUserInvite(this)'>Кинуть дружбу</span>
+                                </span>
+                            </li>";
+                    } else if ($user_invite_num_rows > 0 && $friend_num_rows == 0) {
+                        echo "<li class='info-invite'>
+                                <span>
+                                    <span>Предложение отправлено
+                                        <img src='" . base_url() . "uploads/icons/checked.png'>
+                                    </span>
+                                </span>
+                            </li>
+                            <li class='action-invite'>
+                                <span>
+                                    <span onclick='deleteUserInvite(this)'>Отменить предложение</span>    
+                                </span>
+                            </li>";
+                    } else {
+                        echo "<li class='info-invite'>
+                                <span>
+                                    <span>Вы друзья
+                                        <img src='" . base_url() . "uploads/icons/checked.png'>
+                                    </span>
+                                </span>
+                            </li>
+                            <li class='action-invite'>
+                                <span>
+                                    <span onclick='deleteFriend(this)'>Удалить из друзей</span>
+                                </span>
+                            </li>";
+                    }
+                    ?>
+                        </ul>
+                    </div>
+
                     <img id="showMobileInterests" class="middle-hidden big-hidden huge-hidden" src="/uploads/icons/world.png">
                     <div id="mobileInterests" class="small-hidden interests">
                         <div class="one-interest">
-                            <button class="btn btn-primary btn-interests">
-                                <a class="white" href="<?php echo base_url()?>friends">Друзья <?php if ($total_friends > 0) { echo '(' .  $total_friends . ')';}?></a>
-                            </button>
+                            <button data-toggle="modal" data-target="#getUserFriends" class="btn btn-primary btn-interests">Друзья <?php if ($total_friends > 0) { echo '(' .  $total_friends . ')';}?></button>
                         </div>
                         <div class="one-interest">
                             <button data-toggle="modal" data-target="#getUserBooks" class="btn btn-primary btn-interests">Книги <?php if ($total_books > 0) { echo '(' .  $total_books . ')';}?></button>
@@ -126,6 +163,79 @@
                 <div id="publications" class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
 
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="getUserAlbums" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Альбомы пользователя</h4>
+            </div>
+            <div id="get_user_albums" class="modal-body row">
+                <h5 class="centered">Выберите альбом пользователя, чтобы просмотреть фотографии</h5>
+                <?php
+
+                foreach ($user_albums as $user_album) {
+                    echo "<div class='col-xs-6 col-sm-6 col-md-3 col-lg-3'>
+                                <a href='" . base_url() . "user_images/$user_album->id'>
+                                    <img src='" . base_url() . "uploads/icons/my_album.png'>
+                                    <div class='album_name'>
+                                        $user_album->album_name    
+                                    </div>
+                                </a>";
+                    echo "</div>";
+                }
+                ?>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="getUserFriends" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Друзья пользователя</h4>
+            </div>
+            <div id="get_user_friends" class="modal-body row">
+                <?php
+
+                if (count($user_friends) == 0) {
+                    echo "<h4 class='centered'>Пока у пользователя нет ни одного друга.</h4>";
+                } else {
+                    foreach ($user_friends as $user_friend) {
+                        $email = $user_friend->email;
+                        $nickname = $user_friend->nickname;
+                        $surname = $user_friend->surname;
+                        $main_image = $user_friend->main_image;
+                        $last_visit = $user_friend->last_visit;
+                        echo "<div class='col-xs-6 col-sm-4 col-lg-3 emotion_user'>
+                        <a href='" . base_url() . "one_user/$email'>
+                            <div class='emotion_user_image'>
+                                <img src='" . base_url() . "uploads/images/user_images/$main_image' class='action_avatar'>
+                            </div>
+                            <div class='emotion_user_name'>
+                                $nickname $surname";
+                                if ($last_visit == "Online") {
+                                    echo "<img src='" . base_url() . "uploads/icons/lamp.png'>";
+                                }
+                            echo "</div>
+                        </a>
+                    </div>";
+                    }
+                }
+                ?>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -458,25 +568,110 @@
 
 <script>
 
+    $(document).on("click", ".dropdown-menu li span", function (e) { e.stopImmediatePropagation() });
+
+    function insertUserInvite(context) {
+        var user_id = context.parentElement.parentElement.parentElement.getAttribute('data-user_id');
+        var invited_user_id = context.parentElement.parentElement.parentElement.getAttribute('data-invited_user_id');
+        $.ajax({
+            method: "POST",
+            url: "<?php echo base_url()?>user_invites/insert_user_invite",
+            data: {user_id: user_id, invited_user_id: invited_user_id, csrf_test_name: $(".csrf").val()},
+            dataType: "JSON"
+        }).done(function (message) {
+            $(".csrf").val(message.csrf_hash);
+            $("#dropdown-invite").html("<li class='info-invite'>" +
+                "<span> " +
+                "<span>Предложение отправлено " +
+                    "<img src='<?php echo base_url()?>uploads/icons/checked.png'> " +
+                "</span> " +
+            "</span> " +
+            "</li> " +
+                "<li class='action-invite'> " +
+                "<span> " +
+                    "<span onclick='deleteUserInvite(this)'>Отменить предложение</span> " +
+                "</span> " +
+                "</li>");
+        })
+    }
+
+    function deleteUserInvite(context) {
+        var user_id = context.parentElement.parentElement.parentElement.getAttribute('data-user_id');
+        var invited_user_id = context.parentElement.parentElement.parentElement.getAttribute('data-invited_user_id');
+        $.ajax({
+            method: "POST",
+            url: "<?php echo base_url()?>user_invites/delete_user_invite_by_invited_user_id",
+            data: {user_id: user_id, invited_user_id: invited_user_id, csrf_test_name: $(".csrf").val()},
+            dataType: "JSON"
+        }).done(function (message) {
+            $(".csrf").val(message.csrf_hash);
+            $("#dropdown-invite").html("<li class='action-invite'> " +
+                "<span> " +
+                "<span onclick='insertUserInvite(this)'>Кинуть дружбу</span> " +
+                "</span> " +
+                "</li>");
+        })
+    }
+
+    function deleteFriend(context) {
+        var user_id = context.parentElement.parentElement.parentElement.getAttribute('data-user_id');
+        var friend_id = context.parentElement.parentElement.parentElement.getAttribute('data-invited_user_id');
+        $.ajax({
+            method: "POST",
+            url: "<?php echo base_url()?>friends/delete_friend",
+            data: {user_id: user_id, friend_id: friend_id, csrf_test_name: $(".csrf").val()},
+            dataType: "JSON"
+        }).done(function (message) {
+            $(".csrf").val(message.csrf_hash);
+            $("#dropdown-invite").html("<li class='action-invite'> " +
+                "<span> " +
+                "<span onclick='insertUserInvite(this)'>Кинуть дружбу</span> " +
+                "</span> " +
+                "</li>");
+        })
+    }
+
     function insertUserPageEmotion(context) {
         var user_id = context.parentElement.getAttribute('data-user_id');
         var emotioned_user_id = context.parentElement.getAttribute('data-emotioned_user_id');
-        console.log(emotioned_user_id);
-        con
-//        $.ajax({
-//            method: "POST",
-//            url: "<?php //echo base_url()?>//publication_emotions/insert_publication_emotion",
-//            data: {published_user_id: published_user_id, emotioned_user_id: emotioned_user_id, publication_id: publication_id, csrf_test_name: $(".csrf").val()},
-//            dataType: "JSON"
-//        }).done(function (message) {
-//            $(".csrf").val(message.csrf_hash);
-//            if (message.emotion_num_rows == 0) {
-//                $(".emotions_field_" + publication_id).html("<img onclick='deletePublicationEmotion(this)'" +
-//                    " src='<?php //echo base_url()?>//uploads/icons/emotioned.png'><span class='badge' onclick='getPublicationEmotions(this)' data-toggle='modal' data-target='#getPublicationEmotions'>" + message.total_emotions + "</span>");
-//            } else {
-//                alert(message.emotion_error);
-//            }
-//        })
+        $.ajax({
+            method: "POST",
+            url: "<?php echo base_url()?>user_page_emotions/insert_user_page_emotion",
+            data: {user_id: user_id, emotioned_user_id: emotioned_user_id, csrf_test_name: $(".csrf").val()},
+            dataType: "JSON"
+        }).done(function (message) {
+            $(".csrf").val(message.csrf_hash);
+            if (message.emotion_num_rows == 0) {
+                $(".user_page_emotions").html("<img onclick='deleteUserPageEmotion(this)'" +
+                    " src='<?php echo base_url()?>uploads/icons/emotioned.png'><span class='badge' onclick='getUserPageEmotions(this)' data-toggle='modal' data-target='#getUserPageEmotions'>" + message.total_emotions + "</span>");
+            } else {
+                alert(message.emotion_error);
+            }
+        })
+    }
+
+    function deleteUserPageEmotion(context) {
+        var user_id = context.parentElement.getAttribute('data-user_id');
+        var emotioned_user_id = context.parentElement.getAttribute('data-emotioned_user_id');
+        $.ajax({
+            method: "POST",
+            url: "<?php echo base_url()?>user_page_emotions/delete_user_page_emotion",
+            data: {user_id: user_id, emotioned_user_id: emotioned_user_id, csrf_test_name: $(".csrf").val()},
+            dataType: "JSON"
+        }).done(function (message) {
+            $(".csrf").val(message.csrf_hash);
+            if (message.emotion_num_rows > 0) {
+                if (message.total_emotions == null) {
+                    $(".user_page_emotions").html("<img onclick='insertUserPageEmotion(this)'" +
+                        " src='<?php echo base_url()?>uploads/icons/unemotioned.png'>");
+                } else {
+                    $(".user_page_emotions").html("<img onclick='insertUserPageEmotion(this)'" +
+                        " src='<?php echo base_url()?>uploads/icons/unemotioned.png'><span class='badge' onclick='getPublicationEmotions(this)' data-toggle='modal' data-target='#getUserPageEmotions'>" + message.total_emotions + "</span>");
+                }
+            } else {
+                alert(message.emotion_error);
+            }
+        })
     }
 
     function insertGuestMessage(context) {
@@ -752,7 +947,7 @@
 
 
     function getUserPageEmotions(context) {
-        var user_id = context.getAttribute('data-user_id');
+        var user_id = context.parentElement.getAttribute('data-user_id');
         $.ajax({
             method: "POST",
             url: "<?php echo base_url()?>user_page_emotions/index",
@@ -763,6 +958,20 @@
             $("#one_user_page_emotions").html(message.one_user_page_emotions);
         })
     }
+
+    function playSong(context) {
+        context.parentElement.parentElement.nextElementSibling.nextElementSibling.play();
+    }
+    function pauseSong(context) {
+        context.parentElement.parentElement.nextElementSibling.nextElementSibling.pause();
+    }
+    var player = $('.player');
+    player.on('play', function() {
+        player.not(this).each(function() {
+            this.pause();
+        })
+    });
+
 
     function loadBlock(context) {
         var id = context.getAttribute('data-id');
@@ -885,6 +1094,12 @@
         $('#mobileInfo').slideToggle(500);
     });
 
+    $("#getUserFriends").on('show.bs.modal', function () {
+        history.pushState(null, null, location.href);
+        window.onpopstate = function() {
+            $("#getUserFriends").modal('hide');
+        };
+    });
     $("#getUserBooks").on('show.bs.modal', function () {
         history.pushState(null, null, location.href);
         window.onpopstate = function() {

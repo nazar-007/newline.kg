@@ -75,6 +75,7 @@ class Songs extends CI_Controller {
             $data = array(
                 'songs' => $html,
                 'friend_ids' => $friend_ids,
+                'total_songs' => $this->users_model->getTotalByFanUserIdAndFanTable($session_user_id, "song_fans"),
                 'song_actions' => $this->songs_model->getSongActionsByFriendIds($friend_ids),
                 'song_categories' => $this->songs_model->getSongCategories(),
                 'my_fan_songs' => $this->songs_model->getSongFansByFanUserId($session_user_id),

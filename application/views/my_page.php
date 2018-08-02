@@ -26,7 +26,9 @@
             <div class="row" id="my_page">
                 <?php foreach ($users as $user):?>
                 <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 about">
-                    <img class="img-thumbnail" src="<?php echo base_url()?>uploads/images/user_images/<?php echo $user->main_image?>">
+                    <a href="<?php echo base_url()?>albums">
+                        <img class="img-thumbnail" src="<?php echo base_url()?>uploads/images/user_images/<?php echo $user->main_image?>">
+                    </a>
                 </div>
                 <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 about">
                     <h2 class="centered"><?php echo $user->nickname . ' ' . $user->surname?></h2>

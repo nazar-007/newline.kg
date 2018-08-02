@@ -191,7 +191,7 @@
         var all_inputs = new FormData(form);
         $.ajax({
             method: "POST",
-            url: "<?php echo base_url()?>" + "albums/delete_albim",
+            url: "<?php echo base_url()?>" + "albums/delete_album",
             data: all_inputs,
             dataType: "JSON",
             contentType: false,
@@ -226,7 +226,7 @@
         }).done(function(message) {
             $(".csrf").val(message.csrf_hash);
             $(".album_name").val('');
-            if (message.album_name == 'My Folder') {
+            if (message.album_name == 'My Album') {
                 alert(message.album_error);
             } else {
                 $("#updateAlbum").trigger('click');

@@ -87,9 +87,12 @@ class Friends extends CI_Controller {
                        </div>
                         </div>
                         <div class='col-xs-4 col-sm-4 col-md-4 col-lg-4'>
-                            <img class='img-thumbnail' src='" . base_url() . "uploads/images/user_images/$main_image'>
-                        </div></div>
-                   </div>";
+                            <a class='link-friend' href='" . base_url() . "one_user/$email'>
+                                <img class='img-thumbnail' src='" . base_url() . "uploads/images/user_images/$main_image'>
+                            </a>
+                        </div>
+                    </div>
+               </div>";
             }
         }
 
@@ -178,9 +181,12 @@ class Friends extends CI_Controller {
                        </div>
                         </div>
                         <div class='col-xs-4 col-sm-4 col-md-4 col-lg-4'>
-                            <img class='img-thumbnail' src='" . base_url() . "uploads/images/user_images/$main_image'>
-                        </div></div>
-                   </div>";
+                            <a class='link-friend' href='" . base_url() . "one_user/$email'>
+                                <img class='img-thumbnail' src='" . base_url() . "uploads/images/user_images/$main_image'>
+                            </a>
+                        </div>
+                    </div>
+               </div>";
             }
         }
         $data = array(
@@ -269,12 +275,15 @@ class Friends extends CI_Controller {
                        </div>
                         </div>
                         <div class='col-xs-4 col-sm-4 col-md-4 col-lg-4'>
-                            <img class='img-thumbnail' src='" . base_url() . "uploads/images/user_images/$main_image'>
-                                                      <div>
-                          Предложение отправлено<br> $invite_date<br>в $invite_time 
+                            <a class='link-friend' href='" . base_url() . "one_user/$email'>
+                                <img class='img-thumbnail' src='" . base_url() . "uploads/images/user_images/$main_image'>
+                            </a>
+                            <div>
+                              Предложение отправлено<br> $invite_date<br>в $invite_time 
                           </div>
-                        </div></div>
-                   </div>";
+                        </div>
+                    </div>
+               </div>";
             }
         }
         $data = array(
@@ -360,9 +369,12 @@ class Friends extends CI_Controller {
                             </div>
                         </div>
                         <div class='col-xs-4 col-sm-4 col-md-4 col-lg-4'>
-                            <img class='img-thumbnail' src='" . base_url() . "uploads/images/user_images/$main_image'>
-                        </div></div>
-                   </div>";
+                            <a class='link-friend' href='" . base_url() . "one_user/$email'>
+                                <img class='img-thumbnail' src='" . base_url() . "uploads/images/user_images/$main_image'>
+                            </a>
+                        </div>
+                    </div>
+                </div>";
             }
         }
 
@@ -435,7 +447,9 @@ class Friends extends CI_Controller {
                             </div>
                         </div>
                         <div class='col-xs-4 col-sm-4 col-md-4 col-lg-4'>
-                            <img class='img-thumbnail' src='" . base_url() . "uploads/images/user_images/$main_image'>
+                            <a class='link-friend' href='" . base_url() . "one_user/$email'>
+                                <img class='img-thumbnail' src='" . base_url() . "uploads/images/user_images/$main_image'>
+                            </a>
                         </div></div>
                    </div>";
             }
@@ -509,9 +523,12 @@ class Friends extends CI_Controller {
                             </div>
                         </div>
                         <div class='col-xs-4 col-sm-4 col-md-4 col-lg-4'>
-                            <img class='img-thumbnail' src='" . base_url() . "uploads/images/user_images/$main_image'>
-                        </div></div>
-                   </div>";
+                            <a class='link-friend' href='" . base_url() . "one_user/$email'>
+                                <img class='img-thumbnail' src='" . base_url() . "uploads/images/user_images/$main_image'>
+                            </a>
+                        </div>
+                    </div>
+                </div>";
             }
         }
 
@@ -583,9 +600,12 @@ class Friends extends CI_Controller {
                             </div>
                         </div>
                         <div class='col-xs-4 col-sm-4 col-md-4 col-lg-4'>
-                            <img class='img-thumbnail' src='" . base_url() . "uploads/images/user_images/$main_image'>
-                        </div></div>
-                   </div>";
+                            <a class='link-friend' href='" . base_url() . "one_user/$email'>
+                                <img class='img-thumbnail' src='" . base_url() . "uploads/images/user_images/$main_image'>
+                            </a>
+                        </div>
+                    </div>
+                </div>";
             }
         }
 
@@ -661,7 +681,7 @@ class Friends extends CI_Controller {
                 'notification_viewed' => 'Не просмотрено',
                 'link_id' => 1,
                 'link_table' => 'friends',
-                'user_id' => $user_id
+                'user_id' => $friend_id
             );
             $this->users_model->insertUserNotification($data_user_notifications);
             $insert_json = array(
@@ -680,7 +700,13 @@ class Friends extends CI_Controller {
     public function delete_friend() {
         $user_id = $this->input->post('user_id');
         $friend_id = $this->input->post('friend_id');
-        $this->users_model->deleteFriends($user_id, $friend_id);
-        $this->users_model->deleteFriends($friend_id, $user_id);
+
+        $this->users_model->deleteFriendByUserIdAndFriendId($user_id, $friend_id);
+        $this->users_model->deleteFriendByUserIdAndFriendId($friend_id, $user_id);
+
+        $json = array(
+            'csrf_hash' => $this->security->get_csrf_hash()
+        );
+        echo json_encode($json);
     }
 }

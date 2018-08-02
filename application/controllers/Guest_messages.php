@@ -22,7 +22,7 @@ class Guest_messages extends CI_Controller {
                     <textarea required id='message_text' class='form-control comment-input' placeholder='Добавить запись в гостевую книгу...' name='message_text'></textarea>
                     <input class='user_id' type='hidden' name='user_id' value='$user_id'>
                     <input class='guest_id' type='hidden' name='guest_id' value='$guest_id'>
-                    <button class='btn btn-success center-block' type='submit'>Комментировать</button>
+                    <button class='btn btn-success center-block' type='submit'>Добавить запись</button>
                   </form>";
         }
 
