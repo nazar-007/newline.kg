@@ -5,86 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ce46e8a7-f822-48f3-ae00-3e1c2dffd3bc" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/book_files/Atlant_raspravil_plechi1.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/book_files/Zolushka.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/admin_images/thumb/default.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/book_images/Zolushka.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/publication_images/1.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/publication_images/10.PNG" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/publication_images/11.PNG" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/publication_images/12.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/publication_images/3.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/publication_images/36942d4753b09c449eaf88b057468338.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/publication_images/4.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/publication_images/5.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/publication_images/6.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/publication_images/6bffb8714d6c8ab8f97757ae8ebc7aae.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/publication_images/8.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/publication_images/9.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/publication_images/Hedgehog.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/publication_images/ac9ab9b28b4e957544f7f97ce6fb7465.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/publication_images/de807654c095305d2426755daac41152.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/publication_images/efd67d42b77e2448c4f7ac8170413fb7.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/publication_images/folder.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/publication_images/happy.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/publication_images/hedgehog.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/publication_images/hedgehog.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/publication_images/in-love.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/publication_images/index.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/publication_images/index2.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/publication_images/internet.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/publication_images/logo.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/publication_images/logo2.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/user_images/066b22e3d7b1c0a3aa39a86e4e88900a.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/user_images/476886ce5f456c1d8aa3dbf5d37c3aa4.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/user_images/a59b4d4a153ca436ab90a489035ddfee.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/user_images/ava.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/user_images/b4721f6273d3ba4f2fffbd197e3998ed.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/user_images/batman.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/user_images/cat.jpeg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/user_images/d1e4dbd5240a4f1d0d1d5e9574252b4e.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/user_images/dc5612bcb176c3b59f27738181a8a374.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/user_images/f0334143780c7c4de2dc3aab8655150d.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/user_images/fe4448dccb57d8ea534b54dc226b99c0.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/user_images/medal.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/user_images/smile.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/user_images/thumb/default.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/images/user_images/wolf.jpeg" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Admins.php" afterPath="$PROJECT_DIR$/application/controllers/Admins.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Albums.php" afterPath="$PROJECT_DIR$/application/controllers/Albums.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Friends.php" afterPath="$PROJECT_DIR$/application/controllers/Friends.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Guests.php" afterPath="$PROJECT_DIR$/application/controllers/Guests.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Publication_complaints.php" afterPath="$PROJECT_DIR$/application/controllers/Publication_complaints.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Publication_shares.php" afterPath="$PROJECT_DIR$/application/controllers/Publication_shares.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Publications.php" afterPath="$PROJECT_DIR$/application/controllers/Publications.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/User_images.php" afterPath="$PROJECT_DIR$/application/controllers/User_images.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/User_invites.php" afterPath="$PROJECT_DIR$/application/controllers/User_invites.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/controllers/Users.php" afterPath="$PROJECT_DIR$/application/controllers/Users.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/models/Publications_model.php" afterPath="$PROJECT_DIR$/application/models/Publications_model.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/models/Songs_model.php" afterPath="$PROJECT_DIR$/application/models/Songs_model.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/models/Users_model.php" afterPath="$PROJECT_DIR$/application/models/Users_model.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/views/admin_panel.php" afterPath="$PROJECT_DIR$/application/views/admin_panel.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/views/albums.php" afterPath="$PROJECT_DIR$/application/views/albums.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/views/books.php" afterPath="$PROJECT_DIR$/application/views/books.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/views/events.php" afterPath="$PROJECT_DIR$/application/views/events.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/views/footer.php" afterPath="$PROJECT_DIR$/application/views/footer.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/views/friends.php" afterPath="$PROJECT_DIR$/application/views/friends.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/views/header.php" afterPath="$PROJECT_DIR$/application/views/header.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/views/my_page.php" afterPath="$PROJECT_DIR$/application/views/my_page.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/views/one_user.php" afterPath="$PROJECT_DIR$/application/views/one_user.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/views/publications.php" afterPath="$PROJECT_DIR$/application/views/publications.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/views/songs.php" afterPath="$PROJECT_DIR$/application/views/songs.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/views/user_images.php" afterPath="$PROJECT_DIR$/application/views/user_images.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/css/albums_images.css" afterPath="$PROJECT_DIR$/css/albums_images.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/css/books.css" afterPath="$PROJECT_DIR$/css/books.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/views/sidebar.php" afterPath="$PROJECT_DIR$/application/views/sidebar.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/css/common.css" afterPath="$PROJECT_DIR$/css/common.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/css/events.css" afterPath="$PROJECT_DIR$/css/events.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/css/guests.css" afterPath="$PROJECT_DIR$/css/guests.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/css/images.css" afterPath="$PROJECT_DIR$/css/images.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/css/publications.css" afterPath="$PROJECT_DIR$/css/publications.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/css/songs.css" afterPath="$PROJECT_DIR$/css/songs.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/css/users.css" afterPath="$PROJECT_DIR$/css/users.css" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -311,11 +234,31 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="friends.php" pinned="false" current-in-tab="true">
+      <file leaf-file-name="friends.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/application/views/friends.php">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="249">
               <caret line="208" column="60" lean-forward="false" selection-start-line="208" selection-start-column="60" selection-end-line="208" selection-end-column="60" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="header.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/application/views/header.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="198">
+              <caret line="11" column="20" lean-forward="true" selection-start-line="11" selection-start-column="20" selection-end-line="11" selection-end-column="20" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="sidebar.php" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/application/views/sidebar.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="432">
+              <caret line="69" column="0" lean-forward="false" selection-start-line="69" selection-start-column="0" selection-end-line="69" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -364,7 +307,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/application/views/one_song.php" />
         <option value="$PROJECT_DIR$/application/models/Albums_model.php" />
         <option value="$PROJECT_DIR$/application/views/one_publication.php" />
         <option value="$PROJECT_DIR$/application/controllers/User_page_emotions.php" />
@@ -411,10 +353,11 @@
         <option value="$PROJECT_DIR$/application/views/footer.php" />
         <option value="$PROJECT_DIR$/application/controllers/Users.php" />
         <option value="$PROJECT_DIR$/css/users.css" />
-        <option value="$PROJECT_DIR$/application/views/header.php" />
-        <option value="$PROJECT_DIR$/css/common.css" />
         <option value="$PROJECT_DIR$/application/views/my_page.php" />
         <option value="$PROJECT_DIR$/application/views/friends.php" />
+        <option value="$PROJECT_DIR$/application/views/header.php" />
+        <option value="$PROJECT_DIR$/css/common.css" />
+        <option value="$PROJECT_DIR$/application/views/sidebar.php" />
       </list>
     </option>
   </component>
@@ -714,12 +657,12 @@
       <workItem from="1533616042404" duration="3522000" />
       <workItem from="1533648759153" duration="1194000" />
       <workItem from="1533661865486" duration="6968000" />
-      <workItem from="1533708026476" duration="10187000" />
+      <workItem from="1533708026476" duration="11052000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1308082000" />
+    <option name="totallyTimeSpent" value="1308947000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1366" height="741" extended-state="0" />
@@ -731,7 +674,7 @@
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.493266" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.49241146" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -776,13 +719,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/application/controllers/Publication_shares.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="86" column="198" lean-forward="false" selection-start-line="86" selection-start-column="198" selection-end-line="86" selection-end-column="198" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/css/publications.css">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="249">
@@ -1346,22 +1282,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/application/views/header.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="8" column="42" lean-forward="false" selection-start-line="8" selection-start-column="42" selection-end-line="8" selection-end-column="42" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/css/common.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="735">
-          <caret line="171" column="10" lean-forward="false" selection-start-line="171" selection-start-column="10" selection-end-line="171" selection-end-column="10" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/application/controllers/User_page_emotions.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-702">
@@ -1586,6 +1506,30 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="249">
           <caret line="208" column="60" lean-forward="false" selection-start-line="208" selection-start-column="60" selection-end-line="208" selection-end-column="60" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/css/common.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="186">
+          <caret line="167" column="0" lean-forward="false" selection-start-line="167" selection-start-column="0" selection-end-line="167" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/views/header.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="11" column="20" lean-forward="true" selection-start-line="11" selection-start-column="20" selection-end-line="11" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/views/sidebar.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="432">
+          <caret line="69" column="0" lean-forward="false" selection-start-line="69" selection-start-column="0" selection-end-line="69" selection-end-column="0" />
           <folding />
         </state>
       </provider>

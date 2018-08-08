@@ -66,6 +66,12 @@
         </a>
     </li>
     <li>
+        <a href="<?php echo base_url()?>feedback_messages">
+            <img src="<?php echo base_url()?>uploads/icons/message.png">
+            Письмо разработчикам
+        </a>
+    </li>
+    <li>
         <a href="<?php echo base_url()?>users/logout">
             <img src="<?php echo base_url()?>uploads/icons/exit.png">
             Выйти
