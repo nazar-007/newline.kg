@@ -80,11 +80,11 @@ class Publication_shares extends CI_Controller {
                     foreach ($publication_images as $key => $publication_image) {
                         if ($key == 0) {
                             $html .= "<div class='item active'>
-                                            <img src='" . base_url() . "uploads/images/publication_images/$publication_image->publication_image_file' class='publication_images' style='width: 200px; margin: 0 auto;'>
+                                            <img src='" . base_url() . "uploads/images/publication_images/$publication_image->publication_image_file' class='publication_images' style='width: initial; margin: 0 auto;'>
                                         </div>";
                         } else {
                             $html .= "<div class='item'>
-                                            <img src='" . base_url() . "uploads/images/publication_images/$publication_image->publication_image_file' class='publication_images' style='width: 200px; margin: 0 auto'>
+                                            <img src='" . base_url() . "uploads/images/publication_images/$publication_image->publication_image_file' class='publication_images' style='width: initial; margin: 0 auto'>
                                         </div>";
                         }
                     }

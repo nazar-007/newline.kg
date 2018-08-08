@@ -16,10 +16,6 @@
 .event-date {
     border: 3px dashed rebeccapurple;
 }
-.emotion_user, .share_user {
-    height: 150px;
-    cursor: pointer;
-}
 .emotion_avatar, .share_avatar {
     width: 100px;
     border-radius: 50%;
@@ -96,7 +92,7 @@
     font-size: 1em;
 }
 .emotion_user, .fan_user {
-    height: 150px;
+    height: 170px;
     cursor: pointer;
 }
 .badge {

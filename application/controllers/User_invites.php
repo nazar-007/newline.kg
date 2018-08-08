@@ -15,18 +15,29 @@ class User_invites extends CI_Controller {
         $user_id = $this->input->post('user_id');
         $invited_user_id = $this->input->post('invited_user_id');
 
-        $data_user_invites = array(
-            'invite_date' => $invite_date,
-            'invite_time' => $invite_time,
-            'user_id' => $user_id,
-            'invited_user_id' => $invited_user_id
-        );
-        $this->users_model->insertUserInvite($data_user_invites);
+        $invite_num_rows = $this->users_model->getUserInviteNumRowsByUserIdAndInvitedUserId($user_id, $invited_user_id);
+        $friend_num_rows = $this->users_model->getFriendNumRowsByUserIdAndFriendId($user_id, $invited_user_id);
 
-        $json = array(
-            'csrf_hash' => $this->security->get_csrf_hash()
-        );
-        echo json_encode($json);
+        if ($invite_num_rows > 0 || $user_id == $invited_user_id || $friend_num_rows > 0) {
+            $insert_json = array(
+                'invite_error' => "Не удалось отправить дружбу",
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        } else {
+            $data_user_invites = array(
+                'invite_date' => $invite_date,
+                'invite_time' => $invite_time,
+                'user_id' => $user_id,
+                'invited_user_id' => $invited_user_id
+            );
+            $this->users_model->insertUserInvite($data_user_invites);
+
+            $insert_json = array(
+                'invite_success' => "Предложение отправлено",
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        }
+        echo json_encode($insert_json);
     }
 
     public function delete_user_invite_by_user_id() {
@@ -43,6 +54,7 @@ class User_invites extends CI_Controller {
 
         if ($user_invite_num_rows > 0) {
             $this->users_model->deleteUserInviteByUserIdAndInvitedUserId($user_id, $invited_user_id);
+            $this->users_model->deleteUserInviteByUserIdAndInvitedUserId($invited_user_id, $user_id);
 
             $notification_text = "$user_name отказался принимать Вас в друзья.";
             $data_user_notifications = array(
@@ -73,10 +85,22 @@ class User_invites extends CI_Controller {
     public function delete_user_invite_by_invited_user_id() {
         $user_id = $this->input->post('user_id');
         $invited_user_id = $this->input->post('invited_user_id');
-        $this->users_model->deleteUserInviteByUserIdAndInvitedUserId($user_id, $invited_user_id);
-        $delete_json = array(
-            'csrf_hash' => $this->security->get_csrf_hash()
-        );
+
+        $user_invite_num_rows = $this->users_model->getUserInviteNumRowsByUserIdAndInvitedUserId($user_id, $invited_user_id);
+
+        if ($user_invite_num_rows > 0) {
+            $this->users_model->deleteUserInviteByUserIdAndInvitedUserId($user_id, $invited_user_id);
+            $this->users_model->deleteUserInviteByUserIdAndInvitedUserId($invited_user_id, $user_id);
+            $delete_json = array(
+                'invite_success' => "Предложение отменено успешно!",
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        } else {
+            $delete_json = array(
+                'invite_error' => "Не удалось отклонить предложение",
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        }
         echo json_encode($delete_json);
     }
 

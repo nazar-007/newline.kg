@@ -155,8 +155,9 @@
 
 
     var offset = 0;
+
     $(document).scroll(function() {
-        if($(document).scrollTop() >= $(document).height() - $(window).height()) {
+        if(($(document).scrollTop() + 1) >= $(document).height() - $(window).height()) {
             offset = offset + 2;
             $.ajax({
                 method: "POST",

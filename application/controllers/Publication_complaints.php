@@ -10,12 +10,60 @@ class Publication_complaints extends CI_Controller {
     }
 
     public function Index() {
-        $admin_id = 2;
-        $data = array(
-            'publication_complaints' => $this->publications_model->getPublicationComplaintsByAdminId($admin_id),
-            'csrf_hash' => $this->security->get_csrf_hash()
-        );
-        $this->load->view('publication_complaints', $data);
+        $material = $this->input->post('material');
+        $admin_id = $_SESSION['admin_id'];
+        $admin_email = $_SESSION['admin_email'];
+        $admin_table = $_SESSION['admin_table'];
+        if ($material == 'publication' && $admin_id && $admin_email && $admin_table) {
+
+            $html = "<h3 class='centered'>Вы - админ публикации.</h3>
+            <table border='3'>
+                <tr>
+                    <td>ID</td>
+                    <td>Жалобщик</td>
+                    <td>Текст жалобы</td>
+                    <td>Проверка поста</td>
+                    <td>Удалить жалобу</td>
+                    <td>Принять жалобу</td>
+                </tr>";
+
+            $publication_complaints = $this->publications_model->getPublicationComplaintsByAdminId($admin_id);
+
+            foreach ($publication_complaints as $publication_complaint) {
+                $id = $publication_complaint->id;
+                $email = $publication_complaint->email;
+                $complaint_text = $publication_complaint->complaint_text;
+                $publication_id = $publication_complaint->publication_id;
+                $publication_name = $publication_complaint->publication_name;
+                $html .= "<tr class='one-complaint-$id'>
+                        <td>$id</td>
+                        <td>$email</td>
+                        <td>$complaint_text</td>
+                        <td>
+                            <button onclick='getOnePublicationByAdmin(this)' type='button' class='btn btn-default' data-toggle='modal' data-target='#getOnePublication' data-id='$publication_id'><span class='glyphicon glyphicon-align-justify'></span></button>
+                        </td> 
+                        <td>
+                            <button onclick='deletePressPublicationComplaint(this)' type='button' class='btn btn-success' data-toggle='modal' data-target='#deletePublicationComplaint' data-complaint_id='$id' data-complaint_text='$complaint_text' data-publication_name='$publication_name'><span class='glyphicon glyphicon-trash'></span></button>
+                        </td>
+                        <td>
+                            <button onclick='deletePressPublicationComplaintAndDeletePressPublication(this)' type='button' class='btn btn-danger' data-toggle='modal' data-target='#deletePublicationComplaintAndPublication' data-complaint_id='$id' data-publication_id='$publication_id' data-complaint_text='$complaint_text' data-publication_name='$publication_name'><span class='glyphicon glyphicon-trash'></span></button>
+                        </td>
+                    </tr>";
+            }
+
+            $html .= "</table>";
+
+            $data = array(
+                'publication_complaints' => $html,
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        } else {
+            $data = array(
+                'complaint_error' => 'У вас нет прав на просмотр жалоб на книги',
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        }
+        echo json_encode($data);
     }
 
     public function insert_publication_complaint() {

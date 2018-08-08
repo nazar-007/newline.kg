@@ -161,7 +161,7 @@
             } else {
                 $("#insertAlbum").trigger('click');
                 $(".albums").append("<div class='col-xs-6 col-sm-6 col-md-3 col-lg-3 one_album_" + message.id + "'>" +
-                    "<a href='<?php echo base_url()?>images/" + message.id + "'>" +
+                    "<a href='<?php echo base_url()?>user_images/" + message.id + "'>" +
                         "<img src='<?php echo base_url()?>uploads/icons/my_album.png'>" +
                         "<div class='one_album_name_" + message.id + " album_name'>" + message.album_name + "</div>" +
                     "</a>" +

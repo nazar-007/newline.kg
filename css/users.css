@@ -8,11 +8,14 @@
 
 .info-invite {
     text-align: center;
-    font-size: 1em;
+    font-size: 1.3em;
+    padding: 7px;
     background-color: #2cc36b;
 }
 
 .action-invite {
+    cursor: pointer;
+    padding: 5px;
     color: #fff;
     font-size: 1em;
     text-align: center;
@@ -24,7 +27,11 @@
 }
 .about {
     text-align: center;
-    height: 200px;
+    height: 210px;
+}
+.btn-delete {
+    margin-left: 10px;
+    margin-right: 10px;
 }
 .bout_user{
     height: 30px;
@@ -41,6 +48,7 @@
     margin-left: 1%;
 }
 .img-thumbnail {
+    max-height: 190px;
     padding: 0;
     background-color: transparent;
     border-radius: 50%;

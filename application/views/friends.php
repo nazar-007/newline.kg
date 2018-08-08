@@ -206,6 +206,7 @@
             dataType: "JSON"
         }).done(function (message) {
             $(".csrf").val(message.csrf_hash);
+            $("#common_friends").html(message.common_friends);
         })
     }
     function getCommonBooks(context) {

@@ -93,6 +93,13 @@ ul li{
     background-color: #bfc7cd;
 }
 
+.emotion_user_image {
+    height: 130px;
+}
+.fan_user_image {
+    height: 130px;
+}
+
 .notification {
     margin-bottom: 20px;
     border-left: 3px dotted blue;
@@ -157,6 +164,13 @@ ul li{
     position: absolute;
     top: 0.5%;
     right: 1%;
+}
+
+.mobile-message {
+    width: 48px;
+    position: absolute;
+    top: 0.5%;
+    right: 2%;
 }
 .show-mobile-catalog {
     position: absolute;

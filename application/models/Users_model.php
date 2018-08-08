@@ -387,11 +387,11 @@ class Users_model extends CI_Model {
     }
     public function getUserImagesByAlbumId($album_id) {
         $this->db->where('album_id', $album_id);
-        $this->db->order_by('user_image_date DESC, user_image_time DESC');
+        $this->db->order_by('id DESC');
         $query = $this->db->get('user_images');
         return $query->result();
     }
-    public function getUserImageByUserId($user_id) {
+    public function getUserImagesByUserId($user_id) {
         $this->db->where('user_id', $user_id);
         $query = $this->db->get('user_images');
         return $query->result();
@@ -420,6 +420,15 @@ class Users_model extends CI_Model {
             $user_image_file = $user_image->user_image_file;
         }
         return $user_image_file;
+    }
+    public function getUserImageNumRowsByAlbumIdAndUserImageFile($album_id, $user_image_file) {
+        $this->db->select('user_images.*, albums.album_name');
+        $this->db->from('user_images');
+        $this->db->join('albums', 'user_images.album_id = albums.id');
+        $this->db->where('user_images.album_id', $album_id);
+        $this->db->where('user_images.user_image_file', $user_image_file);
+        $query = $this->db->get();
+        return $query->num_rows();
     }
     public function getUserInvitesByUserId($user_id) {
         $this->db->select('user_invites.*, users.email, users.nickname, users.surname, users.main_image, users.last_visit');
@@ -677,7 +686,7 @@ class Users_model extends CI_Model {
     }
     public function deleteGuestsByUserIdOrGuestId($user_id) {
         $this->db->where('user_id', $user_id);
-        $this->db->or_where('friend_id', $user_id);
+        $this->db->or_where('guest_id', $user_id);
         $this->db->delete('guests');
     }
     public function deleteUserById($id) {

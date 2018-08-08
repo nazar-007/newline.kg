@@ -9,10 +9,10 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="shortcut icon" href="<?php echo base_url()?>uploads/icons/logo.png">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/publications.css">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/users.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/media.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/common.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/animate.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/users.css">
 </head>
 <body>
 
@@ -62,12 +62,15 @@
                     <?php endforeach;?>
                 </div>
                 <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 centered">
-                    <img src="<?php echo base_url()?>uploads/icons/unemotioned.png">
+                    <img onclick="insertUserPageEmotion(this)" src="<?php echo base_url()?>uploads/icons/unemotioned.png">
                     <span data-toggle="modal" data-target="#getUserPageEmotions" onclick="getUserPageEmotions(this)" data-user_id="<?php echo $_SESSION['user_id']?>" class="badge"><?php echo $total_user_page_emotions?></span>
                     <button class="btn btn-default">
                         <a href='<?php echo base_url()?>update'>
                             <img src="<?php echo base_url()?>uploads/icons/update.png">
                         </a>
+                    </button>
+                    <button class="btn btn-danger btn-delete" data-toggle="modal" data-target="#deleteUser">
+                        <span class="glyphicon glyphicon-trash"></span>
                     </button>
                     <img id="showMobileInterests" class="middle-hidden big-hidden huge-hidden" src="/uploads/icons/world.png">
                     <div id="mobileInterests" class="small-hidden interests">
@@ -114,6 +117,31 @@
             </div>
             <div id="one_publication_comments" class="modal-body">
 
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteUser" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Удаление страницы</h4>
+            </div>
+            <div class="modal-body">
+                <form action="<?php echo base_url()?>users/delete_user">
+                    <input type="hidden" class="csrf" name="csrf_test_name" value="<?php echo $csrf_hash;?>">
+                    <input type="hidden" name="id" value="<?php echo $_SESSION['user_id']?>">
+                    <h3>Вы действительно хотите удалить свою страницу со всеми данными?</h3>
+                    <span class="action_buttons">
+                        <button class="btn btn-primary" type="submit">ОК, удалить</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Отмена</button>
+                    </span>
+                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -250,6 +278,10 @@
 <?php $this->load->view("footer");?>
 
 <script>
+
+    function insertUserPageEmotion(context) {
+        alert("Вы не можете поставить эмоцию на свою страницу");
+    }
 
     function deletePressPublication(context) {
         var id = context.getAttribute('data-id');
@@ -482,7 +514,6 @@
             $("#one_user_page_emotions").html(message.one_user_page_emotions);
         })
     }
-
 
 
     $(document).scroll(function(){

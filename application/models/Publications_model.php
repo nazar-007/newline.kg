@@ -66,8 +66,13 @@ class Publications_model extends CI_Model {
         return $query->num_rows();
     }
     public function getPublicationComplaintsByAdminId($admin_id) {
+        $this->db->select('publication_complaints.*, users.email, users.nickname, users.surname, users.main_image, publications.publication_name, publications.publication_description');
+        $this->db->from('publication_complaints');
+        $this->db->join('users', 'publication_complaints.complained_user_id = users.id');
+        $this->db->join('publications', 'publication_complaints.publication_id = publications.id');
         $this->db->where('admin_id', $admin_id);
-        $query = $this->db->get('publication_complaints');
+        $this->db->order_by('id DESC');
+        $query = $this->db->get();
         return $query->result();
     }
     public function getPublicationComplaintNumRowsByPublicationIdAndComplainedUserId($publication_id, $complained_user_id) {
@@ -301,6 +306,11 @@ class Publications_model extends CI_Model {
         $this->db->where('complained_user_id', $complained_user_id);
         $this->db->delete('publication_complaints');
     }
+    public function deletePublicationComplaintsByPublishedUserIdOrComplainedUserId($user_id) {
+        $this->db->where('published_user_id', $user_id);
+        $this->db->or_where('complained_user_id', $user_id);
+        $this->db->delete('publication_complaints');
+    }
     public function deletePublicationEmotionByPublicationIdAndEmotionedUserId($publication_id, $emotioned_user_id) {
         $this->db->where('publication_id', $publication_id);
         $this->db->where('emotioned_user_id', $emotioned_user_id);
@@ -332,9 +342,8 @@ class Publications_model extends CI_Model {
         $this->db->where('publication_image_id', $publication_image_id);
         $this->db->delete('publication_image_emotions');
     }
-    public function deletePublicationImageEmotionsByPublishedUserIdOrEmotionedUserId($user_id) {
-        $this->db->where('published_user_id', $user_id);
-        $this->db->or_where('emotioned_user_id', $user_id);
+    public function deletePublicationImageEmotionsByEmotionedUserId($user_id) {
+        $this->db->where('emotioned_user_id', $user_id);
         $this->db->delete('publication_image_emotions');
     }
     public function deletePublicationShareByPublicationIdAndSharedUserId($publication_id, $shared_user_id) {

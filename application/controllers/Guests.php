@@ -37,16 +37,6 @@ class Guests extends CI_Controller {
         $this->users_model->insertGuest($data_guests);
     }
 
-    public function delete_guest() {
-        $id = $this->input->post('id');
-        $this->users_model->deleteGuestById($id);
-        $delete_json = array(
-            'id' => $id,
-            'csrf_hash' => $this->security->get_csrf_hash()
-        );
-        echo json_encode($delete_json);
-    }
-
     public function update_guest() {
         $id = $this->input->post('id');
         $guest_date = date('d.m.Y');
@@ -66,4 +56,5 @@ class Guests extends CI_Controller {
         );
         $this->users_model->updateGuestById($id, $data_guests);
     }
+
 }

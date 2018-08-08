@@ -14,10 +14,10 @@
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/events.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/songs.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/gift_stakes.css">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/users.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/media.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/common.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/animate.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>css/users.css">
 </head>
 <body>
 
@@ -67,6 +67,10 @@
                         <div>
                             <strong class='info_th'>Звание: </strong>
                             <span class='info_td'><?php echo $user->rank . ' (' . $user->rating . ')'?></span>
+                        </div>
+                        <div>
+                            <strong class='info_th'>Статус: </strong>
+                            <span class='info_td'><?php echo $user->last_visit ?></span>
                         </div>
                     </div>
                     <?php endforeach;?>
@@ -580,18 +584,24 @@
             dataType: "JSON"
         }).done(function (message) {
             $(".csrf").val(message.csrf_hash);
-            $("#dropdown-invite").html("<li class='info-invite'>" +
-                "<span> " +
-                "<span>Предложение отправлено " +
+            if (message.invite_error) {
+                alert(message.invite_error);
+            }
+
+            if (message.invite_success) {
+                $("#dropdown-invite").html("<li class='info-invite'>" +
+                    "<span> " +
+                    "<span>" + message.invite_success + " " +
                     "<img src='<?php echo base_url()?>uploads/icons/checked.png'> " +
-                "</span> " +
-            "</span> " +
-            "</li> " +
-                "<li class='action-invite'> " +
-                "<span> " +
+                    "</span> " +
+                    "</span> " +
+                    "</li> " +
+                    "<li class='action-invite'> " +
+                    "<span> " +
                     "<span onclick='deleteUserInvite(this)'>Отменить предложение</span> " +
-                "</span> " +
-                "</li>");
+                    "</span> " +
+                    "</li>");
+            }
         })
     }
 
@@ -605,11 +615,16 @@
             dataType: "JSON"
         }).done(function (message) {
             $(".csrf").val(message.csrf_hash);
-            $("#dropdown-invite").html("<li class='action-invite'> " +
-                "<span> " +
-                "<span onclick='insertUserInvite(this)'>Кинуть дружбу</span> " +
-                "</span> " +
-                "</li>");
+            if (message.invite_error) {
+                alert(message.invite_error);
+            }
+            if (message.invite_success) {
+                $("#dropdown-invite").html("<li class='action-invite'> " +
+                    "<span> " +
+                    "<span onclick='insertUserInvite(this)'>Кинуть дружбу</span> " +
+                    "</span> " +
+                    "</li>");
+            }
         })
     }
 
@@ -623,11 +638,16 @@
             dataType: "JSON"
         }).done(function (message) {
             $(".csrf").val(message.csrf_hash);
-            $("#dropdown-invite").html("<li class='action-invite'> " +
-                "<span> " +
-                "<span onclick='insertUserInvite(this)'>Кинуть дружбу</span> " +
-                "</span> " +
-                "</li>");
+            if (message.friend_error) {
+                alert(message.friend_error);
+            }
+            if (message.friend_success) {
+                $("#dropdown-invite").html("<li class='action-invite'> " +
+                    "<span> " +
+                    "<span onclick='insertUserInvite(this)'>Кинуть дружбу</span> " +
+                    "</span> " +
+                    "</li>");
+            }
         })
     }
 
@@ -696,7 +716,7 @@
                     "<span class='comment-date-time'>" + message.message_date + " <br>" + message.message_time + "</span>" +
                     "<div onclick='deleteGuestMessage(this)' data-id='" + message.message_id + "' data-guest_id='" + message.guest_id + "' class='right'>X</div>" +
                     "</div>" +
-                    "<div class='comment_text'>" + message.comment_text + "</div> " +
+                    "<div class='comment_text'>" + message.message_text + "</div> " +
                     "</div>");
                 $(".no-messages").html('');
             } else {

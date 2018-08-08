@@ -75,25 +75,87 @@
     </div>
 </div>
 
+<div class="modal fade" id="deleteUserImage" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Удаление фотографии из своего альбома</h4>
+            </div>
+            <div class="modal-body">
+                <h3>Вы действительно хотите удалить данную фотографию?</h3>
+                <form onsubmit="deleteUserImage(this)" action="javascript:void(0)" enctype="multipart/form-data">
+                    <input type="hidden" class="csrf" name="csrf_test_name" value="<?php echo $csrf_hash;?>">
+                    <input type="hidden" class="id" name="id">
+                    <input type="hidden" class="album_id" name="album_id">
+                    <input type="hidden" name="user_id" value="<?php echo $_SESSION['user_id']?>">
+                    <input type="hidden" class="user_image_file" name="user_image_file">
+                    <button class="btn btn-primary center-block" type="submit">Удалить фотографиию</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?php $this->load->view("footer");?>
 
 
 <script>
 
     function changeMainImage(context) {
-        var user_image = context.getAttribute('data-image');
+        var album_id = context.getAttribute('data-album_id');
+        var user_image_file = context.getAttribute('data-image_file');
         $.ajax({
             method: "POST",
             url: "<?php echo base_url()?>user_images/change_main_image",
-            data: {user_image: user_image, csrf_test_name: $('.csrf').val()},
+            data: {album_id: album_id, user_image_file: user_image_file, csrf_test_name: $('.csrf').val()},
             dataType: "JSON"
         }).done(function (message) {
             $(".csrf").val(message.csrf_hash);
+            if (message.image_error) {
+                alert(message.image_error);
+            }
             if (message.image_success) {
                 alert(message.image_success);
                 location.reload(true);
             }
         })
+    }
+
+    function deleteUserImagePress(context) {
+        var id = context.getAttribute('data-id');
+        var album_id = context.getAttribute('data-album_id');
+        var user_image_file = context.getAttribute('data-image_file');
+        $('.id').val(id);
+        $('.album_id').val(album_id);
+        $('.user_image_file').val(user_image_file);
+    }
+
+    function deleteUserImage(context) {
+        var form = $(context)[0];
+        var all_inputs = new FormData(form);
+        $.ajax({
+            method: "POST",
+            url: "<?php echo base_url()?>" + "user_images/delete_user_image",
+            data: all_inputs,
+            dataType: "JSON",
+            contentType: false,
+            processData: false
+        }).done(function(message) {
+            $(".csrf").val(message.csrf_hash);
+            $("#deleteUserImage").trigger('click');
+            if (message.album_error) {
+                alert(message.album_error);
+            }
+
+            if (message.image_success) {
+                alert(message.image_success);
+                location.reload(true);
+            }
+        });
     }
 
     function insertUserImage(context) {

@@ -183,7 +183,7 @@ class Songs_model extends CI_Model {
         return $song_suggestion_file;
     }
     public function getSongSuggestionsBySuggestedUserId($suggested_user_id) {
-        $this->db->select('id, suggestion_file, suggestion_image');
+        $this->db->select('id, suggestion_file');
         $this->db->where('suggested_user_id', $suggested_user_id);
         $query = $this->db->get('song_suggestions');
         return $query->result();

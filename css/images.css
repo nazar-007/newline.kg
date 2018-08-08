@@ -6,9 +6,28 @@
     padding:10px;
 }
 
+.second_album {
+    margin-left: 50%;
+}
+
 #all_images {
     padding: 0;
     margin: 0;
+}
+
+.main_image, .delete_image {
+    display: inline-block;
+    text-align: center;
+    font-size: 1.2em;
+    color: forestgreen;
+}
+
+.main_image {
+    margin-left: 40%;
+}
+
+.delete_image {
+    color: red;
 }
 
 .absolute {

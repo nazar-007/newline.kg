@@ -5,6 +5,9 @@
             <img class="logo-mobile" src="<?php echo base_url()?>uploads/icons/newline.png">
             <img id="showMobileMenu" src="<?php echo base_url()?>uploads/icons/menu.png" class="scrolldown show-mobile-catalog">
             <img src="<?php echo base_url()?>uploads/icons/up-arrow.png" class="up-arrow-mobile scrollup">
+            <a href="<?php echo base_url()?>feedback_messages">
+                <img class="mobile-message" src="<?php echo base_url()?>uploads/icons/notification.png">
+            </a>
             <img class="mobile-notification" onclick="getMyNotifications(this)" data-toggle="modal" data-target="#getMyNotifications" src="<?php echo base_url()?>uploads/icons/notification.png">
         </div>
         <div id="mobileMenu" class="small-hidden mobMenuContent" style="display: none">

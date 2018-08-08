@@ -64,13 +64,11 @@ class Admins extends CI_Controller {
             $data['material'] = 'user';
             $data['users'] = $this->users_model->getUsers();
         }
-
         $this->load->view('session_admin');
         $this->load->view('admin_panel', $data);
     }
 
-    public function insert_admin()
-    {
+    public function insert_admin() {
         $admin_email = $this->input->post('admin_email');
         $admin_password = $_POST['admin_password'];
         $admin_check_password = $_POST['admin_check_password'];

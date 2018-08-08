@@ -286,6 +286,59 @@ class Publications extends CI_Controller {
         $this->load->view('one_publication', $data_publications);
     }
 
+    public function get_one_publication_by_admin() {
+        $id = $this->input->post('id');
+        $html = '';
+        $publications = $this->publications_model->getOnePublicationById($id);
+
+            foreach ($publications as $publication) {
+                $publication_id = $publication->id;
+                $publication_images = $this->publications_model->getPublicationImagesByPublicationId($publication_id);
+                $html .= "<div class='one_publication one_pub_$publication_id'>
+                    <div class='publication'>
+                        <div class='user_publication'>
+                            <h4 class='publication_name'>$publication->publication_name</h4>
+                            <div class='publication_description'>" .
+                    $publication->publication_description . "
+                            </div>
+                        </div>";
+                if (count($publication_images) > 0) {
+                    $html .= "<div id='carousel_$publication_id' class='carousel slide' data-interval='false' data-ride='carousel'>
+                            <div class='carousel-inner'>";
+                    foreach ($publication_images as $key => $publication_image) {
+                        if ($key == 0) {
+                            $html .= "<div class='item active'>
+                                            <img src='" . base_url() . "uploads/images/publication_images/$publication_image->publication_image_file' class='publication_images' style='width: initial; margin: 0 auto;'>
+                                        </div>";
+                        } else {
+                            $html .= "<div class='item'>
+                                            <img src='" . base_url() . "uploads/images/publication_images/$publication_image->publication_image_file' class='publication_images' style='width: initial; margin: 0 auto'>
+                                        </div>";
+                        }
+                    }
+                    if (count($publication_images) > 1) {
+                        $html .= "<a class='left carousel-control' href='#carousel_$publication_id' data-slide='prev'>
+                              <span class='glyphicon glyphicon-chevron-left'></span>
+                              <span class='sr-only'>Previous</span>
+                            </a>
+                            <a class='right carousel-control' href='#carousel_$publication_id' data-slide='next'>
+                              <span class='glyphicon glyphicon-chevron-right'></span>
+                              <span class='sr-only'>Next</span>
+                            </a>";
+                    }
+                    $html .= "</div>
+                    </div>";
+                }
+                $html .= "</div></div>";
+        }
+        $data = array(
+            'get_one_publication' => $html,
+            'csrf_hash' => $this->security->get_csrf_hash()
+        );
+        echo json_encode($data);
+
+    }
+
     public function insert_publication() {
         $publication_name = $this->input->post('publication_name');
         $publication_description = $this->input->post('publication_description');
@@ -301,6 +354,7 @@ class Publications extends CI_Controller {
                 'csrf_hash' => $this->security->get_csrf_hash()
             );
         } else {
+            $publication_description = nl2br($publication_description);
             $data_publications = array(
                 'publication_name' => $publication_name,
                 'publication_description' => $publication_description,

@@ -41,11 +41,17 @@ class User_images extends CI_Controller {
                         $total_user_image_emotions = $this->users_model->getTotalByUserImageIdAndUserImageTable($user_image_id, 'user_image_emotions');
                         if ($key == 0) {
                             $html .= "<div class='item active'>";
-                                if ($album_user_id == $session_user_id) {
-                                    $html .= "<div data-image='$user_image_file' style='text-align: center; font-size: 1.5em; color: forestgreen;' onclick='changeMainImage(this)'>Сделать главной</div>";
+                                if ($album_user_id == $session_user_id && $album_name == 'My Album') {
+                                    $html .= "<div data-album_id='$album_id' data-image_file='$user_image_file' class='main_image' onclick='changeMainImage(this)'>Сделать главной</div>";
                                 }
-                                $html.=
-                                    "<img src='" . base_url() . "uploads/images/user_images/$user_image_file' class='user_images' style='width: initial; margin: 0 auto;'>
+                                if ($album_user_id == $session_user_id) {
+                                    $html .= "<div class='delete_image second_album'>
+                                    <button onclick='deleteUserImagePress(this)' data-toggle='modal' data-target='#deleteUserImage' data-id='$user_image_id' data-album_id='$album_id' data-image_file='$user_image_file' class='btn btn-danger'>
+                                        <span class='glyphicon glyphicon-trash'></span>
+                                    </button>
+                                </div>";
+                                }
+                                    $html .= "<img src='" . base_url() . "uploads/images/user_images/$user_image_file' class='user_images' style='width: initial; margin: 0 auto;'>
                                     <div class='user_image_emotion image_emotions_field_$user_image_id' data-user_id='$user_id' data-emotioned_user_id='$session_user_id' data-user_image_id='$user_image_id'>";
                             if ($image_emotion_num_rows == 0) {
                                 $html .= "<img class='emotion_image' onclick='insertUserImageEmotion(this)' src='" . base_url() . "uploads/icons/unemotioned.png'>";
@@ -57,12 +63,18 @@ class User_images extends CI_Controller {
                                         </div>";
                         } else {
                             $html .= "<div class='item'>";
-                                if ($album_user_id == $session_user_id) {
-                                    $html .= "<div data-image='$user_image_file' style='text-align: center; font-size: 1.5em; color: forestgreen;' onclick='changeMainImage(this)'>Сделать главной</div>";
-                                }
-                                $html.=
-                                            "<img src='" . base_url() . "uploads/images/user_images/$user_image_file' class='user_images' style='width: initial; margin: 0 auto'>
-                                                <div class='user_image_emotion image_emotions_field_$user_image_id' data-user_id='$user_id' data-emotioned_user_id='$session_user_id' data-user_image_id='$user_image_id'>";
+                            if ($album_user_id == $session_user_id && $album_name == 'My Album') {
+                                $html .= "<div data-album_id='$album_id' data-image_file='$user_image_file' class='main_image' onclick='changeMainImage(this)'>Сделать главной</div>";
+                            }
+                            if ($album_user_id == $session_user_id) {
+                                $html .= "<div class='delete_image second_album'>
+                                    <button onclick='deleteUserImagePress(this)' data-toggle='modal' data-target='#deleteUserImage' data-id='$user_image_id' data-album_id='$album_id' data-image_file='$user_image_file' class='btn btn-danger'>
+                                        <span class='glyphicon glyphicon-trash'></span>
+                                    </button>
+                                </div>";
+                            }
+                            $html .= "<img src='" . base_url() . "uploads/images/user_images/$user_image_file' class='user_images' style='width: initial; margin: 0 auto'>
+                                    <div class='user_image_emotion image_emotions_field_$user_image_id' data-user_id='$user_id' data-emotioned_user_id='$session_user_id' data-user_image_id='$user_image_id'>";
                             if ($image_emotion_num_rows == 0) {
                                 $html .= "<img class='emotion_image' onclick='insertUserImageEmotion(this)' src='" . base_url() . "uploads/icons/unemotioned.png'>";
                             } else {
@@ -126,16 +138,25 @@ class User_images extends CI_Controller {
 
     public function change_main_image() {
         $id = $_SESSION['user_id'];
-        $user_image = $this->input->post('user_image');
-        $data = array(
-            'main_image' => $user_image
-        );
-        $this->users_model->updateUserById($id, $data);
+        $album_id = $this->input->post('album_id');
+        $user_image_file = $this->input->post('user_image_file');
+        $user_image_num_rows = $this->users_model->getUserImageNumRowsByAlbumIdAndUserImageFile($album_id, $user_image_file);
+        if ($user_image_num_rows > 0) {
+            $data = array(
+                'main_image' => $user_image_file
+            );
+            $this->users_model->updateUserById($id, $data);
 
-        $update_json = array(
-            'csrf_hash' => $this->security->get_csrf_hash(),
-            'image_success' => 'Фотка поставлена на главную'
-        );
+            $update_json = array(
+                'csrf_hash' => $this->security->get_csrf_hash(),
+                'image_success' => 'Фотка поставлена на главную'
+            );
+        } else {
+            $update_json = array(
+                'csrf_hash' => $this->security->get_csrf_hash(),
+                'image_error' => 'Не удалось обновить основную фотку'
+            );
+        }
         echo json_encode($update_json);
     }
 
@@ -200,24 +221,38 @@ class User_images extends CI_Controller {
 
     public function delete_user_image() {
         $id = $this->input->post('id');
-        $user_image_file = $this->users_model->getUserImageFileById($id);
-        unlink("./uploads/images/user_images/$user_image_file");
-        unlink("./uploads/images/user_images/thumb/$user_image_file");
+        $album_id = $this->input->post('album_id');
+        $user_id = $this->input->post('user_id');
+        $user_image_file = $this->input->post('user_image_file');
+        $db_user_image_file = $this->users_model->getUserImageFileById($id);
+        $session_user_id = $_SESSION['user_id'];
 
-        $user_image_comments = $this->users_model->getUserImageCommentsByUserImageId($id);
-        foreach ($user_image_comments as $user_image_comment) {
-            $user_image_comment_id = $user_image_comment->id;
-            $this->users_model->deleteUserImageCommentEmotionsByUserImageCommentId($user_image_comment_id);
+        $user_image_num_rows = $this->users_model->getUserImageNumRowsByAlbumIdAndUserImageFile($album_id, $user_image_file);
+        if ($user_image_num_rows > 0 && $user_id == $session_user_id && $user_image_file == $db_user_image_file) {
+            unlink("./uploads/images/user_images/$user_image_file");
+
+            $this->users_model->deleteUserImageActionsByUserImageId($id);
+            $this->users_model->deleteUserImageEmotionsByUserImageId($id);
+            $this->users_model->deleteUserImageById($id);
+
+            $main_image = $this->users_model->getMainImageById($user_id);
+
+            if ($main_image == $user_image_file) {
+                $data_users = array(
+                    'main_image' => 'default.jpg'
+                );
+                $this->users_model->updateUserById($user_id, $data_users);
+            }
+            $delete_json = array(
+                'image_success' => 'Фотка успешно удалена',
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        } else {
+            $delete_json = array(
+                'image_error' => 'НЕ УДАЛОСЬ!',
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
         }
-        $this->users_model->deleteUserImageActionsByUserImageId($id);
-        $this->users_model->deleteUserImageCommentsByUserImageId($id);
-        $this->users_model->deleteUserImageCommentEmotionsByUserImageId($id);
-        $this->users_model->deleteUserImageEmotionsByUserImageId($id);
-        $this->users_model->deleteUserImageById($id);
-        $delete_json = array(
-            'id' => $id,
-            'csrf_hash' => $this->security->get_csrf_hash()
-        );
         echo json_encode($delete_json);
     }
 

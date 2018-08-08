@@ -85,7 +85,7 @@
             $('.csrf').val(message.csrf_hash);
         })
     }
-//    window.onload = onLine;
+    window.onload = onLine;
 
     function lastVisit() {
         $.ajax({
@@ -97,7 +97,7 @@
             $('.csrf').val(message.csrf_hash);
         })
     }
-//    window.onunload = lastVisit;
+    window.onunload = lastVisit;
 
     $("#getMyNotifications").on('show.bs.modal', function () {
         history.pushState(null, null, location.href);

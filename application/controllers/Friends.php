@@ -671,6 +671,7 @@ class Friends extends CI_Controller {
             );
             $this->users_model->insertFriend($data_friends_2);
             $this->users_model->deleteUserInviteByUserIdAndInvitedUserId($user_id, $friend_id);
+            $this->users_model->deleteUserInviteByUserIdAndInvitedUserId($friend_id, $user_id);
 
             $notification_text = "$user_name принял Ваш запрос в друзья";
             $data_user_notifications = array(
@@ -701,12 +702,22 @@ class Friends extends CI_Controller {
         $user_id = $this->input->post('user_id');
         $friend_id = $this->input->post('friend_id');
 
-        $this->users_model->deleteFriendByUserIdAndFriendId($user_id, $friend_id);
-        $this->users_model->deleteFriendByUserIdAndFriendId($friend_id, $user_id);
+        $user_num_rows = $this->users_model->getFriendNumRowsByUserIdAndFriendId($user_id, $friend_id);
+        $friend_num_rows = $this->users_model->getFriendNumRowsByUserIdAndFriendId($friend_id, $user_id);
 
-        $json = array(
-            'csrf_hash' => $this->security->get_csrf_hash()
-        );
-        echo json_encode($json);
+        if ($user_num_rows > 0 && $friend_num_rows > 0) {
+            $this->users_model->deleteFriendByUserIdAndFriendId($user_id, $friend_id);
+            $this->users_model->deleteFriendByUserIdAndFriendId($friend_id, $user_id);
+            $delete_json = array(
+                'friend_success' => "Успешно удален из Ваших друзей",
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        } else {
+            $delete_json = array(
+                'friend_error' => "Не удалось удалить из Ваших друзей",
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        }
+        echo json_encode($delete_json);
     }
 }

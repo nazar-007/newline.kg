@@ -38,6 +38,14 @@ class Users extends CI_Controller {
         if($num_rows > 0) {
             $_SESSION['user_id'] = $user_id;
             $_SESSION['user_email'] = $user_email;
+            $data = array(
+                'last_visit' => 'Online'
+            );
+            $json = array(
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+            $this->users_model->updateUserById($user_id, $data);
+            echo json_encode($json);
             redirect(base_url() . "publications");
         } else {
             redirect(base_url());
@@ -274,7 +282,7 @@ class Users extends CI_Controller {
     public function Online() {
         $id = $this->input->post('id');
         $data = array(
-            'last_visit' => 'Онлайн'
+            'last_visit' => 'Online'
         );
         $json = array(
             'csrf_hash' => $this->security->get_csrf_hash()
@@ -286,7 +294,7 @@ class Users extends CI_Controller {
     public function Last_visit() {
         $id = $this->input->post('id');
         $data = array(
-            'last_visit' => 'заходил(а) в ' . date('d.m.Y') . ' ' . date("H:i:s")
+            'last_visit' => 'заходил(а) ' . date('d.m.Y') . ' в ' . date("H:i:s")
         );
         $json = array(
             'csrf_hash' => $this->security->get_csrf_hash()
@@ -323,6 +331,53 @@ class Users extends CI_Controller {
         $data = array(
             'csrf_hash'=> $this->security->get_csrf_hash(),
             'search_gift_users' => $html
+        );
+        echo json_encode($data);
+    }
+
+    public function get_one_user_by_admin() {
+        $id = $this->input->post('id');
+        $users = $this->users_model->getUserById($id);
+        $html = '';
+        foreach ($users as $user) {
+            $html .= "<div class='col-xs-12 col-sm-4 col-md-4 col-lg-4 about'>
+                <a href='" . base_url() . "albums'>
+                    <img class='img-thumbnail' src='" . base_url() . "uploads/images/user_images/$user->main_image'>
+                </a>
+            </div>
+            <div class='col-xs-12 col-sm-8 col-md-8 col-lg-8 about'>
+                <h2 class='centered'>$user->nickname $user->surname</h2>
+                <div id='showMobileInfo' class='middle-hidden big-hidden huge-hidden'>Показать информацию</div>
+                <div id='mobileInfo' class='small-hidden'>
+            <div>
+            <strong class='info_th'>Дата рождения: </strong>
+            <span class='info_td'>$user->birth_date $user->birth_year</span>
+        </div>
+        <div>
+            <strong class='info_th'>Страна: </strong>
+            <span class='info_td'>$user->home_land</span>
+        </div>
+        <div>
+            <strong class='info_th'>Школы: </strong>
+            <span class='info_td'>$user->education_schools</span>
+        </div>
+        <div>
+            <strong class='info_th'>Университеты: </strong>
+            <span class='info_td'>$user->education_universities</span>
+        </div>
+        <div>
+            <strong class='info_th'>Семейное положение: </strong>
+            <span class='info_td'>$user->family_position</span>
+        </div>
+        <div>
+            <strong class='info_th'>Звание: </strong>
+            <span class='info_td'>$user->rank ($user->rating)</span>
+        </div>
+    </div>";
+        }
+        $data = array(
+            'get_one_user' => $html,
+            'csrf_hash' => $this->security->get_csrf_hash()
         );
         echo json_encode($data);
     }
@@ -419,24 +474,13 @@ class Users extends CI_Controller {
         } else {
             $config['upload_path'] = './uploads/images/user_images/';
             $config['allowed_types'] = 'gif|jpg|png|jpeg';
-            $config['file_name'] = time();
+            $config['encrypt_name'] = true;
             $config['max_size'] = 1000;
             $this->load->library('upload', $config);
 
             if ($this->upload->do_upload('image')) {
                 $upload_image = $this->upload->data();
                 $main_image = $upload_image['file_name'];
-                $config['image_library'] = 'gd2';
-                $config['source_image'] = "./uploads/images/user_images/$main_image";
-                $config['create_thumb'] = FALSE;
-                $config['maintain_ratio'] = TRUE;
-                $config['width'] = 128;
-                $config['height'] = 128;
-                $config['quality'] = '100%';
-                $config['new_image'] = "./uploads/images/user_images/thumb/$main_image";
-
-                $this->load->library('image_lib', $config);
-                $this->image_lib->resize();
             } else {
                 $main_image = "default.jpg";
             }
@@ -508,6 +552,18 @@ class Users extends CI_Controller {
                 'user_id' => $insert_user_id
             );
             $this->albums_model->insertAlbum($data_user_albums);
+            $insert_my_album_id = $this->db->insert_id();
+
+            if ($main_image != 'default.jpg') {
+                $data_user_images = array(
+                    'user_image_file' => $main_image,
+                    'user_image_date' => $date_mk,
+                    'user_image_time' => $time_mk,
+                    'album_id' => $insert_my_album_id,
+                    'user_id' => $insert_user_id
+                );
+                $this->users_model->insertUserImage($data_user_images);
+            }
 
             $data_publication_albums = array(
                 'album_name' => "Publication Album",
@@ -531,99 +587,96 @@ class Users extends CI_Controller {
 
     public function delete_user() {
         $id = $this->input->post('id');
-        $book_suggestions = $this->books_model->getBookSuggestionsBySuggestedUserId($id);
-        foreach ($book_suggestions as $book_suggestion) {
-            $book_suggestion_file = $book_suggestion->suggestion_file;
-            $book_suggestion_image = $book_suggestion->suggestion_image;
-            unlink("./uploads/book_files/$book_suggestion_file");
-            unlink("./uploads/images/book_images/$book_suggestion_image");
-        }
-        $song_suggestions = $this->songs_model->getSongSuggestionsBySuggestedUserId($id);
-        foreach ($song_suggestions as $song_suggestion) {
-            $song_suggestion_file = $song_suggestion->suggestion_file;
-            unlink("./uploads/song_files/$song_suggestion_file");
-        }
-        $publications = $this->publications_model->getPublicationsByPublishedUserId($id);
-        foreach ($publications as $publication) {
-            $publication_id = $publication->id;
-            $publication_images = $this->publications_model->getPublicationImagesByPublicationId($publication_id);
-            foreach ($publication_images as $publication_image) {
-                $publication_image_id = $publication_image->id;
-                $publication_image_file = $this->publications_model->getPublicationImageFileById($publication_image_id);
-                unlink("./uploads/images/publication_images/$publication_image_file");
-                unlink("./uploads/images/publication_images/thumb/$publication_image_file");
-                $this->publications_model->deletePublicationImageEmotionsByPublicationImageId($publication_image_id);
+        $session_user_id = $_SESSION['user_id'];
+        if ($id == $session_user_id) {
+            $book_suggestions = $this->books_model->getBookSuggestionsBySuggestedUserId($id);
+            if (count($book_suggestions) > 0) {
+                foreach ($book_suggestions as $book_suggestion) {
+                    $book_suggestion_file = $book_suggestion->suggestion_file;
+                    $book_suggestion_image = $book_suggestion->suggestion_image;
+                    unlink("./uploads/book_files/$book_suggestion_file");
+                    unlink("./uploads/images/book_images/$book_suggestion_image");
+                }
             }
-            $publication_shares = $this->publications_model->getPublicationSharesByPublicationId($publication_id);
-            foreach ($publication_shares as $publication_share) {
-                $publication_share_id = $publication_share->id;
-                $this->publications_model->deletePublicationShareEmotionsByPublicationShareId($publication_share_id);
+            $song_suggestions = $this->songs_model->getSongSuggestionsBySuggestedUserId($id);
+            if (count($song_suggestions) > 0) {
+                foreach ($song_suggestions as $song_suggestion) {
+                    $song_suggestion_file = $song_suggestion->suggestion_file;
+                    unlink("./uploads/song_files/$song_suggestion_file");
+                }
             }
-            $this->publications_model->deletePublicationCommentsByPublicationId($publication_id);
-            $this->publications_model->deletePublicationComplaintsByPublicationId($publication_id);
-            $this->publications_model->deletePublicationEmotionsByPublicationId($publication_id);
-            $this->publications_model->deletePublicationImagesByPublicationId($publication_id);
-            $this->publications_model->deletePublicationSharesByPublicationId($publication_id);
-        }
-        $user_images = $this->users_model->getUserImagesByUserId($id);
-        foreach ($user_images as $user_image) {
-            $user_image_id = $user_image->id;
-            $user_image_file = $this->users_model->getUserImageFileById($user_image_id);
-            unlink("./uploads/images/user_images/$user_image_file");
-            unlink("./uploads/images/user_images/thumb/$user_image_file");
-            $this->users_model->deleteUserImageActionsByUserImageId($user_image_id);
-            $this->users_model->deleteUserImageEmotionsByUserImageId($user_image_id);
-        }
-        $this->albums_model->deleteAlbumsByUserId($id);
-        $this->books_model->deleteBookActionsByActionUserId($id);
-        $this->books_model->deleteBookCommentsByCommentedUserId($id);
-        $this->books_model->deleteBookComplaintsByComplainedUserId($id);
-        $this->books_model->deleteBookEmotionsByEmotionedUserId($id);
-        $this->books_model->deleteBookFansByFanUserId($id);
-        $this->books_model->deleteBookSuggestionsBySuggestedUserId($id);
-        $this->documents_model->deleteDocumentsByUserId($id);
-        $this->events_model->deleteEventActionsByActionUserId($id);
-        $this->events_model->deleteEventCommentsByCommentedUserId($id);
-        $this->events_model->deleteEventComplaintsByComplainedUserId($id);
-        $this->events_model->deleteEventEmotionsByEmotionedUserId($id);
-        $this->events_model->deleteEventFansByFanUserId($id);
-        $this->events_model->deleteEventSuggestionsBySuggestedUserId($id);
-        $this->messages_model->deleteFeedbackMessagesByUserId($id);
-        $this->folders_model->deleteFoldersByUserId($id);
-        $this->users_model->deleteFriendsByUserIdOrFriendId($id);
-        $this->gifts_model->deleteGiftSentByUserIdOrSentUserId($id);
-        $this->messages_model->deleteGuestMessagesByUserIdOrGuestId($id);
-        $this->users_model->deleteGuestsByUserIdOrGuestId($id);
-        $this->messages_model->deletePrivateMessagesByUserIdOrTalkerId($id);
-        $this->publications_model->deletePublicationsByPublishedUserId($id);
-        $this->publications_model->deletePublicationCommentsByCommentedUserId($id);
-        $this->publications_model->deletePublicationComplaintsByPublishedUserIdOrComplainedUserId($id);
-        $this->publications_model->deletePublicationEmotionsByPublishedUserIdOrEmotionedUserId($id);
-        $this->publications_model->deletePublicationImageEmotionsByPublishedUserIdOrEmotionedUserId($id);
-        $this->publications_model->deletePublicationSharesBySharedUserId($id);
-        $this->publications_model->deletePublicationShareEmotionsBySharedUserIdOrEmotionedUserId($id);
-        $this->songs_model->deleteSongActionsByActionUserId($id);
-        $this->songs_model->deleteSongCommentsByCommentedUserId($id);
-        $this->songs_model->deleteSongComplaintsByComplainedUserId($id);
-        $this->songs_model->deleteSongEmotionsByEmotionedUserId($id);
-        $this->songs_model->deleteSongFansByFanUserId($id);
-        $this->songs_model->deleteSongSuggestionsBySuggestedUserId($id);
-        $this->stakes_model->deleteStakeFansByFanUserId($id);
-        $this->users_model->deleteUserBlacklistByUserIdOrBlackUserId($id);
-        $this->users_model->deleteUserComplaintsByUserIdOrComplainedUserId($id);
-        $this->users_model->deleteUserImageActionsByUserIdOrActionUserId($id);
-        $this->users_model->deleteUserImageEmotionsByUserIdOrEmotionedUserId($id);
-        $this->users_model->deleteUserImagesByUserId($id);
-        $this->users_model->deleteUserInvitesByUserIdOrInvitedUserId($id);
-        $this->users_model->deleteUserNotificationsByUserId($id);
-        $this->users_model->deleteUserPageEmotionsByUserIdOrEmotionedUserId($id);
-        $this->users_model->deleteUserById($id);
+            $publications = $this->publications_model->getPublicationsByPublishedUserId($id);
+            foreach ($publications as $publication) {
+                $publication_id = $publication->id;
+                $publication_images = $this->publications_model->getPublicationImagesByPublicationId($publication_id);
+                if (count($publication_images) > 0) {
+                    foreach ($publication_images as $publication_image) {
+                        $publication_image_id = $publication_image->id;
+                        $publication_image_file = $this->publications_model->getPublicationImageFileById($publication_image_id);
+                        unlink("./uploads/images/publication_images/$publication_image_file");
+                        $this->publications_model->deletePublicationImageEmotionsByPublicationImageId($publication_image_id);
+                    }
+                }
+                $this->publications_model->deletePublicationCommentsByPublicationId($publication_id);
+                $this->publications_model->deletePublicationComplaintsByPublicationId($publication_id);
+                $this->publications_model->deletePublicationEmotionsByPublicationId($publication_id);
+                $this->publications_model->deletePublicationImagesByPublicationId($publication_id);
+                $this->publications_model->deletePublicationSharesByPublicationId($publication_id);
+            }
+            $user_images = $this->users_model->getUserImagesByUserId($id);
+            if (count($user_images) > 0) {
+                foreach ($user_images as $user_image) {
+                    $user_image_id = $user_image->id;
+                    $user_image_file = $this->users_model->getUserImageFileById($user_image_id);
+                    unlink("./uploads/images/user_images/$user_image_file");
+                    $this->users_model->deleteUserImageActionsByUserImageId($user_image_id);
+                    $this->users_model->deleteUserImageEmotionsByUserImageId($user_image_id);
+                }
+            }
+            $this->albums_model->deleteAlbumsByUserId($id);
+            $this->books_model->deleteBookActionsByActionUserId($id);
+            $this->books_model->deleteBookCommentsByCommentedUserId($id);
+            $this->books_model->deleteBookComplaintsByComplainedUserId($id);
+            $this->books_model->deleteBookEmotionsByEmotionedUserId($id);
+            $this->books_model->deleteBookFansByFanUserId($id);
+            $this->books_model->deleteBookSuggestionsBySuggestedUserId($id);
+            $this->documents_model->deleteDocumentsByUserId($id);
+            $this->events_model->deleteEventActionsByActionUserId($id);
+            $this->events_model->deleteEventCommentsByCommentedUserId($id);
+            $this->events_model->deleteEventComplaintsByComplainedUserId($id);
+            $this->events_model->deleteEventEmotionsByEmotionedUserId($id);
+            $this->events_model->deleteEventFansByFanUserId($id);
+            $this->events_model->deleteEventSuggestionsBySuggestedUserId($id);
+            $this->messages_model->deleteFeedbackMessagesByUserId($id);
+            $this->folders_model->deleteFoldersByUserId($id);
+            $this->users_model->deleteFriendsByUserIdOrFriendId($id);
+            $this->gifts_model->deleteGiftSentByUserIdOrSentUserId($id);
+            $this->messages_model->deleteGuestMessagesByUserIdOrGuestId($id);
+            $this->users_model->deleteGuestsByUserIdOrGuestId($id);
+            $this->publications_model->deletePublicationsByPublishedUserId($id);
+            $this->publications_model->deletePublicationCommentsByCommentedUserId($id);
+            $this->publications_model->deletePublicationComplaintsByPublishedUserIdOrComplainedUserId($id);
+            $this->publications_model->deletePublicationEmotionsByPublishedUserIdOrEmotionedUserId($id);
+            $this->publications_model->deletePublicationImageEmotionsByEmotionedUserId($id);
+            $this->publications_model->deletePublicationSharesBySharedUserId($id);
+            $this->songs_model->deleteSongActionsByActionUserId($id);
+            $this->songs_model->deleteSongCommentsByCommentedUserId($id);
+            $this->songs_model->deleteSongComplaintsByComplainedUserId($id);
+            $this->songs_model->deleteSongEmotionsByEmotionedUserId($id);
+            $this->songs_model->deleteSongFansByFanUserId($id);
+            $this->songs_model->deleteSongSuggestionsBySuggestedUserId($id);
+            $this->stakes_model->deleteStakeFansByFanUserId($id);
+            $this->users_model->deleteUserImageActionsByUserIdOrActionUserId($id);
+            $this->users_model->deleteUserImageEmotionsByUserIdOrEmotionedUserId($id);
+            $this->users_model->deleteUserImagesByUserId($id);
+            $this->users_model->deleteUserInvitesByUserIdOrInvitedUserId($id);
+            $this->users_model->deleteUserNotificationsByUserId($id);
+            $this->users_model->deleteUserPageEmotionsByUserIdOrEmotionedUserId($id);
+            $this->users_model->deleteUserById($id);
 
-        $delete_json = array(
-            'id' => $id,
-            'csrf_hash' => $this->security->get_csrf_hash()
-        );
-        echo json_encode($delete_json);
+            session_destroy();
+            redirect(base_url());
+        }
     }
 
     public function update() {
