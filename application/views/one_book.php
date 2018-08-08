@@ -194,9 +194,6 @@
 
 <script>
 
-    window.onblur = function () {console.log('неактивен')};
-    window.onfocus = function () {console.log('снова активен')};
-
     function getBookComments(context) {
         var book_id = context.parentElement.getAttribute('data-book_id');
         $.ajax({

@@ -184,9 +184,6 @@
 
 <script>
 
-    window.onblur = function () {console.log('неактивен')};
-    window.onfocus = function () {console.log('снова активен')};
-
     function getEventComments(context) {
         var event_id = context.parentElement.getAttribute('data-event_id');
         $.ajax({

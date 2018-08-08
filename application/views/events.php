@@ -270,10 +270,6 @@
 
 <script type="text/javascript" src="<?php echo base_url()?>js/common.js"></script>
 <script>
-
-    window.onblur = function () {console.log('неактивен')};
-    window.onfocus = function () {console.log('снова активен')};
-
     var offset = 0;
     $(document).scroll(function() {
         if(($(document).scrollTop() + 1) >= $(document).height() - $(window).height()) {

@@ -7,6 +7,7 @@ class Publication_complaints extends CI_Controller {
         parent::__construct();
         $this->load->model('publications_model');
         $this->load->model('admins_model');
+        $this->load->model('users_model');
     }
 
     public function Index() {
@@ -35,6 +36,7 @@ class Publication_complaints extends CI_Controller {
                 $complaint_text = $publication_complaint->complaint_text;
                 $publication_id = $publication_complaint->publication_id;
                 $publication_name = $publication_complaint->publication_name;
+                $published_user_id = $publication_complaint->published_user_id;
                 $html .= "<tr class='one-complaint-$id'>
                         <td>$id</td>
                         <td>$email</td>
@@ -46,7 +48,7 @@ class Publication_complaints extends CI_Controller {
                             <button onclick='deletePressPublicationComplaint(this)' type='button' class='btn btn-success' data-toggle='modal' data-target='#deletePublicationComplaint' data-complaint_id='$id' data-complaint_text='$complaint_text' data-publication_name='$publication_name'><span class='glyphicon glyphicon-trash'></span></button>
                         </td>
                         <td>
-                            <button onclick='deletePressPublicationComplaintAndDeletePressPublication(this)' type='button' class='btn btn-danger' data-toggle='modal' data-target='#deletePublicationComplaintAndPublication' data-complaint_id='$id' data-publication_id='$publication_id' data-complaint_text='$complaint_text' data-publication_name='$publication_name'><span class='glyphicon glyphicon-trash'></span></button>
+                            <button onclick='deletePressPublicationComplaintAndDeletePressPublication(this)' type='button' class='btn btn-danger' data-toggle='modal' data-target='#deletePublicationComplaintAndPublication' data-complaint_id='$id' data-publication_id='$publication_id' data-complaint_text='$complaint_text' data-publication_name='$publication_name' data-published_user_id='$published_user_id'><span class='glyphicon glyphicon-trash'></span></button>
                         </td>
                     </tr>";
             }
@@ -114,25 +116,107 @@ class Publication_complaints extends CI_Controller {
         echo json_encode($insert_json);
     }
 
-    public function delete_publication_complaint_by_admin() {
+    public function delete_publication_complaint() {
         $id = $this->input->post('id');
-        $this->publications_model->deletePublicationComplaintById($id);
-        $delete_json = array(
-            'id' => $id,
-            'csrf_hash' => $this->security->get_csrf_hash()
-        );
+        $publication_name = $this->input->post('publication_name');
+        $complaint_text = $this->input->post('complaint_text');
+
+        $admin_id = $_SESSION['admin_id'];
+        $admin_email = $_SESSION['admin_email'];
+        $admin_table = $_SESSION['admin_table'];
+        if ($admin_id && $admin_email && $admin_table) {
+            $this->publications_model->deletePublicationComplaintById($id);
+            $data_admin_actions = array(
+                'admin_action' => "$admin_email отклонил жалобу на публикацию '$publication_name' с текстом $complaint_text под id $id",
+                'admin_table' => $admin_table,
+                'admin_date' => date('d.m.Y'),
+                'admin_time' => date('H:i:s'),
+                'action_admin_id' => $admin_id
+            );
+            $this->admins_model->insertAdminAction($data_admin_actions);
+            $delete_json = array(
+                'id' => $id,
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        } else {
+            $delete_json = array(
+                'complaint_error' => "Не удалось удалить жалобу.",
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        }
         echo json_encode($delete_json);
     }
 
-    public function update_publication_complaint_by_admin() {
+    public function delete_publication_complaint_and_publication() {
         $id = $this->input->post('id');
-        $admin_table = $this->input->post('admin_table');
-        $admin_id = $this->admins_model->getRandomAdminIdByAdminTable($admin_table);
+        $publication_id = $this->input->post('publication_id');
+        $publication_name = $this->input->post('publication_name');
+        $published_user_id = $this->input->post('published_user_id');
+        $complaint_text = $this->input->post('complaint_text');
 
-        $data_publication_complaints = array(
-            'complaint_time_unix' => time(),
-            'admin_id' => $admin_id
-        );
-        $this->publications_model->updatePublicationComplaintById($id, $data_publication_complaints);
+        $admin_id = $_SESSION['admin_id'];
+        $admin_email = $_SESSION['admin_email'];
+        $admin_table = $_SESSION['admin_table'];
+        if ($admin_id && $admin_email && $admin_table) {
+            $this->publications_model->deletePublicationComplaintsByPublicationId($publication_id);
+
+            $publication_images = $this->publications_model->getPublicationImagesByPublicationId($publication_id);
+            if (count($publication_images) > 0) {
+                foreach ($publication_images as $publication_image) {
+                    $publication_image_id = $publication_image->id;
+                    $publication_image_file = $this->publications_model->getPublicationImageFileById($publication_image_id);
+                    unlink("./uploads/images/publication_images/$publication_image_file");
+                    $this->publications_model->deletePublicationImageEmotionsByPublicationImageId($publication_image_id);
+                }
+            }
+            $this->publications_model->deletePublicationCommentsByPublicationId($publication_id);
+            $this->publications_model->deletePublicationComplaintsByPublicationId($publication_id);
+            $this->publications_model->deletePublicationEmotionsByPublicationId($publication_id);
+            $this->publications_model->deletePublicationImagesByPublicationId($publication_id);
+            $this->publications_model->deletePublicationSharesByPublicationId($publication_id);
+            $this->publications_model->deletePublicationById($publication_id);
+
+            $data_admin_actions = array(
+                'admin_action' => "$admin_email удалил публикацию $publication_name под id $id",
+                'admin_table' => $admin_table,
+                'admin_date' => date('d.m.Y'),
+                'admin_time' => date('H:i:s'),
+                'action_admin_id' => $admin_id
+            );
+            $this->admins_model->insertAdminAction($data_admin_actions);
+
+            $data_user_notifications = array(
+                'notification_type' => 'Удаление Вашей публикации',
+                'notification_text' => "Админ удалил Вашу публикацию $publication_name из-за нарушения правил",
+                'notification_date' => date('d.m.Y'),
+                'notification_time' => date('H:i:s'),
+                'notification_viewed' => 'Не просмотрено',
+                'link_id' => 0,
+                'link_table' => 0,
+                'user_id' => $published_user_id
+            );
+            $this->users_model->insertUserNotification($data_user_notifications);
+
+            $data_admin_actions = array(
+                'admin_action' => "$admin_email принял жалобу на публикацию '$publication_name' с текстом $complaint_text под id $id и удалил эту публикацию под id $publication_id",
+                'admin_table' => $admin_table,
+                'admin_date' => date('d.m.Y'),
+                'admin_time' => date('H:i:s'),
+                'action_admin_id' => $admin_id
+            );
+            $this->admins_model->insertAdminAction($data_admin_actions);
+            $delete_json = array(
+                'id' => $id,
+                'complaint_success' => 'Жалоба успешно принята',
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        } else {
+            $delete_json = array(
+                'complaint_error' => "Не удалось удалить жалобу.",
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        }
+        echo json_encode($delete_json);
     }
+
 }

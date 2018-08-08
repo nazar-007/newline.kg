@@ -36,14 +36,12 @@ class User_notifications extends CI_Controller {
                         $html .= "<a class='notification-link' href='" . base_url() . "one_event/$link_id'>Смотреть событие</a>";
                     } else if ($link_table == 'songs') {
                         $html .= "<a class='notification-link' href='" . base_url() . "one_song/$link_id'>Смотреть песню</a>";
-                    } else if ($link_table == 'user_images') {
-                        $html .= "<a class='notification-link' href='" . base_url() . "one_user_image/$link_id'>Смотреть фотографию.</a>";
                     } else if ($link_table == 'users') {
                         $html .= "<a class='notification-link' href='" . base_url() . "my_page'>Перейти к моей странице.</a>";
                     } else if ($link_table == 'friends') {
                         $html .= "<a class='notification-link' href='" . base_url() . "friends'>Смотреть</a>";
                     } else if ($link_table == 'gifts') {
-                        $html .= "<a class='notification-link' href='" . base_url() . "friends'>Смотреть</a>";
+                        $html .= "<a class='notification-link' href='" . base_url() . "gifts'>Смотреть</a>";
                     }
                     $html .= "</div>";
                 }

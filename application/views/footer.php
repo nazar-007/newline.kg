@@ -1,7 +1,3 @@
-<footer>
-    <p>This is footer.</p>
-</footer>
-
 <div class="modal fade" id="getMyNotifications" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">

@@ -206,9 +206,6 @@
 <script type="text/javascript" src="<?php echo base_url()?>js/common.js"></script>
 <script>
 
-    window.onblur = function () {console.log('неактивен')};
-    window.onfocus = function () {console.log('снова активен')};
-
     function insertSongSuggestion(context) {
         var form = $(context)[0];
         var all_inputs = new FormData(form);

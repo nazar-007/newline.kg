@@ -7,6 +7,7 @@ class Publications extends CI_Controller {
         $this->load->model('publications_model');
         $this->load->model('users_model');
         $this->load->model('albums_model');
+        $this->load->model('admins_model');
     }
     public function Index() {
         $this->load->view('session_user');
@@ -409,6 +410,66 @@ class Publications extends CI_Controller {
         echo json_encode($insert_json);
     }
 
+    public function delete_publication() {
+        $id = $this->input->post('id');
+        $publication_name = $this->input->post('publication_name');
+        $published_user_id = $this->input->post('published_user_id');
+        $admin_id = $_SESSION['admin_id'];
+        $admin_email = $_SESSION['admin_email'];
+        $admin_table = $_SESSION['admin_table'];
+
+        if (!$admin_id && !$admin_email && !$admin_table) {
+            $delete_json = array(
+                'publication_error' => 'Не удалось удалить публикацию',
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        } else {
+            $publication_images = $this->publications_model->getPublicationImagesByPublicationId($id);
+            if (count($publication_images) > 0) {
+                foreach ($publication_images as $publication_image) {
+                    $publication_image_id = $publication_image->id;
+                    $publication_image_file = $this->publications_model->getPublicationImageFileById($publication_image_id);
+                    unlink("./uploads/images/publication_images/$publication_image_file");
+                    $this->publications_model->deletePublicationImageEmotionsByPublicationImageId($publication_image_id);
+                }
+            }
+            $this->publications_model->deletePublicationCommentsByPublicationId($id);
+            $this->publications_model->deletePublicationComplaintsByPublicationId($id);
+            $this->publications_model->deletePublicationEmotionsByPublicationId($id);
+            $this->publications_model->deletePublicationImagesByPublicationId($id);
+            $this->publications_model->deletePublicationSharesByPublicationId($id);
+            $this->publications_model->deletePublicationById($id);
+
+            $data_admin_actions = array(
+                'admin_action' => "$admin_email удалил публикацию $publication_name под id $id",
+                'admin_table' => $admin_table,
+                'admin_date' => date('d.m.Y'),
+                'admin_time' => date('H:i:s'),
+                'action_admin_id' => $admin_id
+            );
+            $this->admins_model->insertAdminAction($data_admin_actions);
+
+            $data_user_notifications = array(
+                'notification_type' => 'Удаление Вашей публикации',
+                'notification_text' => "Админ удалил Вашу публикацию $publication_name из-за нарушения правил",
+                'notification_date' => date('d.m.Y'),
+                'notification_time' => date('H:i:s'),
+                'notification_viewed' => 'Не просмотрено',
+                'link_id' => 0,
+                'link_table' => 0,
+                'user_id' => $published_user_id
+            );
+            $this->users_model->insertUserNotification($data_user_notifications);
+
+            $delete_json = array(
+                'id' => $id,
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
+        }
+
+        echo json_encode($delete_json);
+    }
+
     public function delete_publication_by_published_user_id() {
         $id = $this->input->post('id');
         $published_user_id = $this->input->post('published_user_id');
@@ -443,46 +504,6 @@ class Publications extends CI_Controller {
             );
         }
         echo json_encode($delete_json);
-    }
-
-    public function delete_publication_by_admin_without_ban() {
-        $user_id = $this->input->post('user_id');
-        $this->delete_publication_by_user();
-        $notification_text = 'Админ удалил Вашу публикацию "Тема 18+".';
-
-        $data_user_notifications = array(
-            'notification_type' => 'Удаление Вашей публикации',
-            'notification_text' => $notification_text,
-            'notification_date' => date('d.m.Y'),
-            'notification_time' => date('H:i:s'),
-            'notification_viewed' => 'Не просмотрено',
-            'link_id' => 0,
-            'link_table' => 0,
-            'user_id' => $user_id
-        );
-        $this->users_model->insertUserNotification($data_user_notifications);
-    }
-
-    public function delete_publication_by_admin_with_ban() {
-
-        $this->delete_publication_by_user();
-        $user_id = $this->input->post('user_id');
-        $notification_text = 'Админ забанил Ваш аккаунт из-за Вашей публикации "Тема 18+" и удалил её. Теперь Вы не можете добавлять публикации. Если Вы считаете, что бан произошёл несправедливо, сообщите об ошибке.';
-
-        $data_users = array(
-            'my_account_access' => "Закрыто"
-        );
-        $this->users_model->updateUserById($user_id, $data_users);
-
-        $data_user_notifications = array(
-            'notification_type' => 'Бан Вашего аккаунта',
-            'notification_text' => $notification_text,
-            'notification_date' => date('d.m.Y'),
-            'notification_time' => date('H:i:s'),
-            'notification_viewed' => 'Не просмотрено',
-            'user_id' => $user_id
-        );
-        $this->users_model->insertUserNotification($data_user_notifications);
     }
 
     public function update_publication() {

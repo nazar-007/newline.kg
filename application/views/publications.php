@@ -132,28 +132,6 @@
 
 <script type="text/javascript" src="<?php base_url()?>js/common.js"></script>
 <script>
-//    window.onfocus = function () {
-//        $.ajax({
-//            method: "POST",
-//            url: "<?php //echo base_url()?>//users/online",
-//            data: {id:<?php //echo $_SESSION['user_id']?>//, csrf_test_name: $(".csrf").val()},
-//            dataType: "JSON"
-//        }).done(function(message) {
-//            $('.csrf').val(message.csrf_hash);
-//        })
-//    };
-//    window.onblur = function () {
-//        $.ajax({
-//            method: "POST",
-//            url: "<?php //echo base_url()?>//users/last_visit",
-//            data: {id:<?php //echo $_SESSION['user_id']?>//, csrf_test_name: $(".csrf").val()},
-//            dataType: "JSON"
-//        }).done(function(message) {
-//            $('.csrf').val(message.csrf_hash);
-//        })
-//    };
-
-
     var offset = 0;
 
     $(document).scroll(function() {

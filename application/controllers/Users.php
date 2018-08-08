@@ -282,7 +282,7 @@ class Users extends CI_Controller {
     public function Online() {
         $id = $this->input->post('id');
         $data = array(
-            'last_visit' => 'Online'
+            'last_visit' => 'Онлайн'
         );
         $json = array(
             'csrf_hash' => $this->security->get_csrf_hash()
@@ -341,14 +341,10 @@ class Users extends CI_Controller {
         $html = '';
         foreach ($users as $user) {
             $html .= "<div class='col-xs-12 col-sm-4 col-md-4 col-lg-4 about'>
-                <a href='" . base_url() . "albums'>
-                    <img class='img-thumbnail' src='" . base_url() . "uploads/images/user_images/$user->main_image'>
-                </a>
+                <img class='img-thumbnail' src='" . base_url() . "uploads/images/user_images/$user->main_image'>
             </div>
             <div class='col-xs-12 col-sm-8 col-md-8 col-lg-8 about'>
                 <h2 class='centered'>$user->nickname $user->surname</h2>
-                <div id='showMobileInfo' class='middle-hidden big-hidden huge-hidden'>Показать информацию</div>
-                <div id='mobileInfo' class='small-hidden'>
             <div>
             <strong class='info_th'>Дата рождения: </strong>
             <span class='info_td'>$user->birth_date $user->birth_year</span>

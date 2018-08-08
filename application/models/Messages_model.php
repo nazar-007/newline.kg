@@ -28,8 +28,13 @@ class Messages_model extends CI_Model {
         $query = $this->db->get('guest_messages');
         return $query->num_rows();
     }
-    public function getFeedbackMessages() {
-        $query = $this->db->get('feedback_messages');
+    public function getFeedbackMessagesByAdminId($admin_id) {
+        $this->db->select('feedback_messages.*, users.email, users.nickname, users.surname, users.main_image');
+        $this->db->from('feedback_messages');
+        $this->db->join('users', 'feedback_messages.user_id = users.id');
+        $this->db->where('admin_id', $admin_id);
+        $this->db->order_by('id DESC');
+        $query = $this->db->get();
         return $query->result();
     }
 

@@ -23,25 +23,33 @@
         <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
             <a href="<?php echo base_url()?>admins/logout_admin">Выйти</a>
             <ul>
-
+                <li>
+                    <button class='btn btn-info'>
+                        <a href='<?php echo base_url()?>admin_panel'>Все материалы</a>
+                    </button>
+                </li>
                 <?php
+                if ($material == 'book' || $material == 'event' || $material == 'song' || $material == 'publication') {
                     echo "<li>
-                        <button class='btn btn-info'>
-                            <a href='" . base_url() . "admin_panel'>Все материалы</a>
-                        </button>
-                    </li>
-                    <li>
                         <button class='btn btn-info'>
                             <a href='javascript:void(0)' onclick='loadComplaints(this)' data-material='$material'>Жалобы</a>
                         </button>
                     </li>";
-                    if ($material == 'book' || $material == 'event' || $material == 'song') {
-                        echo "<li>
-                            <button class='btn btn-info'>
-                              <a href='javascript:void(0)' onclick='loadSuggestions(this)' data-material='$material'>Предложения</a>
-                            </button>
-                        </li>";
-                    }
+                }
+                if ($material == 'user') {
+                    echo "<li>
+                        <button class='btn btn-info'>
+                            <a href='javascript:void(0)' onclick='loadFeedbackMessages(this)'>Письма от юзеров</a>
+                        </button>
+                    </li>";
+                }
+                if ($material == 'book' || $material == 'event' || $material == 'song') {
+                    echo "<li>
+                        <button class='btn btn-info'>
+                          <a href='javascript:void(0)' onclick='loadSuggestions(this)' data-material='$material'>Предложения</a>
+                        </button>
+                    </li>";
+                }
                 ?>
             </ul>
         </div>
@@ -119,6 +127,7 @@
                         $publication_id = $publication->id;
                         $publication_name = $publication->publication_name;
                         $publication_description = $publication->publication_description;
+                        $published_user_id = $publication->published_user_id;
                         echo "<tr class='one-publication-$publication_id'>
                             <td>$publication_id</td>
                             <td class='one_publication_name_$publication_id'>$publication_name</td>
@@ -126,7 +135,7 @@
                                 <button onclick='getOnePublicationByAdmin(this)' type='button' class='btn btn-default' data-toggle='modal' data-target='#getOnePublication' data-id='$publication_id'><span class='glyphicon glyphicon-align-justify'></span></button>                            
                             </td>
                             <td>
-                                <button onclick='deletePressPublication(this)' type='button' class='btn btn-danger' data-toggle='modal' data-target='#deletePublication' data-id='$publication_id' data-name='$publication_name'><span class='glyphicon glyphicon-trash'></span></button>
+                                <button onclick='deletePressPublication(this)' type='button' class='btn btn-danger' data-toggle='modal' data-target='#deletePublication' data-id='$publication_id' data-name='$publication_name' data-user_id='$published_user_id'><span class='glyphicon glyphicon-trash'></span></button>
                             </td>
                         </tr>";
                     }
@@ -140,9 +149,6 @@
                             <td class='one_user_name_$user_id'>$user_email</td>
                             <td>
                                 <button onclick='getOneUserByAdmin(this)' type='button' class='btn btn-default' data-toggle='modal' data-target='#getOneUser' data-id='$user_id'><span class='glyphicon glyphicon-align-justify'></span></button>                            
-                            </td>
-                            <td>
-                                <button onclick='deletePressUser(this)' type='button' class='btn btn-danger' data-toggle='modal' data-target='#deleteUser' data-id='$user_id' data-name='$user_email'><span class='glyphicon glyphicon-trash'></span></button>
                             </td>
                         </tr>";
                     }
@@ -685,8 +691,8 @@
                     <h3 class="delete_question"></h3>
                     <div class="form-group">
                         <input class="csrf" type="hidden" name="csrf_test_name" value="<?php echo $csrf_hash?>">
-                        <input class="delete_id" name="id" type="text">
-                        <input class="delete_file" name="song_file" type="text">
+                        <input class="delete_id" name="id" type="hidden">
+                        <input class="delete_file" name="song_file" type="hidden">
                         <span class="action_buttons">
                             <button class="btn btn-primary" type="submit">ОК, удалить</button>
                             <button type="button" class="btn btn-primary" data-dismiss="modal">Отмена</button>
@@ -802,24 +808,21 @@
     </div>
 </div>
 
-
-
-
-
-<div class="modal fade" id="deleteBook" role="dialog">
+<div class="modal fade" id="deletePublication" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Удаление книги</h4>
+                <h4 class="modal-title">Удаление публикации</h4>
             </div>
             <div class="modal-body">
-                <form action="javascript:void(0)" onsubmit="deleteBook(this)">
+                <form action="javascript:void(0)" onsubmit="deletePublication(this)">
                     <h3 class="delete_question"></h3>
                     <div class="form-group">
                         <input class="csrf" type="hidden" name="csrf_test_name" value="<?php echo $csrf_hash?>">
                         <input class="delete_id" name="id" type="hidden">
-                        <input class="delete_name" name="book_name" type="hidden">
+                        <input class="delete_name" name="publication_name" type="hidden">
+                        <input class="delete_user_id" name="published_user_id" type="hidden">
                         <span class="action_buttons">
                             <button class="btn btn-primary" type="submit">ОК, удалить</button>
                             <button type="button" class="btn btn-primary" data-dismiss="modal">Отмена</button>
@@ -834,15 +837,15 @@
     </div>
 </div>
 
-<div class="modal fade" id="deleteBookComplaint" role="dialog">
+<div class="modal fade" id="deletePublicationComplaint" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Удаление жалобы без удаления книги</h4>
+                <h4 class="modal-title">Удаление жалобы без удаления публикации</h4>
             </div>
             <div class="modal-body">
-                <form action="javascript:void(0)" onsubmit="deleteBookComplaint(this)">
+                <form action="javascript:void(0)" onsubmit="deletePublicationComplaint(this)">
                     <h3 class="delete_question"></h3>
                     <div class="form-group">
                         <input class="csrf" type="hidden" name="csrf_test_name" value="<?php echo $csrf_hash?>">
@@ -862,88 +865,25 @@
     </div>
 </div>
 
-<div class="modal fade" id="deleteBookComplaintAndBook" role="dialog">
+<div class="modal fade" id="deletePublicationComplaintAndPublication" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Удаление книги по жалобе пользователя</h4>
+                <h4 class="modal-title">Удаление публикации по жалобе пользователя</h4>
             </div>
             <div class="modal-body">
-                <form action="javascript:void(0)" onsubmit="deleteBookComplaintAndBook(this)">
+                <form action="javascript:void(0)" onsubmit="deletePublicationComplaintAndPublication(this)">
                     <h3 class="delete_question"></h3>
                     <div class="form-group">
                         <input class="csrf" type="hidden" name="csrf_test_name" value="<?php echo $csrf_hash?>">
                         <input class="delete_id" name="id" type="hidden">
-                        <input class="delete_book_id" name="book_id" type="hidden">
+                        <input class="delete_publication_id" name="publication_id" type="hidden">
                         <input class="delete_complaint_text" name="complaint_text" type="hidden">
-                        <input class="delete_name" name="book_name" type="hidden">
+                        <input class="delete_name" name="publication_name" type="hidden">
+                        <input class="delete_published_user_id" name="published_user_id" type="hidden">
                         <span class="action_buttons">
                             <button class="btn btn-primary" type="submit">ОК, удалить</button>
-                            <button type="button" class="btn btn-primary" data-dismiss="modal">Отмена</button>
-                        </span>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="deleteBookSuggestion" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Удаление предложения без добавления книги</h4>
-            </div>
-            <div class="modal-body">
-                <form action="javascript:void(0)" onsubmit="deleteBookSuggestion(this)">
-                    <h3 class="delete_question"></h3>
-                    <div class="form-group">
-                        <input class="csrf" type="hidden" name="csrf_test_name" value="<?php echo $csrf_hash?>">
-                        <input class="delete_id" name="id" type="hidden">
-                        <input class="delete_file" name="book_file" type="hidden">
-                        <input class="delete_image" name="book_image" type="hidden">
-                        <span class="action_buttons">
-                            <button class="btn btn-primary" type="submit">ОК, удалить</button>
-                            <button type="button" class="btn btn-primary" data-dismiss="modal">Отмена</button>
-                        </span>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="deleteBookSuggestionAndInsertBook" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Принятие новой книги по предложению пользователя</h4>
-            </div>
-            <div class="modal-body">
-                <form action="javascript:void(0)" onsubmit="deleteBookSuggestionAndInsertBook(this)">
-                    <h3 class="delete_question"></h3>
-                    <div class="form-group">
-                        <input class="csrf" type="hidden" name="csrf_test_name" value="<?php echo $csrf_hash?>">
-                        <input class="delete_id" name="id" type="hidden">
-                        <h3 class="insert_question"></h3>
-                        <input class="insert_book_name" name="book_name" type="hidden">
-                        <input class="insert_book_file" name="book_file" type="hidden">
-                        <input class="insert_book_author" name="book_author" type="hidden">
-                        <input class="insert_book_description" name="book_description" type="hidden">
-                        <input class="insert_book_image" name="book_image" type="hidden">
-                        <input class="insert_category_id" name="category_id" type="hidden">
-                        <input class="suggested_user_id" name="suggested_user_id" type="hidden">
-                        <span class="action_buttons">
-                            <button class="btn btn-primary" type="submit">ОК, добавить</button>
                             <button type="button" class="btn btn-primary" data-dismiss="modal">Отмена</button>
                         </span>
                     </div>
@@ -990,6 +930,33 @@
     </div>
 </div>
 
+<div class="modal fade" id="deleteFeedbackMessage" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Удаление сообщения</h4>
+            </div>
+            <div class="modal-body">
+                <form action="javascript:void(0)" onsubmit="deleteFeedbackMessage(this)">
+                    <h3 class="delete_question"></h3>
+                    <div class="form-group">
+                        <input class="csrf" type="hidden" name="csrf_test_name" value="<?php echo $csrf_hash?>">
+                        <input class="delete_id" name="id" type="hidden">
+                        <input class="delete_text" name="message_text" type="hidden">
+                        <span class="action_buttons">
+                            <button class="btn btn-primary" type="submit">ОК, удалить</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Отмена</button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <script>
@@ -1767,6 +1734,98 @@
             $("#get_one_publication").html(message.get_one_publication);
         })
     }
+    function deletePressPublication(context) {
+        var id = context.getAttribute('data-id');
+        var publication_name = context.getAttribute('data-name');
+        var published_user_id = context.getAttribute('data-user_id');
+        $(".delete_id").val(id);
+        $(".delete_name").val(publication_name);
+        $(".delete_user_id").val(published_user_id);
+        $(".delete_question").html("Вы действительно хотите удалить публикацию " + publication_name + ' со всеми данными?');
+    }
+    function deletePublication(context) {
+        var form = $(context)[0];
+        var all_inputs = new FormData(form);
+        $.ajax({
+            method: "POST",
+            url: "<?php echo base_url()?>" + "publications/delete_publication",
+            data: all_inputs,
+            dataType: "JSON",
+            contentType: false,
+            processData: false
+        }).done(function(message) {
+            $(".csrf").val(message.csrf_hash);
+            $("#deletePublication").trigger('click');
+            if (message.publication_error) {
+                alert(message.publication_error);
+            } else {
+                $(".one-publication-" + message.id).remove();
+            }
+        });
+    }
+    function deletePressPublicationComplaint(context) {
+        var id = context.getAttribute('data-complaint_id');
+        var publication_name = context.getAttribute('data-publication_name');
+        var complaint_text = context.getAttribute('data-complaint_text');
+        $(".delete_id").val(id);
+        $(".delete_name").val(publication_name);
+        $(".delete_complaint_text").val(complaint_text);
+        $(".delete_question").html("Вы действительно хотите удалить жалобу '" + complaint_text + "' и оставить публикацию в покое?");
+    }
+    function deletePressPublicationComplaintAndDeletePressPublication(context) {
+        var id = context.getAttribute('data-complaint_id');
+        var publication_id = context.getAttribute('data-publication_id');
+        var complaint_text = context.getAttribute('data-complaint_text');
+        var publication_name = context.getAttribute('data-publication_name');
+        var published_user_id = context.getAttribute('data-published_user_id');
+        $(".delete_id").val(id);
+        $(".delete_publication_id").val(publication_id);
+        $(".delete_complaint_text").val(complaint_text);
+        $(".delete_name").val(publication_name);
+        $(".delete_published_user_id").val(published_user_id);
+        $(".delete_question").html("Вы действительно хотите удалить публикацию '" + publication_name + "' из-за жалобы '" + complaint_text + "' со всеми данными?");
+    }
+    function deletePublicationComplaint(context) {
+        var form = $(context)[0];
+        var all_inputs = new FormData(form);
+        $.ajax({
+            method: "POST",
+            url: "<?php echo base_url()?>" + "publication_complaints/delete_publication_complaint",
+            data: all_inputs,
+            dataType: "JSON",
+            contentType: false,
+            processData: false
+        }).done(function(message) {
+            $(".csrf").val(message.csrf_hash);
+            $("#deletePublicationComplaint").trigger('click');
+            if (message.complaint_error) {
+                alert(message.complaint_error);
+            } else {
+                $(".one-complaint-" + message.id).remove();
+            }
+        });
+    }
+    function deletePublicationComplaintAndPublication(context) {
+        var form = $(context)[0];
+        var all_inputs = new FormData(form);
+        $.ajax({
+            method: "POST",
+            url: "<?php echo base_url()?>" + "publication_complaints/delete_publication_complaint_and_publication",
+            data: all_inputs,
+            dataType: "JSON",
+            contentType: false,
+            processData: false
+        }).done(function(message) {
+            $(".csrf").val(message.csrf_hash);
+            $("#deletePublicationComplaintAndPublication").trigger('click');
+            if (message.complaint_error) {
+                alert(message.complaint_error);
+            } else {
+                alert(message.complaint_success);
+                location.reload(true);
+            }
+        });
+    }
 
     function getOneUserByAdmin(context) {
         var id = context.getAttribute('data-id');
@@ -1779,6 +1838,44 @@
             $(".csrf").val(message.csrf_hash);
             $("#get_one_user").html(message.get_one_user);
         })
+    }
+    function loadFeedbackMessages(context) {
+        $.ajax({
+            method: "POST",
+            url: "<?php echo base_url()?>feedback_messages/get_feedback_messages_by_admin",
+            data: {csrf_test_name: $(".csrf").val()},
+            dataType: "JSON"
+        }).done(function (message) {
+            $(".csrf").val(message.csrf_hash);
+            $("#materials").html(message.feedback_messages);
+        })
+    }
+    function deletePressFeedbackMessage(context) {
+        var id = context.getAttribute('data-id');
+        var message_text = context.getAttribute('data-message_text');
+        $(".delete_id").val(id);
+        $(".delete_text").val(message_text);
+        $(".delete_question").html("Вы действительно хотите удалить сообщение '" + message_text + "' ?");
+    }
+    function deleteFeedbackMessage(context) {
+        var form = $(context)[0];
+        var all_inputs = new FormData(form);
+        $.ajax({
+            method: "POST",
+            url: "<?php echo base_url()?>" + "feedback_messages/delete_feedback_message",
+            data: all_inputs,
+            dataType: "JSON",
+            contentType: false,
+            processData: false
+        }).done(function(message) {
+            $(".csrf").val(message.csrf_hash);
+            $("#deleteFeedbackMessage").trigger('click');
+            if (message.message_error) {
+                alert(message.message_error);
+            } else {
+                $(".one-message-" + message.id).remove();
+            }
+        });
     }
 
     function loadComplaints(context) {

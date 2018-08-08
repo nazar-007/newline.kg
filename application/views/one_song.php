@@ -181,10 +181,6 @@
 </div>
 
 <script>
-
-    window.onblur = function () {console.log('неактивен')};
-    window.onfocus = function () {console.log('снова активен')};
-
     function getSongComments(context) {
         var song_id = context.parentElement.getAttribute('data-song_id');
         $.ajax({
