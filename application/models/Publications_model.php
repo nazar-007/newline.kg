@@ -194,7 +194,7 @@ class Publications_model extends CI_Model {
         $publications = $query->result();
         foreach ($publications as $publication) {
             $total = $publication->total;
-            if (strlen($total) == 2) {
+            if (strlen($total) == 4) {
                 return substr($total, 0, 1) . "K";
             } else if(strlen($total) == 5) {
                 return substr($total, 0, 2) . "K";

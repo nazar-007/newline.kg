@@ -81,8 +81,7 @@ class Song_suggestions extends CI_Controller {
         );
         $song_name = $this->input->post('song_name');
         $song_singer = $this->input->post('song_singer');
-        $song_lyrics = nl2br(addslashes($_POST['song_lyrics']));
-        $song_lyrics = str_replace('<br />', '<br>', $song_lyrics);
+        $song_lyrics = 'Описание отсутствует. Админ ещё не добавил текст песни';
         $category_id = $this->input->post('category_id');
         $song_file = strtr(preg_replace('/[ \t]+/', '_', $_FILES['song_file']['name']), $transliteration);
 
