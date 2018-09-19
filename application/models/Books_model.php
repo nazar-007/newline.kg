@@ -250,7 +250,7 @@ class Books_model extends CI_Model {
             WHERE fan_user_id 
             IN ($user1,$user2) 
             GROUP BY book_id 
-            HAVING COUNT(book_id) = 2) 
+            HAVING COUNT(book_id) = 2)
             AND fan_user_id = $user1"
         );
         $books = $query->result();

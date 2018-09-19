@@ -14,6 +14,9 @@ audio:hover, audio:focus, audio:active {
     font-size: 1.2em;
     margin-top: 5px;
 }
+.play-buttons {
+    width: 24px;
+}
 pre {
     border: none;
     background-color: transparent;

@@ -1,82 +1,82 @@
 <ul class="catalog">
-    <li>
-        <a href="<?php echo base_url()?>my_page">
-            <img src="<?php echo base_url()?>uploads/icons/my_page.png">
-            Моя страница
-        </a>
-    </li>
-    <li>
-        <a href="<?php echo base_url()?>publications">
-            <img src="<?php echo base_url()?>uploads/icons/publications.png">
-            Публикации
-        </a>
-    </li>
-    <li>
-        <a href="<?php echo base_url()?>friends">
-            <img src="<?php echo base_url()?>uploads/icons/friends.png">
-            Друзья
-        </a>
-    </li>
-    <li>
-        <a href="<?php echo base_url()?>books">
+    <a href="<?php echo base_url()?>my_page">
+        <li>
+                <img src="<?php echo base_url()?>uploads/icons/my_page.png">
+                Моя страница
+        </li>
+    </a>
+    <a href="<?php echo base_url()?>publications">
+        <li>
+                <img src="<?php echo base_url()?>uploads/icons/publications.png">
+                Публикации
+        </li>
+    </a>
+    <a href="<?php echo base_url()?>friends">
+        <li>
+                <img src="<?php echo base_url()?>uploads/icons/friends.png">
+                Друзья
+        </li>
+    </a>
+    <a href="<?php echo base_url()?>books">
+        <li>
             <img src="<?php echo base_url()?>uploads/icons/books.png">
             Книги
-        </a>
-    </li>
-    <li>
-        <a href="<?php echo base_url()?>events">
+        </li>
+    </a>
+    <a href="<?php echo base_url()?>events">
+        <li>
             <img src="<?php echo base_url()?>uploads/icons/events.png">
             События
-        </a>
-    </li>
-    <li>
-        <a href="<?php echo base_url()?>songs">
+        </li>
+    </a>
+    <a href="<?php echo base_url()?>songs">
+        <li>
             <img src="<?php echo base_url()?>uploads/icons/songs.png">
             Песни
-        </a>
-    </li>
-    <li>
-        <a href="<?php echo base_url()?>guests">
+        </li>
+    </a>
+    <a href="<?php echo base_url()?>guests">
+        <li>
             <img src="<?php echo base_url()?>uploads/icons/guests.png">
             Гости
-        </a>
-    </li>
-    <li>
-        <a href="<?php echo base_url()?>albums">
+        </li>
+    </a>
+    <a href="<?php echo base_url()?>albums">
+        <li>
             <img src="<?php echo base_url()?>uploads/icons/photos.png">
             Фотографии
-        </a>
-    </li>
-    <li>
-        <a href="<?php echo base_url()?>folders">
-            <img src="<?php echo base_url()?>uploads/icons/documents.png">
-            Документы
-        </a>
-    </li>
-    <li>
-        <a href="<?php echo base_url()?>gifts">
+        </li>
+    </a>
+    <a href="<?php echo base_url()?>folders">
+        <li>
+                <img src="<?php echo base_url()?>uploads/icons/documents.png">
+                Документы
+        </li>
+    </a>
+    <a href="<?php echo base_url()?>gifts">
+        <li>
             <img src="<?php echo base_url()?>uploads/icons/gifts.png">
-            Подарки
-        </a>
-    </li>
-    <li>
-        <a href="<?php echo base_url()?>stakes">
+                Подарки
+        </li>
+    </a>
+    <a href="<?php echo base_url()?>stakes">
+        <li>
             <img src="<?php echo base_url()?>uploads/icons/stakes.png">
             Награды
-        </a>
-    </li>
-    <li>
-        <a href="<?php echo base_url()?>feedback_messages">
+        </li>
+    </a>
+    <a href="<?php echo base_url()?>feedback_messages">
+        <li>
             <img src="<?php echo base_url()?>uploads/icons/message.png">
             Письмо разработчикам
-        </a>
-    </li>
-    <li>
-        <a href="<?php echo base_url()?>users/logout">
-            <img src="<?php echo base_url()?>uploads/icons/exit.png">
-            Выйти
-        </a>
-    </li>
+        </li>
+    </a>
+    <a href="<?php echo base_url()?>users/logout">
+        <li>
+                <img src="<?php echo base_url()?>uploads/icons/exit.png">
+                Выйти
+        </li>
+    </a>
     <li>
         <img src="/uploads/icons/up-arrow.png" class="up-arrow scrollup">
     </li>

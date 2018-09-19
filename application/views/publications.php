@@ -27,6 +27,10 @@
                 echo $publications;
             ?>
             </div>
+            <?php if ($friends == 'true') {
+                echo "<span id='loadMorePublications'><button class='btn btn-info btn-lg btn-load center-block' onclick='loadMorePublications()'>Показать ещё публикации</button></span>";
+            }
+            ?>
         </div>
     </div>
 </div>
@@ -134,20 +138,21 @@
 <script>
     var offset = 0;
 
-    $(document).scroll(function() {
-        if(($(document).scrollTop() + 1) >= $(document).height() - $(window).height()) {
-            offset = offset + 2;
-            $.ajax({
-                method: "POST",
-                url: "<?php echo base_url()?>publications/index",
-                data: {offset: offset, csrf_test_name: $(".csrf").val()},
-                dataType: "JSON"
-            }).done(function (message) {
-                $('.csrf').val(message.csrf_hash);
-                $("#all_publications").append(message.publications);
-            })
-        }
-    });
+    function loadMorePublications() {
+        offset = offset + 2;
+        $.ajax({
+            method: "POST",
+            url: "<?php echo base_url()?>publications/index",
+            data: {offset: offset, csrf_test_name: $(".csrf").val()},
+            dataType: "JSON"
+        }).done(function (message) {
+            $('.csrf').val(message.csrf_hash);
+            $("#all_publications").append(message.publications);
+        })
+    }
+
+
+
     function getPublicationComments(context) {
         var publication_id = context.parentElement.getAttribute('data-publication_id');
         var published_user_id = context.parentElement.getAttribute('data-published_user_id');

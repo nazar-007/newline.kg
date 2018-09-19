@@ -28,15 +28,15 @@ class Songs extends CI_Controller {
             $total_song_fans = $this->songs_model->getTotalBySongIdAndSongTable($song_id, 'song_fans');
             $html .= "<div class='one-song col-xs-12 col-sm-6 col-md-6 col-lg-6'>
                 <div class='row'>
-                    <div class='col-xs-6 col-sm-6 col-md-6 col-lg-6'>
+                    <div class='col-xs-4 col-sm-4 col-md-4 col-lg-4'>
                         <span class='play' onclick='playSong(this)'>
-                            <img src='" . base_url() . "uploads/icons/play.png'>
+                            <img src='" . base_url() . "uploads/icons/play.png' class='play-buttons'>
                         </span>
                         <span class='pause' onclick='pauseSong(this)'>
-                            <img src='" . base_url() . "uploads/icons/pause.png'>
+                            <img src='" . base_url() . "uploads/icons/pause.png' class='play-buttons'>
                         </span>
                     </div>
-                    <div class='col-xs-6 col-sm-6 col-md-6 col-lg-6'>
+                    <div class='col-xs-8 col-sm-8 col-md-8 col-lg-8'>
                         <div class='actions'>
                             <span class='emotions_field'>
                                 <img onclick='putEmotionOrFan()' src='" . base_url() . "uploads/icons/emotioned.png'>

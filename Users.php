@@ -45,7 +45,7 @@ class Users extends CI_Controller {
                 'csrf_hash' => $this->security->get_csrf_hash()
             );
             $this->users_model->updateUserById($user_id, $data);
-            echo json_encode($json);
+            //echo json_encode($json);
             redirect(base_url() . "publications");
         } else {
             redirect(base_url());
@@ -128,6 +128,14 @@ class Users extends CI_Controller {
     }
 
     public function Logout() {
+		$id = $_SESSION['user_id'];
+        $data = array(
+            'last_visit' => 'заходил(а) ' . date('d.m.Y') . ' в ' . date("H:i:s")
+        );
+        $json = array(
+            'csrf_hash' => $this->security->get_csrf_hash()
+        );
+        $this->users_model->updateUserById($id, $data);
         session_start();
         session_destroy();
         redirect('/');
@@ -282,7 +290,7 @@ class Users extends CI_Controller {
     public function Online() {
         $id = $this->input->post('id');
         $data = array(
-            'last_visit' => 'Онлайн'
+            'last_visit' => 'Online'
         );
         $json = array(
             'csrf_hash' => $this->security->get_csrf_hash()
@@ -405,7 +413,7 @@ class Users extends CI_Controller {
             'csrf_hash' => $this->security->get_csrf_hash()
         );
 
-        if ($num_rows > 0 || strlen($email) < 5 || !preg_match('|^[a-zA-Z0-9_.-]*$|', $email) || empty($email) || $password !== $check_password || empty($password)
+        if ($num_rows > 0 || strlen($email) < 5 || empty($email) || $password !== $check_password || empty($password)
             || strlen($password) < 6 || empty($nickname) || strlen($nickname) < 2 || empty($surname)
             || strlen($surname) < 2 || empty($day) || empty($month) || empty($birth_year)
             || $birth_date == '30 февраля' || $birth_date == '31 февраля' || $birth_date == '31 апреля'
@@ -424,9 +432,6 @@ class Users extends CI_Controller {
             }
             if (strlen($email) < 5) {
                 $messages['email_less'] = 'Email слишком короткий, введите не менее 5 символов';
-            }
-            if(!preg_match('|^[a-zA-Z0-9_.-]*$|', $email)) {
-                $messages['email_regex'] = 'В емайле есть недопустимые символы. Используйте только цифры и английские буквы!';
             }
             if ($password !== $check_password) {
                 $messages['password_mismatch'] = 'Пароли не совпадают!';

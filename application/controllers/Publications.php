@@ -9,7 +9,8 @@ class Publications extends CI_Controller {
         $this->load->model('albums_model');
         $this->load->model('admins_model');
     }
-    public function Index() {
+    public function Index()
+    {
         $this->load->view('session_user');
         $session_user_id = $_SESSION['user_id'];
         $friend_ids = array();
@@ -129,16 +130,25 @@ class Publications extends CI_Controller {
                 $html .= "</span></div></div>";
             }
         }
+        if (count($friend_ids) == 0) {
             $data = array(
                 'publications' => $html,
+                'friends' => 'false',
                 'csrf_hash' => $this->security->get_csrf_hash()
             );
-            if (isset($_POST['offset']) && count($friend_ids) > 0) {
-                echo json_encode($data);
-            } else {
-                $this->load->view('publications', $data);
-            }
+        } else {
+            $data = array(
+                'publications' => $html,
+                'friends' => 'true',
+                'csrf_hash' => $this->security->get_csrf_hash()
+            );
         }
+        if (isset($_POST['offset']) && count($friend_ids) > 0) {
+            echo json_encode($data);
+        } else {
+            $this->load->view('publications', $data);
+        }
+    }
 
     public function User_publications() {
         $user_id = $this->input->post('user_id');

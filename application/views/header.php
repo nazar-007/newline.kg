@@ -17,71 +17,71 @@
                         </div>
                     </form>
                 </li>
-                <li>
-                    <a href="<?php echo base_url()?>my_page">
-                        Моя страница
-                    </a>
-                </li>
-                <li>
-                    <a href="<?php echo base_url()?>publications">
-                        Публикации
-                    </a>
-                </li>
-                <li>
-                    <a href="<?php echo base_url()?>friends">
-                        Друзья
-                    </a>
-                </li>
-                <li>
-                    <a href="<?php echo base_url()?>books">
-                        Книги
-                    </a>
-                </li>
-                <li>
-                    <a href="<?php echo base_url()?>events">
-                        События
-                    </a>
-                </li>
-                <li>
-                    <a href="<?php echo base_url()?>songs">
-                        Песни
-                    </a>
-                </li>
-                <li>
-                    <a href="<?php echo base_url()?>guests">
-                        Гости
-                    </a>
-                </li>
-                <li>
-                    <a href="<?php echo base_url()?>albums">
-                        Фотографии
-                    </a>
-                </li>
-                <li>
-                    <a href="<?php echo base_url()?>folders">
-                        Документы
-                    </a>
-                </li>
-                <li>
-                    <a href="<?php echo base_url()?>gifts">
-                        Подарки
-                    </a>
-                </li>
-                <li>
-                    <a href="<?php echo base_url()?>stakes">
-                        Награды
-                    </a>
-                </li>
-                <li>
-                    <a href="<?php echo base_url()?>feedback_messages">
-                        Письмо разработчикам
-                    </a>
-                </li>
-                <li>
-                    <a href="<?php echo base_url()?>users/logout">
-                        Выйти
-                    </a>
-                </li>
+                <a href="<?php echo base_url()?>my_page">
+                    <li>
+                            Моя страница
+                    </li>
+                </a>
+                <a href="<?php echo base_url()?>publications">
+                    <li>
+                            Публикации
+                    </li>
+                </a>
+                <a href="<?php echo base_url()?>friends">
+                    <li>
+                            Друзья
+                    </li>
+                </a>
+                <a href="<?php echo base_url()?>books">
+                    <li>
+                            Книги
+                    </li>
+                </a>
+                <a href="<?php echo base_url()?>events">
+                    <li>
+                            События
+                    </li>
+                </a>
+                <a href="<?php echo base_url()?>songs">
+                    <li>
+                            Песни
+                    </li>
+                </a>
+                <a href="<?php echo base_url()?>guests">
+                    <li>
+                            Гости
+                    </li>
+                </a>
+                <a href="<?php echo base_url()?>albums">
+                    <li>
+                            Фотографии
+                    </li>
+                </a>
+                <a href="<?php echo base_url()?>folders">
+                    <li>
+                            Документы
+                    </li>
+                </a>
+                <a href="<?php echo base_url()?>gifts">
+                    <li>
+                            Подарки
+                    </li>
+                </a>
+                <a href="<?php echo base_url()?>stakes">
+                    <li>
+                            Награды
+                    </li>
+                </a>
+                <a href="<?php echo base_url()?>feedback_messages">
+                    <li>
+                            Письмо разработчикам
+                    </li>
+                </a>
+                <a href="<?php echo base_url()?>users/logout">
+                    <li>
+                            Выйти
+                    </li>
+                </a>
             </ul>
         </div>
     </div>

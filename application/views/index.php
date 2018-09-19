@@ -243,6 +243,8 @@
                 $("#email_error").html(messages.email_empty)
             } else if (messages.email_less) {
                 $("#email_error").html(messages.email_less)
+            } else if (messages.email_regex) {
+                $("#email_error").html(messages.email_regex)
             } else {
                 $("#email_error").html('');
             }

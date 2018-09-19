@@ -42,7 +42,7 @@ class User_images extends CI_Controller {
                         if ($key == 0) {
                             $html .= "<div class='item active'>";
                                 if ($album_user_id == $session_user_id && $album_name == 'My Album') {
-                                    $html .= "<div data-album_id='$album_id' data-image_file='$user_image_file' class='main_image' onclick='changeMainImage(this)'>Сделать главной</div>";
+                                    $html .= "<div><button data-album_id='$album_id' data-image_file='$user_image_file' class='main_image btn btn-info' onclick='changeMainImage(this)'>Сделать главной</button></div>";
                                 }
                                 if ($album_user_id == $session_user_id) {
                                     $html .= "<div class='delete_image second_album'>

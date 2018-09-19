@@ -1,0 +1,54 @@
+*{
+    outline: none;
+    text-decoration: none;
+}
+body{
+    margin:0 auto;
+    padding:0 auto;
+    background: linear-gradient(to right, lightblue, #59E4FC);
+}
+.nav li{
+    margin-top: 10px;
+    margin-left: 10px;
+}
+.birth-date{
+    width: 83px;
+}
+#login input{
+    width: 200px;
+}
+.plus, .cross {
+    width: 30px;
+    height: 30px;
+}
+.error {
+    color: red;
+    transition: 5s linear ease;
+}
+.img-thumbnail {
+    padding: 0;
+}
+.hedgehog-logo {
+    width: 225px;
+    text-align: center;
+    position: absolute;
+    right: 31%;
+}
+.newline-logo {
+    position: absolute;
+    top: 235px;
+}
+.newline-huge {
+    background-color: transparent;!important;
+    border: 0 !important;
+}
+@media screen and (max-width: 992px) {
+    .hedgehog {
+        display: none;
+    }
+}
+@media screen and (min-width: 992px) {
+    .hedgehog-header {
+        display: none;
+    }
+}

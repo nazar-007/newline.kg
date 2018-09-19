@@ -54,6 +54,9 @@
 .right {
     cursor: pointer;
 }
+.fans_field, .emotions_field {
+    width: 90px;
+}
 .pos_recommendations {
     width: 20%;
     height: 100%;
